@@ -634,6 +634,8 @@ input[type=range]::-webkit-slider-thumb{margin-top:-9.5px}
 html,body{height:100%!important;margin:0!important;overflow:hidden}
 /* 툴바를 iOS 26 탭바처럼 홈 바 쪽으로 더 내림 */
 .bar{bottom:max(8px,calc(env(safe-area-inset-bottom,0px) - 14px))!important}
+/* 툴바: 진짜 살짝만 흐리게 */
+.bar{-webkit-backdrop-filter:blur(2.5px) saturate(1.5)!important;backdrop-filter:blur(2.5px) saturate(1.5)!important;background:rgba(255,255,255,.04)!important}
 </style>
 
 <div id="app"></div>
@@ -844,7 +846,7 @@ function rfPos(){const b=RF.bar,sc=RF.sc;if(!b||!b.offsetWidth)return;const br=b
   RF.ins.forEach(i=>i.style.cssText=i.style.cssText.replace(/left:.*$/,'')+st)}
 let rfT;const rfLater=()=>{clearTimeout(rfT);rfT=setTimeout(rfClone,450)};
 app.addEventListener('click',rfLater);app.addEventListener('input',rfLater);
-stag(main);countUp();rfInit();setTimeout(rfClone,1300);
+stag(main);countUp();/* 복사본 굴절은 끔: 툴바는 살짝 흐림만 */
 
 function lay(){stack.forEach((e,i)=>e.classList.toggle('under',i<stack.length-1))}
 function applyState(){
