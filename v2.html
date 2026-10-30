@@ -849,25 +849,16 @@ html.L .cl{display:none!important}
 :root,html{padding:0!important}
 html,body{height:100%!important;margin:0!important;overflow:hidden}
 #app{position:fixed!important;left:0;right:0;top:env(safe-area-inset-top,0px);bottom:0;height:auto!important;margin:0 auto!important}
-/* 선택 화면 창 안에서는 창 크기에 딱 맞춤 (안전 영역은 바깥 창이 처리) */
-html.F #app{top:0!important;bottom:0!important;height:auto!important}
-html.F .sc{padding-bottom:calc(120px + var(--sb,0px))!important}
-html.F .bar{bottom:calc(8px + var(--sb,0px))!important}
 </style>
 <script>
 (()=>{const app=document.getElementById('app');if(!app)return;
-  const fit=()=>{if(window.parent!==window||!(navigator.standalone||matchMedia('(display-mode: standalone)').matches))return;
+  const fit=()=>{if(!(navigator.standalone||matchMedia('(display-mode: standalone)').matches))return;
     const land=innerWidth>innerHeight,h=land?Math.min(screen.width,screen.height):Math.max(screen.width,screen.height);if(h<=innerHeight)return;
     [document.documentElement,document.body].forEach(e=>e.style.setProperty('height',h+'px','important'));
     app.style.setProperty('bottom','auto','important');app.style.setProperty('height',`calc(${h}px - env(safe-area-inset-top,0px))`,'important')};
   fit();addEventListener('resize',fit);
   if(!/[?&]l=1/.test(location.search))return;
   document.documentElement.classList.add('L');
-  const q=new URLSearchParams(location.search),framed=q.get('f')==='1'&&window.parent!==window;
-  /* 선택 화면 안의 창으로 열렸을 때: 바깥 창이 아이폰처럼 커지고 줄어드니까 앱 자체 애니메이션은 생략 */
-  if(framed){const sb=parseFloat(q.get('sb'))||0;document.documentElement.style.setProperty('--sb',sb+'px');document.documentElement.classList.add('F');
-    document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-exit]')){e.stopPropagation();e.preventDefault();parent.postMessage('buds-exit',location.origin)}},true);
-    return}
   /* 열 때: 작고 흐린 데서 커지며 등장 */
   app.classList.add('closed');requestAnimationFrame(()=>requestAnimationFrame(()=>app.classList.remove('closed')));
   /* 나가기: 줄어드는 애니메이션 뒤 버전 선택 화면으로 */
