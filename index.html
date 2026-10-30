@@ -1013,7 +1013,7 @@ const segIdx=(g,r)=>{if(g._ri===r)return;g._ri=r;if(g.id==='ms')S.mode=r;
 /* 물방울 스프링: 손가락을 관성 있게 따라오고, 빠를수록 진행 방향으로 늘어남(부피 유지) */
 const segLoop=g=>{const sp=g._sp;if(sp.run)return;sp.run=1;let last=performance.now();
   const step=now=>{const dt=Math.min(.032,(now-last)/1000)||.016;last=now;
-    const K=sp.fin?380:700,C=2*Math.sqrt(K)*(sp.fin?.72:1),a=(sp.t-sp.x)*K-sp.v*C;sp.v+=a*dt;sp.x+=sp.v*dt;
+    const bar=g.classList.contains('bar'),K=bar?320:sp.fin?380:700,C=2*Math.sqrt(K)*(bar?.72:sp.fin?.72:1),a=(sp.t-sp.x)*K-sp.v*C;sp.v+=a*dt;sp.x+=sp.v*dt;
     g.style.setProperty('--i',sp.x.toFixed(4));
     /* 꾹 누르면 렌즈가 스프링으로 부풀고, 놓으면 스프링으로 줄어듦 (CSS로 한 번에 툭 커지던 것) */
     const pt=sp.fin?1:1.3,K2=g.classList.contains('bar')?420:150,pa=(pt-sp.ps)*K2-sp.pv*2*Math.sqrt(K2)*.95;sp.pv+=pa*dt;sp.ps+=sp.pv*dt;g.style.setProperty('--ps',sp.ps.toFixed(4));g.style.setProperty('--pf',Math.max(0,Math.min(1,1-(sp.ps-1)/.3)).toFixed(3));
@@ -1044,7 +1044,7 @@ app.addEventListener('pointerdown',e=>{
   },HOLD)};
   if(g)g._ri=Math.round(+g.style.getPropertyValue('--i')||0);
   /* 툴바: 누르는 즉시 위쪽과 같은 렌즈가 누른 버튼으로 미끄러져 가며 부풂 (끌어서 옮기기는 없음) */
-  if(hd.bb){clearTimeout(hd.t);const ix=[...g.querySelectorAll(':scope>button')].indexOf(hd.bb);g.style.setProperty('--i',ix);if(g._sp&&!g._sp.run){g._sp.x=g._sp.t=ix;g._sp.v=0}hd.t0=performance.now();segStart(g);segDrag(g,ix)}
+  if(hd.bb){clearTimeout(hd.t);const ix=[...g.querySelectorAll(':scope>button')].indexOf(hd.bb);if(!g.classList.contains('picked')){g.style.setProperty('--i',ix);if(g._sp&&!g._sp.run){g._sp.x=g._sp.t=ix;g._sp.v=0}}hd.t0=performance.now();segStart(g);segDrag(g,ix)}
 });
 app.addEventListener('pointermove',e=>{
   if(!hd||!hd.g||e.pointerId!==hd.id||hd.bb)return;
