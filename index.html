@@ -828,15 +828,18 @@ function tlFrame(){const s=TL,t=s.tg;if(!t||!t.isConnected){s.run=0;return}
 /* 툴바 굴절: 뒤 화면 복사본을 테두리에서만 보이게 하고 안쪽으로 눌러 담아서 유리 가장자리처럼 휘게 */
 const RF={};
 function rfInit(){const bar=main.querySelector('.bar'),sc=main.querySelector('.sc');if(!bar||!sc)return;
-  const B=Array.from({length:24},(_,k)=>{const d=k*.8,e=(1-d/19.2)**2;return[d,1-.14*e,1-.32*e]});
+  const B=Array.from({length:16},(_,k)=>{const d=k*.75,e=(1-d/12)**2;return[d,1-.12*e,1-.3*e]});RF.B=B;
   const w=document.createElement('div');w.className='rfw';w.setAttribute('aria-hidden','true');w.inert=true;bar.before(w);
-  w.insertAdjacentHTML('afterbegin',B.map(([d,sx,sy])=>`<div class="rf" aria-hidden="true" inert style="clip-path:inset(${d}px round ${Math.max(0,32-d)}px)"><div class="rfin" style="--sx:${sx.toFixed(4)};--sy:${sy.toFixed(4)}"></div></div>`).join(''));
+  w.insertAdjacentHTML('afterbegin',B.map(([d,sx,sy])=>`<div class="rf" aria-hidden="true" inert><div class="rfin" style="--sx:${sx.toFixed(4)};--sy:${sy.toFixed(4)}"></div></div>`).join(''));
   RF.bar=bar;RF.w=w;RF.sc=sc;RF.ins=[...w.querySelectorAll('.rfin')];rfClone();sc.addEventListener('scroll',()=>{w.classList.add('mv');clearTimeout(RF.st);RF.st=setTimeout(()=>{rfPos();w.classList.remove('mv')},140)},{passive:true});addEventListener('resize',rfPos)}
 function rfClone(){if(!RF.ins)return;const c=document.createElement('div');[...RF.sc.children].forEach(n=>c.appendChild(n.cloneNode(true)));
   /* id 유지: #ms 같은 스타일이 id에 걸려 있음. 실제 화면이 DOM에서 먼저라 q('#..')는 그대로 실제 요소를 찾음 */c.querySelectorAll('canvas').forEach(e=>e.remove());
   RF.ins.forEach(i=>i.replaceChildren(...c.cloneNode(true).childNodes));rfPos()}
 function rfPos(){const b=RF.bar,sc=RF.sc;if(!b||!b.offsetWidth)return;const br=b.getBoundingClientRect(),mr=main.getBoundingClientRect();
-  RF.w.style.cssText=`left:${br.left-mr.left}px;top:${br.top-mr.top}px;width:${br.width}px;height:${br.height}px`;const sr=sc.getBoundingClientRect(),cs=getComputedStyle(sc);
+  RF.w.style.cssText=`left:${br.left-mr.left}px;top:${br.top-mr.top}px;width:${br.width}px;height:${br.height}px`;
+  const W=br.width,H=br.height,sz=W+'x'+H;if(RF.sz!==sz){RF.sz=sz;
+    const rr=d=>{const x=d,y=d,w=W-2*d,h=H-2*d,r=Math.max(0,H/2-d);return`M${x+r},${y}H${x+w-r}A${r},${r} 0 0 1 ${x+w},${y+r}V${y+h-r}A${r},${r} 0 0 1 ${x+w-r},${y+h}H${x+r}A${r},${r} 0 0 1 ${x},${y+h-r}V${y+r}A${r},${r} 0 0 1 ${x+r},${y}Z`};
+    RF.w.querySelectorAll('.rf').forEach((e,k)=>{const d=RF.B[k][0],d2=k+1<RF.B.length?RF.B[k+1][0]:12;e.style.clipPath=`path(evenodd,'${rr(d)}${rr(d2)}')`})}const sr=sc.getBoundingClientRect(),cs=getComputedStyle(sc);
   const l=sr.left-br.left,t=sr.top-br.top-sc.scrollTop,st=`left:${l}px;top:${t}px;width:${sc.clientWidth}px;padding:${cs.padding};transform-origin:${br.width/2-l}px ${br.height/2-t}px`;
   RF.ins.forEach(i=>i.style.cssText=i.style.cssText.replace(/left:.*$/,'')+st)}
 let rfT;const rfLater=()=>{clearTimeout(rfT);rfT=setTimeout(rfClone,450)};
