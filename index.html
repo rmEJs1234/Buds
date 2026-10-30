@@ -629,6 +629,9 @@ input[type=range]::-webkit-slider-thumb{margin-top:-9.5px}
 .rfw.mv{opacity:0;transition:opacity .08s}
 /* 홈 화면 앱(standalone)에서 높이가 화면보다 짧게 잡혀 아래가 잘리던 것: 화면에 고정해서 꽉 채움 */
 #app{position:fixed!important;left:0;right:0;top:env(safe-area-inset-top,0px);bottom:0;height:auto!important;margin:0 auto!important}
+/* 바깥 html 여백(안전 영역) 때문에 앱이 위아래로 밀리던 것: 여백 없애고 앱이 직접 안전 영역 처리 */
+:root,html{padding:0!important}
+html,body{height:100%!important;margin:0!important;overflow:hidden}
 </style>
 
 <div id="app"></div>
