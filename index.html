@@ -16,6 +16,17 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);wo
   padding-block:calc(28px + env(safe-area-inset-top,0px)) calc(28px + env(safe-area-inset-bottom,0px));
   transition:transform .5s cubic-bezier(.55,0,.8,.4),opacity .35s ease-in .1s,filter .5s ease-in}
 .wrap.go{transform:scale(1.08);opacity:0;filter:blur(14px)}
+/* 앱 창: 누른 줄에서 커져 나오고, 나가면 그 줄로 줄어들어 들어감 */
+.win{position:fixed;left:0;top:0;width:100%;height:var(--H,100%);z-index:20;background:#000;overflow:hidden;transform-origin:50% 50%;will-change:transform,clip-path}
+.win iframe{position:absolute;left:0;right:0;bottom:0;top:env(safe-area-inset-top,0px);width:100%;height:calc(100% - env(safe-area-inset-top,0px));border:0;background:#000;opacity:0;transition:opacity .22s}
+.win.ready iframe{opacity:1}
+.win .splash{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .25s}
+.win .splash img{width:120px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.6))}
+.win.ready .splash{opacity:0}
+.wrap.under{transform:scale(.93);filter:blur(6px);opacity:.55;transition:transform .5s cubic-bezier(.2,.9,.25,1),filter .5s,opacity .5s}
+.wrap.back{transition:transform .5s cubic-bezier(.2,.9,.25,1),filter .45s,opacity .45s}
+.v.landed{animation:land .7s ease-out}
+@keyframes land{0%{background:rgba(255,255,255,.16)}100%{background:transparent}}
 .hero{display:grid;place-items:center;padding-top:10px;position:relative}
 .hero img{width:150px;height:auto;filter:drop-shadow(0 16px 24px rgba(0,0,0,.6));animation:fl 6s ease-in-out infinite}
 .hero::after{content:"";position:absolute;bottom:-6px;left:50%;width:96px;height:10px;margin-left:-48px;border-radius:50%;
@@ -66,14 +77,41 @@ h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing
   const wrap=document.getElementById('wrap');
   let last=null;try{last=localStorage.getItem('buds.last')}catch(_){}
   if(last){const b=document.getElementById(last);if(b){const t=document.createElement('span');t.className='tag last';t.textContent='마지막으로 봄';b.querySelector('.tt').appendChild(t)}}
-  document.querySelectorAll('.v').forEach(b=>b.addEventListener('click',()=>{
+  const reduce=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+  /* 홈 화면 앱에서 아이폰이 높이를 짧게 알려주는 문제: 실제 화면 높이 사용 */
+  const H=()=>{const land=innerWidth>innerHeight,h=land?Math.min(screen.width,screen.height):Math.max(screen.width,screen.height);return standalone&&h>innerHeight?h:innerHeight};
+  const probe=document.createElement('div');probe.style.cssText='position:fixed;visibility:hidden;padding-bottom:env(safe-area-inset-bottom,0px)';document.body.appendChild(probe);
+  let win=null,from=null,busy=false;
+  /* 줄(rect) 모양으로 접힌 창의 transform + clip */
+  const folded=r=>{const W=innerWidth,h=H(),s=r.width/W,vis=r.height/s,iv=Math.max(0,(h-vis)/2);
+    return{transform:`translate(${r.left+r.width/2-W/2}px,${r.top+r.height/2-h/2}px) scale(${s})`,clipPath:`inset(${iv}px 0px ${iv}px 0px round ${22/s}px)`}};
+  const full=()=>({transform:'translate(0px,0px) scale(1)',clipPath:`inset(0px 0px 0px 0px round 0px)`});
+  function openApp(b){if(busy||win)return;busy=true;from=b;
     try{localStorage.setItem('buds.last',b.id)}catch(_){}
-    wrap.classList.add('go');
-    const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-    setTimeout(()=>{location.href=b.dataset.href+'?l=1'},reduce?120:420);
-  }));
-  /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
-  addEventListener('pageshow',e=>{if(e.persisted)wrap.classList.remove('go')});
+    const sb=parseFloat(getComputedStyle(probe).paddingBottom)||0;
+    win=document.createElement('div');win.className='win';win.style.setProperty('--H',H()+'px');
+    win.innerHTML=`<div class="splash"><img src="buds.png" alt=""></div><iframe title="${b.querySelector('.tt').firstChild.textContent.trim()}" src="${b.dataset.href}?l=1&f=1&sb=${sb}"></iframe>`;
+    document.body.appendChild(win);
+    const ifr=win.querySelector('iframe');ifr.addEventListener('load',()=>{setTimeout(()=>win&&win.classList.add('ready'),60);try{ifr.contentWindow.focus()}catch(_){}});
+    wrap.classList.remove('back');wrap.classList.add('under');
+    const r=b.getBoundingClientRect();
+    if(reduce()){busy=false;return}
+    win.animate([folded(r),full()],{duration:520,easing:'cubic-bezier(.2,.9,.25,1)',fill:'both'}).finished.then(()=>busy=false);
+  }
+  function closeApp(){if(!win||busy)return;busy=true;const w=win,b=from;
+    wrap.classList.remove('under');wrap.classList.add('back');
+    const done=()=>{w.remove();win=null;busy=false;b.classList.remove('landed');void b.offsetWidth;b.classList.add('landed');b.focus({preventScroll:true})};
+    if(reduce()){done();return}
+    const r=b.getBoundingClientRect();
+    w.animate([full(),folded(r)],{duration:440,easing:'cubic-bezier(.3,.75,.3,1)',fill:'both'});
+    w.querySelector('iframe').animate([{opacity:1},{opacity:1,offset:.55},{opacity:0}],{duration:440,fill:'both'});
+    w.animate([{opacity:1},{opacity:1,offset:.8},{opacity:0}],{duration:440,fill:'both'}).finished.then(done);
+  }
+  document.querySelectorAll('.v').forEach(b=>b.addEventListener('click',()=>openApp(b)));
+  addEventListener('message',e=>{if(e.origin===location.origin&&e.data==='buds-exit')closeApp()});
+  addEventListener('resize',()=>{if(win)win.style.setProperty('--H',H()+'px')});
+  addEventListener('pageshow',e=>{if(e.persisted)wrap.classList.remove('go','under')});
 })();
 </script>
 </body></html>
