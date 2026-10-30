@@ -656,6 +656,8 @@ html,body{height:100%!important;margin:0!important;overflow:hidden}
 .sheet{bottom:calc(8px + var(--kb,0px))!important;transition:transform .55s cubic-bezier(.3,1.2,.5,1),opacity .3s,bottom .3s cubic-bezier(.3,.8,.3,1)!important}
 /* 연결 안 됨: 케이스를 살짝 어둡고 흐리게 */
 .dv img[alt="연결 안 됨"]{filter:brightness(.68) saturate(.8) blur(1.4px) drop-shadow(0 14px 22px rgba(0,0,0,.55))!important}
+/* 큰 제목: 이름이 길어도 안 잘리게 조금 작게 */
+.nb h1{font-size:28px!important;line-height:34px!important}
 </style>
 
 <div id="app"></div>
@@ -940,7 +942,12 @@ function morph(toConn){
   const h1=h.offsetHeight;if(h0!==h1)h.animate([{height:h0+'px'},{height:h1+'px'}],{duration:620,easing:'cubic-bezier(.32,.72,0,1)'});
   setTimeout(()=>{old.remove();nh.querySelectorAll('.im img').forEach(e=>e.style.animation='')},1150);
 }
-function setConn(v){if(cbusy||v===S.conn)return;cbusy=1;morph(v);setTimeout(()=>{cbusy=0},D_BUSY)}
+function setConn(v){if(cbusy||v===S.conn)return;cbusy=1;
+  /* 연결/해제 애니메이션이 보이게 먼저 맨 위로 스크롤 */
+  const sc=main.querySelector('.sc'),go=()=>{morph(v);setTimeout(()=>{cbusy=0},D_BUSY)};
+  if(!sc||sc.scrollTop<4)return go();
+  sc.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+  const t0=performance.now();(function w(){if(sc.scrollTop<2||performance.now()-t0>700){sc.scrollTop=0;requestAnimationFrame(go)}else requestAnimationFrame(w)})()}
 const D_BUSY=1000;
 const vv=window.visualViewport;if(vv){const kb=()=>{const b=app.getBoundingClientRect().bottom-(vv.offsetTop+vv.height);ov.style.setProperty('--kb',Math.max(0,b)+'px')};vv.addEventListener('resize',kb);vv.addEventListener('scroll',kb)}
 function ovOpen(h){ov.innerHTML='<div class="scrim" data-o="x"></div>'+h;ov.querySelectorAll('.sheet,.al').forEach(e=>e.insertAdjacentHTML('afterbegin','<span class="eg" aria-hidden="true"></span>'));ov.offsetWidth;ov.classList.add('on');const i=ov.querySelector('input');if(i)setTimeout(()=>{i.focus();i.select()},380);else{const b=ov.querySelector('[data-o]:not(.scrim)');b&&b.focus({preventScroll:true})}}
