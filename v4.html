@@ -910,7 +910,7 @@ function morph(toConn){
   old.querySelectorAll('.hero,.im img,.rg circle').forEach(e=>e.style.animation='none');
   app.appendChild(old);
   S.conn=toConn;applyState();
-  const nh=q('#hero');nh.querySelectorAll('.hero,.im img').forEach(e=>e.style.animation='none');
+  const nh=q('#hero');nh.querySelectorAll('.hero').forEach(e=>e.style.animation='none');
   const ni=caseImg(nh,toConn),oi=caseImg(old,!toConn),nw=ni.parentNode,ow=oi.parentNode;
   const r1=(()=>{const r=ni.getBoundingClientRect();if(r.height>1)return r;return{left:r.left,top:r.top,width:r.width,height:r.width*(AS[toConn?'c':'u']||1)}})();
   nw.style.zIndex=2;
@@ -940,7 +940,7 @@ function morph(toConn){
   }
   /* 아래 내용이 뚝 끊기지 않게 높이도 같이 */
   const h1=h.offsetHeight;if(h0!==h1)h.animate([{height:h0+'px'},{height:h1+'px'}],{duration:620,easing:'cubic-bezier(.32,.72,0,1)'});
-  setTimeout(()=>{old.remove();nh.querySelectorAll('.im img').forEach(e=>e.style.animation='')},1150);
+  setTimeout(()=>old.remove(),1150);
 }
 function setConn(v){if(cbusy||v===S.conn)return;cbusy=1;
   /* 연결/해제 애니메이션이 보이게 먼저 맨 위로 스크롤 */
