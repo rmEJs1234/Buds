@@ -46,6 +46,51 @@ h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing
 @media (prefers-reduced-motion:reduce){.hero img,.hero::after,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
 </style></head><body>
 
+<style>
+/* 컴퓨터에서 열면: 아이폰 목업 안에 앱을 띄움 */
+.mock body{overflow:hidden}
+.mock .wrap{display:none}
+.mk{position:fixed;inset:0;display:grid;place-items:center;
+  background:radial-gradient(60% 50% at 50% 38%,#1d2333 0%,#0b0d12 55%,#050507 100%);overflow:hidden}
+.mk-stage{display:flex;flex-direction:column;align-items:center;gap:22px;transform-origin:50% 50%}
+.mk-phone{position:relative;width:417px;height:876px;border-radius:68px;padding:12px;
+  background:linear-gradient(145deg,#5b5e66,#2a2c31 30%,#1b1c20 60%,#4a4d55);
+  box-shadow:0 0 0 1.5px #0d0e10,inset 0 0 0 1.5px rgba(255,255,255,.18),inset 0 0 0 5px #121316,0 40px 90px rgba(0,0,0,.65),0 12px 30px rgba(0,0,0,.4)}
+.mk-btn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#3a3c42,#5e6169)}
+.mk-btn.a{left:-4px;top:150px;height:32px}.mk-btn.b{left:-4px;top:205px;height:62px}.mk-btn.c{left:-4px;top:280px;height:62px}.mk-btn.d{right:-4px;top:230px;height:100px}
+.mk-screen{position:relative;width:393px;height:852px;border-radius:56px;overflow:hidden;background:#000}
+.mk-screen iframe{position:absolute;left:0;top:54px;width:393px;height:798px;border:0;background:#000}
+.mk-status{position:absolute;inset:0 0 auto;height:54px;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 46px;
+  color:#fff;font:600 17px -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;z-index:2;pointer-events:none}
+.mk-status svg{height:12px;width:auto}
+.mk-ic{display:flex;gap:6px;align-items:center}
+.mk-island{position:absolute;top:11px;left:50%;width:126px;height:37px;margin-left:-63px;border-radius:20px;background:#000;z-index:3}
+.mk-home{position:absolute;left:50%;bottom:8px;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:rgba(255,255,255,.75);z-index:3;pointer-events:none}
+.mk-cap{margin:0;color:#8e93a3;font:500 13px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;letter-spacing:.02em;text-align:center}
+.mk-cap b{color:#d9dce6;font-weight:600}
+</style>
+<script>
+(()=>{
+  const desk=matchMedia('(min-width: 700px) and (pointer: fine)').matches;
+  if(!desk||location.hash==='#phone')return;
+  document.documentElement.classList.add('mock');
+  const base=location.href.split('#')[0];
+  const mk=document.createElement('div');mk.className='mk';
+  mk.innerHTML=`<div class="mk-stage"><div class="mk-phone"><i class="mk-btn a"></i><i class="mk-btn b"></i><i class="mk-btn c"></i><i class="mk-btn d"></i>
+    <div class="mk-screen"><div class="mk-status"><span class="mk-time"></span><span class="mk-ic">
+      <svg viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+      <svg viewBox="0 0 16 12" fill="#fff"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg>
+      <svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke="#fff" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="#fff"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#fff" fill-opacity=".45"/></svg>
+    </span></div><div class="mk-island"></div><iframe title="Galaxy Buds4 Pro" src="${base}#phone"></iframe><div class="mk-home"></div></div></div>
+    <p class="mk-cap"><b>Galaxy Buds4 Pro</b> for iOS 27 · 휴대폰으로 열면 전체 화면으로 보여요</p></div>`;
+  document.body.appendChild(mk);
+  const st=mk.querySelector('.mk-stage'),tm=mk.querySelector('.mk-time');
+  const fit=()=>{const s=Math.min(1,(innerHeight-40)/(876+22+18),(innerWidth-40)/417);st.style.transform=`scale(${s})`};
+  const clock=()=>{const d=new Date();tm.textContent=(d.getHours()%12||12)+':'+String(d.getMinutes()).padStart(2,'0')};
+  fit();clock();addEventListener('resize',fit);setInterval(clock,15000);
+  window.__MOCK=1;
+})();
+</script>
 <main class="wrap" id="wrap">
   <div class="hero in" style="--k:0"><img src="buds.png" alt="Galaxy Buds4 Pro 이어버드"></div>
   <div class="in" style="--k:1">
@@ -63,6 +108,7 @@ h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing
 
 <script>
 (()=>{
+  if(window.__MOCK)return;
   const wrap=document.getElementById('wrap');
   let last=null;try{last=localStorage.getItem('buds.last')}catch(_){}
   if(last){const b=document.getElementById(last);if(b){const t=document.createElement('span');t.className='tag last';t.textContent='마지막으로 봄';b.querySelector('.tt').appendChild(t)}}
