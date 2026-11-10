@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>갈무리 Galmuri</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{
+blue:{50:'#EEF2FF',100:'#DDE5FF',200:'#BCCBFF',300:'#93A9FF',400:'#6F8AF5',500:'#4C6EF5',600:'#3B5BDB',700:'#2F4AC0',800:'#27399A',900:'#1E2B73'},
+gray:{50:'#F6F7F9',100:'#EEF0F4',200:'#E1E4EA',300:'#C9CED8',400:'#757C8A',500:'#5B6270',600:'#454B58',700:'#343A46',800:'#232831',900:'#171B22'}}}}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0;background:#EEF0F4;font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:#191F28}
+@keyframes up{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slide{from{transform:translateY(-100%)}to{transform:none}}
+.up{animation:up .3s ease}.pop{animation:pop .45s ease}.spin{animation:spin .8s linear infinite}
+button{position:relative;overflow:hidden;transition:transform .15s ease,background-color .15s ease}button:active{transform:scale(.97)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.space-y-3>*,.space-y-4>*{animation:rise .4s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--n,0)*45ms)}
+.hero{background:linear-gradient(135deg,#2F4AC0,#3B5BDB 55%,#5B73F0);animation:rise .4s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes hs{50%{background-position:100% 100%}}
+.hero>*:not(.blob){position:relative;z-index:1}
+.blob{position:absolute;border-radius:50%;filter:blur(24px);background:rgba(255,255,255,.22)}
+.b1{width:150px;height:150px;right:-40px;top:-50px;animation:bl 7s ease-in-out infinite}
+.b2{width:110px;height:110px;left:-30px;bottom:-40px;animation:bl 9s -3s ease-in-out infinite reverse}
+@keyframes bl{50%{transform:translate(-26px,22px) scale(1.25)}}
+.border-l-4.border-amber-400{animation:rise .4s cubic-bezier(.2,.8,.2,1) calc(var(--n,0)*45ms) backwards}
+.border-l-4.border-red-400{animation:rise .4s cubic-bezier(.2,.8,.2,1) calc(var(--n,0)*45ms) backwards}
+nav>div{position:relative}.tabind{position:absolute;top:0;left:0;width:25%;height:3px;display:flex;justify-content:center;transition:transform .3s cubic-bezier(.3,.8,.3,1)}.tabind::after{content:'';width:32px;height:3px;border-radius:0 0 4px 4px;background:#3B5BDB}
+.tabon svg{animation:tb .6s cubic-bezier(.34,1.56,.64,1)}@keyframes tb{0%{transform:translateY(6px) scale(.7)}60%{transform:translateY(-4px) scale(1.2)}}
+.w-6.h-6.bg-white.rounded-full{transition:transform .4s cubic-bezier(.34,1.8,.5,1)}
+@keyframes fade{from{opacity:0}}.fade{animation:fade .25s}
+.sheet{animation:sheet .5s cubic-bezier(.2,1,.3,1);position:relative}@keyframes sheet{from{transform:translateY(100%)}}
+.toastin{animation:ti .5s cubic-bezier(.3,1.5,.5,1)}@keyframes ti{from{transform:translateY(30px) scale(.8);opacity:0}}
+.cf{position:absolute;left:50%;top:90px;width:8px;height:12px;border-radius:2px;animation:burst 1.1s cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes burst{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+.ringp{animation:pop .45s ease}
+@keyframes fl{50%{transform:translateY(-3px) rotate(-4deg)}}.emo{animation:fl 3.4s ease-in-out infinite}
+@keyframes grow{from{width:0}}.grow{animation:grow 1.1s .2s cubic-bezier(.2,.8,.2,1) backwards;position:relative;overflow:hidden}
+.draw{stroke-dasharray:1;animation:dr 1.4s .3s ease backwards}@keyframes dr{from{stroke-dashoffset:1}}
+@keyframes nw{0%{transform:translateY(-30px) scale(.9);opacity:0}60%{transform:translateY(4px) scale(1.02)}}
+.flash{animation:nw .7s cubic-bezier(.2,.9,.3,1.3) backwards}
+@keyframes lv{to{opacity:0;transform:translateX(70px) scale(.88)}}.leave{animation:lv .32s ease forwards !important}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.18;transform:scale(0);animation:rp .6s ease-out forwards;pointer-events:none}@keyframes rp{to{transform:scale(1);opacity:0}}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ===== UI v2: 10대~성인 공용 ===== */
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-size:1rem;line-height:1.5;-webkit-font-smoothing:antialiased;color:#171B22}
+body .text-xs{font-size:.8125rem;line-height:1.25rem}
+body .text-sm{font-size:.9375rem;line-height:1.4rem}
+body .text-\[11px\]{font-size:.75rem;line-height:1rem}
+body .text-\[15px\]{font-size:1rem;line-height:1.4rem}
+body .shadow-sm{box-shadow:0 0 0 1px rgba(23,27,34,.05),0 1px 3px rgba(23,27,34,.06)}
+body .shadow-lg{box-shadow:0 8px 24px rgba(47,74,192,.22)}
+body button.rounded-xl{min-height:44px}
+body button.rounded-full.shrink-0{min-height:40px}
+body :focus-visible{outline:3px solid #93A9FF;outline-offset:2px}
+body .emo{animation:none}
+body .blob{background:rgba(255,255,255,.12)}
+body .b1,body .b2{animation:none}
+body .tabon svg{animation:none}
+body .w-6.h-6.bg-white.rounded-full{transition:transform .25s ease}
+body .opacity-80{opacity:.9}
+.sheet::before{content:'';display:block;width:40px;height:4px;border-radius:4px;background:#C9CED8;margin:-6px auto 14px}
+body{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const {useState,useEffect,useRef}=React;
+const html=htm.bind(React.createElement);
+const won=n=>Number(n).toLocaleString('ko-KR')+'원';
+const P={home:'M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z',box:'M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8',tag:'M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8zM7.5 7.5h.01',users:'M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M21 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8',x:'M18 6L6 18M6 6l12 12',chev:'M6 9l6 6 6-6',plus:'M12 5v14M5 12h14',check:'M20 6L9 17l-5-5',search:'M21 21l-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14'};
+const Ic=({n,s=22,c='currentColor',w=2})=>html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${c} stroke-width=${w} stroke-linecap="round" stroke-linejoin="round"><path d=${P[n]}/></svg>`;
+
+const INIT=[
+{id:1,cat:'consumable',sub:'fridge',name:'서울우유 1L',brand:'서울우유',store:'쿠팡',date:'2026-11-03',price:2780,dday:2,auto:85,shared:true,emoji:'🥛'},
+{id:2,cat:'consumable',sub:'daily',name:'제주 삼다수 2L 6개입',brand:'제주삼다수',store:'이마트',date:'2026-10-20',price:7480,remain:20,rebuy:12900,emoji:'💧'},
+{id:3,cat:'consumable',sub:'daily',name:'다우니 섬유유연제',brand:'P&G',store:'네이버쇼핑',date:'2026-10-25',price:14900,dday:15,remain:60,emoji:'🧺'},
+{id:9,cat:'consumable',sub:'fridge',name:'무항생제 계란 30구',brand:'풀무원',store:'쿠팡',date:'2026-10-27',price:8990,dday:6,auto:92,emoji:'🥚'},
+{id:10,cat:'consumable',sub:'fridge',name:'국산 두부 300g',brand:'풀무원',store:'이마트',date:'2026-11-06',price:2480,dday:5,auto:55,emoji:'🧈'},
+{id:4,cat:'durable',sub:'digital',name:'Apple 에어팟 프로 2세대',brand:'Apple',store:'쿠팡',date:'2025-11-28',price:329000,resale:215000,warranty:18,serial:'GX7H2K9QLM',emoji:'🎧'},
+{id:5,cat:'durable',sub:'fashion',name:'나이키 에어포스 1',brand:'Nike',store:'무신사',date:'2025-12-14',price:139000,resale:75000,warranty:null,serial:'CW2288-111',emoji:'👟'},
+{id:6,cat:'durable',sub:'digital',name:'LG 코드제로 청소기',brand:'LG전자',store:'하이마트',date:'2025-11-17',price:890000,resale:195000,warranty:7,serial:'LG-A9K-48215',emoji:'🧹'},
+{id:7,cat:'medical',sub:'medical',name:'타이레놀 정 500mg',brand:'한국존슨앤드존슨',store:'종로약국',date:'2026-09-02',price:6000,dday:120,emoji:'💊'},
+{id:8,cat:'medical',sub:'medical',name:'이비인후과 처방약 3일분',brand:'처방조제',store:'연세약국',date:'2026-11-08',price:7800,doses:2,alarm:true,emoji:'🧪'}];
+const POOL=[
+{sub:'fridge',name:'대파 1단',brand:'국내산',emoji:'🌱',price:2990,dday:7},{sub:'fridge',name:'삼겹살 600g',brand:'한돈',emoji:'🥩',price:16900,dday:3},{sub:'daily',name:'크리넥스 3겹 휴지 30롤',brand:'유한킴벌리',emoji:'🧻',price:25300,remain:100},
+{sub:'fridge',name:'그릭요거트 900g',brand:'매일유업',emoji:'🍶',price:7900,dday:9},{sub:'daily',name:'주방세제 750ml',brand:'참그린',emoji:'🧴',price:4900,remain:100},{sub:'fridge',name:'방울토마토 1kg',brand:'산지직송',emoji:'🍅',price:9800,dday:6}];
+const FILTERS=[['all','전체'],['fridge','냉장·식자재'],['daily','생필품'],['digital','디지털·가전'],['fashion','의류·잡화'],['medical','의약품']];
+const SYMP=['전원이 켜지지 않아요','소음·진동이 심해요','배터리가 빨리 닳아요','작동 중 멈춰요','외관 파손·불량'];
+
+function useCount(t){const [v,setV]=useState(t);const r=useRef(t);
+ useEffect(()=>{const from=r.current,st=performance.now();let id;
+  const f=now=>{const p=Math.min(1,(now-st)/700);const e=1-Math.pow(1-p,3);const x=Math.round(from+(t-from)*e);setV(x);r.current=x;if(p<1)id=requestAnimationFrame(f)};
+  id=requestAnimationFrame(f);return()=>cancelAnimationFrame(id)},[t]);return v}
+
+const Confetti=()=>{const ps=React.useMemo(()=>Array.from({length:32},(_,k)=>{const a=Math.random()*Math.PI*2,d=70+Math.random()*120;return {x:Math.cos(a)*d,y:Math.sin(a)*d-30+Math.random()*60,r:Math.random()*720-360,c:['#3B5BDB','#10B981','#F59E0B','#EF4444','#8B5CF6'][k%5],t:Math.random()*.15}}),[]);return html`<div>${ps.map((p,k)=>html`<i key=${k} class="cf" style=${{'--x':p.x+'px','--y':p.y+'px','--r':p.r+'deg',background:p.c,animationDelay:p.t+'s'}}></i>`)}</div>`};
+const Badge=({c,children})=>html`<span class=${'text-[11px] font-bold px-2 py-0.5 rounded-full '+c}>${children}</span>`;
+const Btn=({onClick,kind='p',children,cls=''})=>html`<button onClick=${onClick} class=${'rounded-xl text-sm font-bold px-3.5 py-3 '+({p:'bg-blue-600 text-white',g:'bg-gray-100 text-gray-700',a:'bg-amber-50 text-amber-700',r:'bg-red-50 text-red-600'}[kind])+' '+cls}>${children}</button>`;
+const Sheet=({onClose,children})=>{useEffect(()=>{const k=e=>{if(e.key==='Escape')onClose()};window.addEventListener('keydown',k);return()=>window.removeEventListener('keydown',k)},[onClose]);return html`<div class="fade fixed inset-0 z-40 flex items-end justify-center bg-black/50" onClick=${onClose}><div role="dialog" aria-modal="true" class="sheet w-full max-w-md bg-white rounded-t-3xl p-5 max-h-[90vh] overflow-y-auto scroll" onClick=${e=>e.stopPropagation()}>${children}</div></div>`};
+
+const ddayInfo=d=>d<=3?['text-red-600 bg-red-50','D-'+d]:d<=20?['text-amber-700 bg-amber-50','D-'+d]:['text-emerald-700 bg-emerald-50','D-'+d];
+
+function App(){
+ const [items,setItems]=useState(INIT);
+ const [tab,setTab]=useState('home');
+ const [space,setSpace]=useState('family');
+ const [spaceOpen,setSpaceOpen]=useState(false);
+ const [filter,setFilter]=useState('all');
+ const [cash,setCash]=useState(0);
+ const [toast,setToast]=useState(null);
+ const [radar,setRadar]=useState(false);
+ const [radarPop,setRadarPop]=useState(false);
+ const [sell,setSell]=useState(null);
+ const [method,setMethod]=useState('market');
+ const [phase,setPhase]=useState('idle');
+ const [as,setAs]=useState(null);
+ const [symp,setSymp]=useState([]);
+ const [asDone,setAsDone]=useState(false);
+ const [payN,setPayN]=useState(0);
+ const [orders,setOrders]=useState({});
+ const [q,setQ]=useState('');
+ const tm=useRef();
+ const say=(msg,loading=false,ms=2400,undo=null)=>{clearTimeout(tm.current);setToast({msg,loading,undo});if(!loading)tm.current=setTimeout(()=>setToast(null),ms)};
+ const upd=(id,f)=>setItems(a=>a.map(i=>i.id===id?{...i,...f}:i));
+ const [gone,setGone]=useState({});
+ const del=id=>{setGone(g=>({...g,[id]:1}));setTimeout(()=>setItems(a=>a.filter(i=>i.id!==id)),320)};
+
+ const durables=items.filter(i=>i.cat==='durable');
+ const total=useCount(durables.reduce((s,i)=>s+i.resale,0));
+ const cashV=useCount(cash);
+ React.useLayoutEffect(()=>{document.querySelectorAll('.space-y-3>*,.space-y-4>*').forEach((e,k)=>e.style.setProperty('--n',Math.min(k,9)))},[tab,space,filter]);
+
+ const pay=()=>{say('방금 이마트에서 카드로 45,200원 결제됨 → 전자영수증에서 3개 품목 자동 추출 중...',true);
+  setTimeout(()=>{const base=payN*3;const add=[0,1,2].map(k=>{const p=POOL[(base+k)%POOL.length];return {...p,id:Date.now()+k,cat:'consumable',store:'이마트',date:'2026-11-10',isNew:true}});
+   setItems(a=>[...add,...a]);setPayN(n=>n+1);say('✅ '+add.map(a=>a.name).join(', ')+' 자동 등록 완료!',false,3200)},1500)};
+ const toggleRadar=()=>{const v=!radar;setRadar(v);if(v){setRadarPop(true);say('📍 마트 도착 감지 시뮬레이션')}else{setRadarPop(false);say('중복 구매 방지 레이더를 껐어요')}};
+ const restore=(snap,idx)=>{setGone(g=>{const n={...g};delete n[snap.id];return n});setItems(a=>a.some(x=>x.id===snap.id)?a:[...a.slice(0,idx),snap,...a.slice(idx)]);setToast(null)};
+ const eaten=i=>{const idx=items.findIndex(x=>x.id===i.id);del(i.id);say(i.name+' 소진 처리 완료',false,5000,()=>restore(i,idx))};
+ const extend=i=>{upd(i.id,{dday:i.dday+3,auto:40});say(i.name+' 기한을 3일 연장했어요')};
+ const openSell=i=>{setSell(i);setMethod('market');setPhase('idle')};
+ const doSell=()=>{setPhase('processing');const amt=method==='market'?sell.resale:sell.resale-20000;
+  setTimeout(()=>{setCash(c=>c+amt);del(sell.id);setPhase('done')},1400)};
+ const sellAmt=sell?(method==='market'?sell.resale:sell.resale-20000):0;
+ const doAs=()=>{setAsDone(true);setTimeout(()=>{setAs(null);setAsDone(false);setSymp([]);say('🔧 서비스센터 접수 완료 · 영수증/보증서 자동 첨부됨',false,3200)},1800)};
+ const fridgeAuto=items.filter(i=>i.auto>=90).length;
+ const radarStock=items.filter(i=>i.sub==='fridge'&&/계란|두부/.test(i.name)).map(i=>/계란/.test(i.name)?'계란':'두부');
+
+ const card=(i)=>{
+  const faded=i.auto>=90;
+  const [dc,dt]=i.dday!=null?ddayInfo(i.dday):['',''];
+  const low=i.remain!=null&&i.remain<=20;
+  return html`<div key=${i.id} class=${'up bg-white rounded-2xl p-4 shadow-sm border '+(i.isNew?'border-blue-300 flash':'border-transparent')+(faded?' opacity-55':'')+(gone[i.id]?' leave':'')}>
+   <div class="flex gap-3">
+    <div class="emo w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-2xl shrink-0">${i.emoji}</div>
+    <div class="flex-1 min-w-0">
+     <div class="flex items-center gap-1.5 flex-wrap">
+      <span class="font-bold text-[15px] truncate">${i.name}</span>
+      ${i.isNew&&html`<${Badge} c="bg-blue-600 text-white">NEW<//>`}
+     </div>
+     <div class="text-xs text-gray-500 mt-0.5">${i.store} · ${i.date.slice(5).replace('-','/')} 구매 · ${won(i.price)}</div>
+     <div class="flex gap-1.5 mt-2 flex-wrap">
+      ${i.dday!=null&&html`<${Badge} c=${dc}>${i.cat==='medical'?'사용기한 ':'소비기한 '}${dt}<//>`}
+      ${i.remain!=null&&html`<${Badge} c=${low?'bg-red-50 text-red-600':'bg-gray-100 text-gray-600'}>잔여 ${i.remain}%<//>`}
+      ${faded&&html`<${Badge} c="bg-gray-200 text-gray-700">자동 소진 예정 (${i.auto}%)<//>`}
+      ${!faded&&i.auto&&html`<${Badge} c="bg-blue-50 text-blue-600">소진 확률 ${i.auto}%<//>`}
+      ${i.shared&&html`<${Badge} c="bg-violet-50 text-violet-600">👨‍👩‍👧 가족 공유 중<//>`}
+      ${i.doses!=null&&html`<${Badge} c="bg-blue-50 text-blue-600">⏰ 복용 알림 · 잔여 ${i.doses}회<//>`}
+      ${i.warranty!=null&&html`<${Badge} c=${i.warranty<=7?'bg-red-50 text-red-600':'bg-amber-50 text-amber-700'}>무상보증 D-${i.warranty}<//>`}
+      ${i.resale&&html`<${Badge} c="bg-emerald-50 text-emerald-700">정품 영수증 인증<//>`}
+     </div>
+    </div>
+   </div>
+   <div class="flex gap-2 mt-3 flex-wrap">
+    ${faded&&html`<${Btn} kind="g" cls="flex-1" onClick=${()=>{upd(i.id,{auto:30});say('알겠어요! 아직 있는 걸로 표시했어요')}}>아직 있음<//>`}
+    ${faded&&html`<${Btn} kind="p" cls="flex-1" onClick=${()=>eaten(i)}>소진 확인<//>`}
+    ${!faded&&i.dday!=null&&i.cat==='consumable'&&i.dday<=3&&html`<${Btn} kind="p" cls="flex-1" onClick=${()=>eaten(i)}>다 먹었어요<//>`}
+    ${!faded&&i.dday!=null&&i.cat==='consumable'&&i.dday<=3&&html`<${Btn} kind="g" cls="flex-1" onClick=${()=>extend(i)}>+3일 연장<//>`}
+    ${low&&html`<${Btn} kind="p" cls="flex-1" onClick=${()=>{upd(i.id,{remain:100});say('🛒 최저가 '+won(i.rebuy)+'에 재구매 주문 완료!')}}>최저가 ${won(i.rebuy)} 재구매<//>`}
+    ${i.doses!=null&&html`<${Btn} kind="g" cls="flex-1" onClick=${()=>{i.doses>1?upd(i.id,{doses:i.doses-1}):del(i.id);say('복용 기록 완료 💊')}}>복용 완료<//>`}
+    ${i.resale&&html`<${Btn} kind="p" cls="flex-1" onClick=${()=>openSell(i)}>3초 만에 팔기<//>`}
+    ${(i.cat==='consumable'||(i.cat==='medical'&&i.doses==null))&&!faded&&!low&&!(i.dday<=3)&&html`<${Btn} kind="g" cls="flex-1" onClick=${()=>eaten(i)}>소진 처리<//>`}
+   </div></div>`};
+
+ /* ---------- TABS ---------- */
+ const urgent=items.filter(i=>i.cat==='consumable'&&i.dday!=null&&i.dday<=3&&!(i.auto>=90));
+ const warrantyUrgent=items.filter(i=>i.warranty!=null&&i.warranty<=7);
+ const todoN=urgent.length+warrantyUrgent.length+fridgeAuto;
+ const Home=()=>html`<div class="space-y-4">
+  <div class="hero rounded-3xl p-5 text-white shadow-lg relative overflow-hidden"><div class="blob b1"></div><div class="blob b2"></div>
+   <div class="text-sm opacity-80">잠자는 내 물건 총가치</div>
+   <div class="text-3xl font-extrabold mt-1 tracking-tight">${won(total)}</div>
+   <div class="text-sm mt-1.5 opacity-90">지금 방치된 물건 팔면 <b>${won(total)}</b> 바로 입금!</div>
+   <div class="mt-4 bg-white/15 rounded-2xl px-4 py-3 flex justify-between items-center"><span class="text-sm">갈무리 머니 잔고</span><b class="text-lg">${won(cashV)}</b></div>
+  </div>
+  <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
+   <div class="text-2xl">📍</div>
+   <div class="flex-1"><div class="font-bold text-[15px]">중복 구매 방지 레이더</div><div class="text-xs text-gray-500">마트 도착 시 집 재고 알림 켜기</div></div>
+   <button onClick=${toggleRadar} role="switch" aria-checked=${radar} aria-label="중복 구매 방지 레이더" class=${'w-12 h-7 rounded-full p-0.5 transition '+(radar?'bg-blue-600':'bg-gray-300')}><div class=${'w-6 h-6 bg-white rounded-full shadow transition '+(radar?'translate-x-5':'')}></div></button>
+  </div>
+  <div class="flex items-center gap-2 px-1 pt-1"><span class="text-lg font-extrabold">오늘의 갈무리</span>${todoN>0&&html`<${Badge} c="bg-blue-600 text-white">${todoN}<//>`}</div>
+  ${urgent.map(i=>html`<div key=${i.id} class="up bg-white rounded-2xl p-4 shadow-sm border-l-4 border-amber-400">
+   <${Badge} c="bg-amber-50 text-amber-700">소비기한 임박<//>
+   <div class="font-bold mt-2">${i.name} 기한이 ${i.dday}일 남았어요. 다 드셨나요?</div>
+   <div class="flex gap-2 mt-3"><${Btn} cls="flex-1" onClick=${()=>eaten(i)}>다 먹었어요 (자동 소진)<//><${Btn} kind="g" cls="flex-1" onClick=${()=>extend(i)}>아직 남았어요 (+3일)<//></div></div>`)}
+  ${warrantyUrgent.map(i=>html`<div key=${i.id} class="up bg-white rounded-2xl p-4 shadow-sm border-l-4 border-red-400">
+   <${Badge} c="bg-red-50 text-red-600">무상보증 만료 임박<//>
+   <div class="font-bold mt-2">${i.name.replace('LG ','LG ')} 무상수리 기간이 ${i.warranty}일 남았어요.</div>
+   <${Btn} cls="w-full mt-3" onClick=${()=>{setAs(i);setSymp([])}}>1초 무상점검 접수<//></div>`)}
+  ${items.filter(i=>i.auto>=90).map(i=>html`<div key=${'a'+i.id} class="up bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3"><div class="text-2xl">${i.emoji}</div><div class="flex-1"><div class="font-bold text-sm">${i.name} 자동 소진 예정 (${i.auto}%)</div><div class="text-xs text-gray-500">소비 주기가 지났어요</div></div><${Btn} kind="g" onClick=${()=>upd(i.id,{auto:30})}>아직 있음<//></div>`)}
+  ${urgent.length+warrantyUrgent.length===0&&fridgeAuto===0&&html`<div class="text-center text-gray-400 py-8 text-sm">🎉 오늘 처리할 일이 없어요</div>`}
+ </div>`;
+
+ const Inv=()=>{const rank=i=>i.isNew?0:(i.cat==='consumable'&&i.dday!=null&&i.dday<=3?1:2);const qq=q.trim();const list=items.filter(i=>(filter==='all'||i.sub===filter)&&(!qq||i.name.includes(qq))).slice().sort((a,b)=>rank(a)-rank(b));
+  return html`<div>
+  <div class="relative mb-3"><span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"><${Ic} n="search" s=${18}/></span><input id="inv-search" type="search" value=${q} onChange=${e=>setQ(e.target.value)} placeholder="품목 이름으로 찾기" aria-label="품목 검색" class="w-full bg-white rounded-xl pl-11 pr-3 py-3 text-sm border border-gray-200 placeholder-gray-400"/></div>
+  <div class="flex gap-2 overflow-x-auto scroll pb-3 -mx-4 px-4">${FILTERS.map(([k,l])=>html`<button key=${k} onClick=${()=>setFilter(k)} class=${'shrink-0 px-3.5 py-2 rounded-full text-sm font-bold '+(filter===k?'bg-gray-900 text-white':'bg-white text-gray-600')}>${l}<span class=${'ml-1.5 text-xs font-semibold '+(filter===k?'text-gray-300':'text-gray-500')}>${items.filter(x=>k==='all'||x.sub===k).length}</span></button>`)}</div>
+  <div class="text-xs text-gray-500 mb-2 px-1">무입력 자동 재고장 · ${list.length}개 품목</div>
+  <div class="space-y-3">${list.length?list.map(card):html`<div class="text-center text-gray-500 py-12 text-sm">${qq?'"'+qq+'"에 맞는 품목이 없어요':'이 카테고리엔 품목이 없어요'}</div>`}</div></div>`};
+
+ const Value=()=>html`<div class="space-y-3">
+  <div class="bg-white rounded-2xl p-4 shadow-sm"><div class="text-sm text-gray-500">지금 팔 수 있는 총액</div><div class="text-2xl font-extrabold mt-0.5">${won(total)}</div><div class="text-xs text-gray-400 mt-1">입금된 갈무리 머니 ${won(cash)}</div></div>
+  ${durables.length===0&&html`<div class="text-center text-gray-400 py-12 text-sm">모든 물건을 가치로 바꿨어요 👏</div>`}
+  ${durables.map(i=>{const pct=Math.round(i.resale/i.price*100);return html`<div key=${i.id} class="up bg-white rounded-2xl p-4 shadow-sm">
+   <div class="flex gap-3 items-center"><div class="text-3xl">${i.emoji}</div><div class="flex-1 min-w-0"><div class="font-bold truncate">${i.name}</div><div class="text-xs text-gray-500">S/N ${i.serial} · ${i.store}</div></div></div>
+   <div class="flex justify-between text-sm mt-3"><span class="text-gray-500">구매가 ${won(i.price)}</span><b class="text-blue-600">시세 ${won(i.resale)}</b></div>
+   <div class="h-2.5 rounded-full bg-gray-100 mt-1.5 overflow-hidden"><div class="h-full bg-blue-500 rounded-full grow" style=${{width:pct+'%'}}></div></div>
+   <div class="flex justify-between text-[11px] text-gray-400 mt-1"><span>감가상각 -${100-pct}%</span><span>잔존가치 ${pct}%</span></div>
+   <svg viewBox="0 0 100 24" class="w-full h-8 mt-1"><polyline pathLength="1" class="draw" fill="none" stroke="#3B5BDB" stroke-width="1.5" points=${'0,2 25,'+(2+(100-pct)*.12)+' 50,'+(2+(100-pct)*.19)+' 75,'+(2+(100-pct)*.22)+' 100,'+(2+(100-pct)*.22+1)}/></svg>
+   <div class="flex gap-2 mt-2"><${Btn} cls="flex-1" onClick=${()=>openSell(i)}>3초 만에 팔기<//><${Btn} kind="g" cls="flex-1" onClick=${()=>{setAs(i);setSymp([])}}>A/S·수선 호출<//></div></div>`})}
+ </div>`;
+
+ const Family=()=>space==='shop'?html`<div class="space-y-3">
+  <div class="bg-white rounded-2xl p-4 shadow-sm"><div class="font-extrabold text-lg">🏪 소상공인 매장 재고장</div><div class="text-xs text-gray-500">식자재 일일 입고 · 안전 재고 자동 발주</div></div>
+  <div class="text-sm font-bold px-1 pt-1">오늘 입고 내역</div>
+  ${[['양파 20kg','농협하나로','06:40',32000],['생닭 10마리','마니커','07:10',48500],['식용유 18L','오뚜기','08:30',54000]].map(([n,s,t,p])=>html`<div key=${n} class="bg-white rounded-2xl p-4 shadow-sm flex justify-between"><div><div class="font-bold text-sm">${n}</div><div class="text-xs text-gray-500">${s} · ${t} 입고</div></div><b class="text-sm">${won(p)}</b></div>`)}
+  <div class="text-sm font-bold px-1 pt-1">안전 재고 미달 · 자동 발주</div>
+  ${[['대파',3,10,'kg',9900],['계란',2,10,'판',24000],['소금',1,5,'kg',7500]].map(([n,c,m,u,p])=>html`<div key=${n} class="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-red-400">
+   <div class="flex justify-between"><b>${n}</b><${Badge} c="bg-red-50 text-red-600">재고 ${c}${u} / 안전 ${m}${u}<//></div>
+   <div class="h-2 bg-gray-100 rounded-full mt-2"><div class="h-full bg-red-400 rounded-full" style=${{width:c/m*100+'%'}}></div></div>
+   <${Btn} kind=${orders[n]?'g':'p'} cls="w-full mt-3" onClick=${()=>{if(orders[n])return;setOrders(o=>({...o,[n]:1}));say('📦 '+n+' '+(m-c)+u+' 자동 발주 완료 · '+won(p))}}>${orders[n]?'발주 완료 ✓':'자동 발주 ('+won(p)+')'}<//></div>`)}
+ </div>`:html`<div class="space-y-3">
+  <div class="bg-white rounded-2xl p-4 shadow-sm"><div class="font-extrabold text-lg mb-3">${space==='family'?'함께 쓰는 우리 가족':'내 개인 보관함'}</div>
+   <div class="flex gap-4">${[['👩','엄마'],['👨','아빠'],['🧑','나']].filter((_,k)=>space==='family'||k===2).map(([e,n])=>html`<div key=${n} class="text-center"><div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-3xl">${e}</div><div class="text-xs font-bold mt-1">${n}</div></div>`)}</div></div>
+  ${space==='family'&&html`<div class="bg-white rounded-2xl p-4 shadow-sm"><div class="flex justify-between items-center"><b>부모님 계정 연동</b><${Badge} c="bg-emerald-50 text-emerald-700">● 연동 중<//></div>
+   <div class="mt-3 space-y-0">${[['10:30','어머니가 종로약국에서 혈압약을 수령하셨습니다','복용 알림 전송 완료','bg-blue-600'],['09:10','아버지가 GS25에서 생수를 결제하셨습니다','보관함 자동 등록','bg-gray-300'],['어제','어머니 비타민D 소진 예정 (88%)','가족에게 알림','bg-amber-400']].map(([t,a,b,c],k)=>html`<div key=${k} class="flex gap-3"><div class="flex flex-col items-center"><div class=${'w-2.5 h-2.5 rounded-full mt-1.5 '+c}></div>${k<2&&html`<div class="w-px flex-1 bg-gray-200"></div>`}</div><div class="pb-4"><div class="text-[11px] text-gray-400">${t}</div><div class="text-sm font-bold">${a}</div><div class="text-xs text-emerald-600">${b}</div></div></div>`)}</div>
+   <${Btn} kind="g" cls="w-full" onClick=${()=>say('📞 어머니께 안부 알림을 보냈어요')}>어머니께 안부 알림 보내기<//></div>`}
+  <div class="bg-white rounded-2xl p-4 shadow-sm"><b>공유 중인 품목</b><div class="mt-2 space-y-2">${items.filter(i=>i.shared||i.cat==='medical').map(i=>html`<div key=${i.id} class="flex items-center gap-2 text-sm"><span class="text-xl">${i.emoji}</span><span class="flex-1">${i.name}</span><${Badge} c="bg-violet-50 text-violet-600">공유<//></div>`)}</div></div>
+ </div>`;
+
+ const spaces=[['family','우리 집 냉장고·보관함 (가족 3명 공유 중)'],['me','내 개인 보관함'],['shop','소상공인 매장 재고장 모드']];
+ const sName={family:'우리 집 냉장고·보관함 (가족 3명)',me:'내 개인 보관함',shop:'소상공인 매장 재고장 모드'}[space];
+ const tabs=[['home','홈','home'],['inv','보관함','box'],['value','중고·수리','tag'],['fam',space==='shop'?'매장 관리':'가족','users']];
+
+ return html`<div class="max-w-md mx-auto min-h-screen bg-gray-50 shadow-xl relative pb-24">
+  <div class="sticky top-0 z-30 bg-gray-50/90 backdrop-blur px-4 pt-3 pb-3 flex items-center gap-2" style=${{paddingTop:'max(12px,env(safe-area-inset-top))'}}>
+   <div class="relative flex-1 min-w-0"><button onClick=${()=>setSpaceOpen(!spaceOpen)} aria-expanded=${spaceOpen} aria-haspopup="true" class="flex items-center gap-1 font-extrabold text-[15px] max-w-full"><span class="truncate">${sName}</span><${Ic} n="chev" s=${18}/></button>
+    ${spaceOpen&&html`<div class="up absolute top-9 left-0 w-72 bg-white rounded-2xl shadow-xl p-1.5 z-50">${spaces.map(([k,l])=>html`<button key=${k} onClick=${()=>{setSpace(k);setSpaceOpen(false);if(k==='shop')setTab('fam');say(l+' 보기로 전환했어요')}} class=${'w-full text-left px-3 py-3 rounded-xl text-sm font-bold flex justify-between '+(space===k?'bg-blue-50 text-blue-600':'')}>${l}${space===k&&html`<${Ic} n="check" s=${16}/>`}</button>`)}</div>`}</div>
+   <button onClick=${pay} class="payb shrink-0 bg-white text-blue-700 border border-blue-300 text-xs font-bold px-3 py-2 rounded-full flex items-center gap-1"><${Ic} n="plus" s=${14} w=${3}/>결제 시뮬레이션</button>
+  </div>
+  ${spaceOpen&&html`<div class="fixed inset-0 z-20" onClick=${()=>setSpaceOpen(false)}></div>`}
+  <div class="px-4 pt-1" key=${tab+space}>${tab==='home'?Home():tab==='inv'?Inv():tab==='value'?Value():Family()}</div>
+
+  ${radarPop&&html`<div class="fixed top-0 left-0 right-0 z-50 flex justify-center px-3 pt-3" style=${{animation:'slide .7s cubic-bezier(.2,1.2,.3,1)'}}><div class="max-w-md w-full bg-gray-900 text-white rounded-2xl p-4 shadow-2xl flex gap-3"><div class="text-2xl">🛒</div><div class="flex-1 text-sm"><b>현재 위치: 이마트</b><div class="mt-0.5">${radarStock.length?html`<span>집에 <b class="text-amber-300">${radarStock.join('과 ')}</b>${radarStock.length>1||radarStock[0]==='두부'?'가':'이'} 아직 남아있어요!</span>`:'집에 겹치는 재고가 없어요. 사셔도 돼요!'}</div></div><button onClick=${()=>setRadarPop(false)} aria-label="닫기" class="p-2 -m-2 shrink-0"><${Ic} n="x" s=${18}/></button></div></div>`}
+
+  ${toast&&html`<div class="toastin fixed bottom-24 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"><div role="status" aria-live="polite" class=${'max-w-sm bg-gray-900 text-white text-sm font-semibold rounded-2xl shadow-xl flex items-center gap-2 pointer-events-auto '+(toast.undo?'pl-4 pr-1.5 py-1.5':'px-4 py-3')}>${toast.loading&&html`<div class="spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full shrink-0"></div>`}<span>${toast.msg}</span>${toast.undo&&html`<button onClick=${toast.undo} class="shrink-0 text-blue-200 font-extrabold px-3 py-2 rounded-xl">되돌리기</button>`}</div></div>`}
+
+  <nav class="fixed bottom-0 left-0 right-0 z-30 flex justify-center"><div class="max-w-md w-full bg-white border-t border-gray-100 flex" style=${{paddingBottom:'env(safe-area-inset-bottom,0px)'}}>
+   <div class="tabind" style=${{transform:'translateX('+tabs.findIndex(t=>t[0]===tab)*100+'%)'}}></div>${tabs.map(([k,l,ic])=>html`<button key=${k} onClick=${()=>setTab(k)} aria-current=${tab===k?'page':undefined} class=${'flex-1 py-2.5 flex flex-col items-center gap-0.5 text-[11px] font-bold '+(tab===k?'text-blue-600 tabon':'text-gray-500')}><${Ic} n=${ic}/>${l}</button>`)}</div></nav>
+
+  ${sell&&html`<${Sheet} onClose=${()=>phase!=='processing'&&setSell(null)}>
+   ${phase==='done'?html`<div class="text-center py-8"><${Confetti}/><div class="ringp w-20 h-20 rounded-full bg-emerald-500 mx-auto flex items-center justify-center"><${Ic} n="check" s=${40} c="#fff" w=${3}/></div>
+    <div class="text-lg font-bold mt-4">정산 완료!</div><div class="text-3xl font-extrabold text-blue-600 mt-1 pop">+${won(sellAmt)}</div><div class="text-sm text-gray-500 mt-2">갈무리 머니 잔고 ${won(cash)}로 입금됐어요</div>
+    <${Btn} cls="w-full mt-6" onClick=${()=>{setSell(null);say('💸 '+sell.name+' 판매 완료 · 보유 자산이 현금으로 바뀌었어요',false,3200)}}>확인<//></div>`
+   :html`<div class="flex justify-between items-center mb-3"><b class="text-lg">3초 만에 팔기</b><button onClick=${()=>setSell(null)} aria-label="닫기" class="p-2 -m-2"><${Ic} n="x"/></button></div>
+    <div class="rounded-2xl border border-gray-200 p-4"><div class="flex gap-3"><div class="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center text-5xl">${sell.emoji}</div><div class="flex-1"><div class="font-bold">${sell.name}</div><div class="text-xs text-gray-500 mt-0.5">공식 제품 고화질 이미지 자동 적용</div><div class="flex gap-1 mt-1.5 flex-wrap"><${Badge} c="bg-emerald-50 text-emerald-700">✔ 정품 영수증 인증<//></div></div></div>
+     <div class="grid grid-cols-2 gap-2 mt-3 text-xs"><div class="bg-gray-50 rounded-xl p-2.5"><div class="text-gray-400">구매 일자</div><b>${sell.date}</b></div><div class="bg-gray-50 rounded-xl p-2.5"><div class="text-gray-400">모델 시리얼</div><b>${sell.serial}</b></div></div>
+     <div class="bg-blue-50 text-blue-900 text-xs rounded-xl p-3 mt-2 leading-relaxed">🤖 AI 상태 설명: 구매 후 약 1년 사용한 ${sell.name}입니다. 정품 영수증과 시리얼이 확인되며 사용감이 적고 기능상 문제 없이 잘 작동해요.</div></div>
+    <div class="space-y-2 mt-3">${[['market','당근/번개장터 동시 자동 등록 (예상가 '+won(sell.resale)+')'],['partner','갈무리 파트너 즉시 매입 ('+won(sell.resale-20000)+' 지금 바로 입금)']].map(([k,l])=>html`<button key=${k} onClick=${()=>setMethod(k)} class=${'w-full text-left p-3.5 rounded-2xl border-2 text-sm font-bold '+(method===k?'border-blue-600 bg-blue-50 text-blue-700':'border-gray-200')}>${l}</button>`)}</div>
+    <button disabled=${phase==='processing'} onClick=${doSell} class="w-full mt-4 bg-blue-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2">${phase==='processing'?html`<div class="spin w-5 h-5 border-2 border-white/40 border-t-white rounded-full"></div>정산 중...`:(method==='market'?'자동 등록하고 판매 완료':'즉시 매입 받기')+' · '+won(sellAmt)}</button>`}
+  <//>`}
+
+  ${as&&html`<${Sheet} onClose=${()=>!asDone&&setAs(null)}>
+   ${asDone?html`<div class="text-center py-10"><div class="pop text-6xl">🔧</div><div class="font-bold text-lg mt-3">접수 중...</div><div class="text-sm text-gray-500 mt-1">전자영수증·보증서를 제조사에 전송하고 있어요</div></div>`
+   :html`<div class="flex justify-between items-center mb-1"><b class="text-lg">원터치 A/S 접수</b><button onClick=${()=>setAs(null)} aria-label="닫기" class="p-2 -m-2"><${Ic} n="x"/></button></div>
+    <div class="text-sm text-gray-500 mb-3">${as.name} · 증상만 선택하세요</div>
+    <div class="space-y-2">${SYMP.map(s=>html`<label key=${s} class=${'flex items-center gap-3 p-3.5 rounded-2xl border-2 text-sm font-semibold cursor-pointer '+(symp.includes(s)?'border-blue-600 bg-blue-50':'border-gray-200')}><input type="checkbox" class="w-5 h-5 accent-blue-600" checked=${symp.includes(s)} onChange=${()=>setSymp(a=>a.includes(s)?a.filter(x=>x!==s):[...a,s])}/>${s}</label>`)}</div>
+    <div class="bg-emerald-50 text-emerald-800 text-xs rounded-xl p-3 mt-3">📎 전자영수증 + 무상보증서 자동 첨부 ${as.warranty!=null?'(무상보증 D-'+as.warranty+')':''}</div>
+    <button disabled=${!symp.length} onClick=${doAs} class=${'w-full mt-4 font-bold py-4 rounded-2xl '+(symp.length?'bg-blue-600 text-white':'bg-gray-200 text-gray-400')}>${LG(as)} 서비스센터에 즉시 접수</button>`}
+  <//>`}
+ </div>`;
+}
+const LG=a=>a.brand==='Apple'?'Apple':a.brand==='LG전자'?'LG전자':a.brand;
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,s=document.createElement('span');s.className='rip';s.style.cssText='width:'+d+'px;height:'+d+'px;left:'+(e.clientX-r.left-d/2)+'px;top:'+(e.clientY-r.top-d/2)+'px';b.appendChild(s);setTimeout(()=>s.remove(),600)});
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
