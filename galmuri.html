@@ -303,7 +303,7 @@ html{touch-action:pan-y}
 .fold>span{overflow:hidden;min-height:0}
 .fold.off{grid-template-rows:0fr;opacity:0;margin-top:0}
 /* 거품 */
-.bub2{position:absolute;z-index:3;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95) 0 16%,rgba(255,255,255,.28) 34%,rgba(34,216,115,.12) 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.85),0 1px 2px rgba(0,60,30,.18)}
+.bub2{position:absolute;z-index:1;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95) 0 16%,rgba(255,255,255,.28) 34%,rgba(34,216,115,.12) 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.85),0 1px 2px rgba(0,60,30,.18)}
 /* 검토 진행 */
 .steps{list-style:none;padding:0;margin:18px 0 0;display:grid}
 .steps li{position:relative;display:flex;gap:14px;padding:0 0 18px}
@@ -924,10 +924,11 @@ const eofIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.for
  if(performance.now()-(S.eofT||0)<1500)return;S.eofT=performance.now();S.eofN=Math.min(EOF_MSG.length,(S.eofN||0)+1);
  const f=$('.fill',el),m=$('small',el);f.dataset.lv=eofLv().toFixed(3);post(el);
  m.style.opacity=0;setTimeout(()=>{m.textContent=EOF_MSG[S.eofN-1];m.style.opacity=1},200);if(S.eofN===EOF_MSG.length)buzz()}),{threshold:1}):null;
-function bubbles(j,n=7){if(RM()||!j)return;const h=j.closest('.jarw')||j,W=h.offsetWidth,H=h.offsetHeight;if(getComputedStyle(h).position==='static')h.style.position='relative';
- for(let k=0;k<n;k++){const b=document.createElement('i'),z=5+Math.random()*9,rise=H*.75+30+Math.random()*60,dx=(Math.random()-.5)*34,d=1100+Math.random()*700;
-  b.className='bub2';b.style.cssText=`width:${z}px;height:${z}px;left:${W*(.28+Math.random()*.44)-z/2}px;bottom:${H*.12}px`;h.appendChild(b);
-  b.animate([{transform:'translate(0,0) scale(.3)',opacity:0},{transform:`translate(${dx*.4}px,${-rise*.3}px) scale(1)`,opacity:1,offset:.22},{transform:`translate(${-dx*.3}px,${-rise*.78}px) scale(1.05)`,opacity:1,offset:.8},{transform:`translate(${dx}px,${-rise}px) scale(1.7)`,opacity:0}],{duration:d,delay:k*85,easing:'cubic-bezier(.3,.5,.4,1)',fill:'backwards'}).onfinish=()=>b.remove()}}
+/* 거품: 병 안 물속 바닥에서 올라와 물 표면에서 톡 터진다 */
+function bubbles(j,n=7){if(RM()||!j)return;const W=j.offsetWidth,H=j.offsetHeight,f=$('.fill',j),lv=f?+f.dataset.lv||0:.6,top=H*(1-Math.max(.25,lv))+6;
+ for(let k=0;k<n;k++){const b=document.createElement('i'),z=3+Math.random()*(W/9),x=W*(.18+Math.random()*.64)-z/2,rise=Math.max(10,H-top-z-6),dx=(Math.random()-.5)*W*.16,d=900+Math.random()*700;
+  b.className='bub2';b.style.cssText=`width:${z}px;height:${z}px;left:${x}px;bottom:4px`;j.appendChild(b);
+  b.animate([{transform:'translate(0,0) scale(.3)',opacity:0},{transform:`translate(${dx*.5}px,${-rise*.35}px) scale(1)`,opacity:1,offset:.25},{transform:`translate(${-dx*.4}px,${-rise*.92}px) scale(1)`,opacity:1,offset:.88},{transform:`translate(${dx*.2}px,${-rise}px) scale(1.6)`,opacity:0}],{duration:d,delay:k*80,easing:'cubic-bezier(.4,.2,.5,1)',fill:'backwards'}).onfinish=()=>b.remove()}}
 /* 바닥에서 더 끌어내리면 병뚜껑이 튀고 거품이 터진다. 한 번 당길 때 한 번만 */
 function burst(){const w=$('.eof .jarw');if(!w||RM())return;buzz();const j=$('.jar',w),m=$('.eof small');
  $('.lid',w).animate([{transform:'none'},{transform:'translateY(-48px) rotate(-170deg)',offset:.42},{transform:'translateY(-6px) rotate(-340deg)',offset:.82},{transform:'rotate(-360deg)'}],{duration:1150,easing:'cubic-bezier(.3,.7,.4,1)'});
