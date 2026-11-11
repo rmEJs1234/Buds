@@ -227,7 +227,10 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .ipb{position:relative;padding:5px;border-radius:77px;background:linear-gradient(140deg,#9a9da3 0%,#44474c 16%,#2a2c30 48%,#3d4045 80%,#a2a5ab 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 50px 90px -30px rgba(var(--s),.7),0 26px 44px -26px rgba(0,0,0,.6)}
 .ip{position:relative;width:426px;height:898px;border-radius:72px;padding:12px;background:#050505}
 .ips{position:relative;width:402px;height:874px;border-radius:60px;overflow:hidden;background:var(--mint);transition:background .3s}
-.ips iframe{position:absolute;left:0;top:54px;width:402px;height:820px;border:0;background:transparent}
+.ips iframe{position:absolute;left:0;top:54px;width:402px;height:820px;border:0;background:transparent;opacity:0;transform:scale(.985);transition:opacity .55s ease,transform .7s cubic-bezier(.2,.9,.2,1)}
+.ips iframe.in{opacity:1;transform:none}
+.ltin iframe{opacity:0;transition:opacity .55s ease}
+.ltin iframe.in{opacity:1}
 .ipdi{position:absolute;top:12px;left:50%;width:94px;height:30px;margin-left:-47px;border-radius:15px;background:#000;z-index:3}
 .ipsb{position:absolute;inset:0 0 auto;height:54px;z-index:2;color:#000;font:600 16px/1 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;pointer-events:none;transition:color .3s}
 .iptime{position:absolute;left:0;width:138px;top:20px;text-align:center}
@@ -489,7 +492,7 @@ setInterval(()=>{$$('.s.on .ips').forEach(sc=>{const f=$('iframe',sc);try{const 
 /* 앱 띄우기 */
 function mount(box,src,before){box.querySelectorAll('iframe').forEach(f=>f.remove());const f=document.createElement('iframe');f.title='갈무리 앱';f.src=src;
  before?box.insertBefore(f,before):box.appendChild(f);
- return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}r(f)},{once:true}))}
+ return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));r(f)},{once:true}))}
 
 /* 시연 장을 처음 상태로: 카메라 멀리, 자막 끄기, 강조 풀기 */
 function resetDemo(sec,hard){const cam=$('.cam',sec),cap=$('.cap',sec),fe=$('.feats',sec);sec.classList.remove('zoom');if(cap)cap.style.left='';
