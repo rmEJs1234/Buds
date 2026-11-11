@@ -140,7 +140,7 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
   if(window.__MOCK)return;
   const wrap=document.getElementById('wrap');
   let last=null;try{last=localStorage.getItem('apps.last')}catch(_){}
-  if(last){const b=document.getElementById(last);if(b)b.querySelector('.tag').classList.add('on')}
+  if(last){const b=document.getElementById(last),t=b&&b.querySelector('.tag');if(t)t.classList.add('on')}
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* 갈무리: 판이 화면만큼 커지면서 초록 화면에 로고가 올라온다. 앱이 같은 화면에서 이어 받는다 */
   const boot=b=>{const r=b.getBoundingClientRect(),W=innerWidth,el=document.createElement('div');el.className='boot';
