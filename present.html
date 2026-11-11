@@ -192,7 +192,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 /* 시연 단계: → 를 누를 때마다 한 칸씩 */
 .nx{display:flex;align-items:center;gap:16px;margin-top:46px;font-size:20px;font-weight:700;color:var(--faint)}
-.nx .dots{display:flex;gap:8px}
+.nx .dots{display:none}
 .nx .dots i{width:26px;height:6px;border-radius:3px;background:#CDDFD4;transition:background .4s,width .55s var(--spring)}
 .nx .dots i.f{background:var(--g)}
 .nx .dots i.c{width:46px}
@@ -643,11 +643,12 @@ async desk(k){const{tap,w,step}=k;
  await w(800);await step();await tap('.sub[data-k=inv] button[data-v=fridge]',2200);await tap('[data-a=tab][data-v=value]',2200);await tap('[data-a=tab][data-v=mkt]',2200);await tap('[data-a=tab][data-v=fam]',2000);await tap('header [data-a=settings]',2600);await tap('#set [data-a=setx]',1300);await tap('[data-a=tab][data-v=home]',1500)}
 };
 
-let gate=null,pend=0,left=0,steps=0;
-const waitStep=()=>new Promise(r=>{if(pend>0){pend--;r()}else gate=r});
-const stepCount=sec=>{const f=RUN[sec.dataset.demo];return f?(f.toString().match(/await step\(/g)||[]).length:0};
+/* → 한 번이면 그 장의 시연이 처음부터 끝까지 이어서 돈다 */
+let gate=null,pend=0,left=0,steps=0,auto=false;
+const waitStep=()=>new Promise(r=>{if(auto||pend>0){pend=0;auto=true;r()}else gate=()=>{auto=true;r()}});
+const stepCount=sec=>RUN[sec.dataset.demo]?1:0;
 function nxUpd(){const nx=$('.nx',S[cur]);if(!nx)return;const done=steps-left;$('.dots',nx).innerHTML=Array.from({length:steps},(_,i)=>`<i class="${i<done?'f':''}${i===done-1?' c':''}"></i>`).join('');
- $('b',nx).innerHTML='<kbd>→</kbd>'+(done===0?'눌러서 시연 시작':left>0?'다음 시연':'다음 장으로')}
+ $('b',nx).innerHTML='<kbd>→</kbd>'+(done===0?'눌러서 시연 보기':'다음 장으로')}
 /* 앞으로: 시연이 남았으면 시연 한 단계, 아니면 다음 장 */
 function fwd(){if(left>0){left--;nxUpd();if(gate){const g=gate;gate=null;g()}else pend++;return}show(cur+1,1)}
 async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)return;
@@ -673,7 +674,7 @@ function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(t
  $('.phone.ap',nw)?.classList.remove('ready');
  const zoomed=!!(old&&$('.cam',old)&&$('.cam',old).style.transform);
  if(old){old.classList.remove('on');old.classList.add('out');resetDemo(old)}
- nw.classList.add('on');cur=n;tok++;gate=null;pend=0;steps=left=stepCount(nw);nxUpd();
+ nw.classList.add('on');cur=n;tok++;gate=null;pend=0;auto=false;steps=left=stepCount(nw);nxUpd();
  const anims=[],A=(el,kf,o)=>{if(!el)return;anims.push(el.animate(kf,{fill:'both',...o}))};
  const E='cubic-bezier(.76,0,.16,1)';
  if(mode==='fade')A(nw,[{opacity:0},{opacity:1}],{duration:T,easing:'ease-out'});
@@ -705,7 +706,7 @@ addEventListener('keydown',e=>{if(NAV.includes(e.key)){e.preventDefault();key(e)
 function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(_){}}
 $('#prev').onclick=()=>show(cur-1,-1);$('#next').onclick=fwd;$('#fs').onclick=fs;
 stage.addEventListener('click',e=>{if(e.target.closest('.again,button,a'))return;fwd()});
-$$('.again').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const sec=b.closest('.s');gate=null;pend=1;steps=stepCount(sec);left=steps-1;nxUpd();demo(sec)}));
+$$('.again').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const sec=b.closest('.s');gate=null;pend=1;auto=false;steps=stepCount(sec);left=steps-1;nxUpd();demo(sec)}));
 $$('.demo .txt').forEach(t=>t.insertAdjacentHTML('beforeend','<div class="nx a" style="--d:.8s"><span class="dots"></span><b></b></div>'));
 let tx=null;const tpos=t=>ROT?t.clientY:t.clientX;addEventListener('touchstart',e=>{if(e.target.closest('.again'))return;tx=tpos(e.touches[0])},{passive:true});
 addEventListener('touchend',e=>{if(tx==null)return;const dx=tpos(e.changedTouches[0])-tx;tx=null;if(Math.abs(dx)>60){dx<0?fwd():show(cur-1,-1)}});
