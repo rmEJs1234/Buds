@@ -1023,7 +1023,7 @@ function obShow(step,dir=1){OB.step=step;(OB.tm||[]).forEach(clearTimeout);OB.tm
  if(step==='t3')[215000,290000,485000].forEach((v,k)=>OB.tm.push(setTimeout(()=>{const t=$('.t3',o);if(!t)return;$('.odo',t).dataset.num=v;post(t);buzz()},RM()?0:450+k*420)));
  if(RM())return;
  if(step==='hi'&&!OB.slid){OB.slid=1;return}
- $$('.obm>*,.obf',o).forEach((e,k)=>e.animate([{opacity:0,transform:`translateX(${dir*40}px)`},{opacity:1,transform:'none'}],{duration:460,delay:k*70,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
+ $$(DK()?'.obm>*,.obf':'.obm,.obf',o).forEach((e,k)=>e.animate([{opacity:0,transform:`translateX(${dir*40}px)`},{opacity:1,transform:'none'}],{duration:460,delay:k*70,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
 function obStart(step='hi'){OB.slid=step!=='hi'?1:0;OB.pick=new Set(P.shops.filter(k=>PICKS.includes(k)));const o=$('#ob');o.hidden=false;o.classList.remove('out');obShow(step)}
 function obEnd(){if(OB.step==='shops'){P.shops=[...new Set([...P.shops.filter(k=>!PICKS.includes(k)),...OB.pick])]}
  P.ob=true;save();const o=$('#ob');o.classList.add('out');setTimeout(()=>{o.hidden=true;$('#obi').innerHTML=''},RM()?0:600);
