@@ -533,11 +533,10 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const step=async(t,i)=>{await waitStep();if(!alive())throw 0;if(t)cap(t,i)};
  const cap=(t,i)=>{if(i!=null)hl(i);if(!capEl)return;const cw=$('.cw',capEl);if(!capEl.classList.contains('on')){cw.replaceChildren();roll(cw,t);capEl.classList.add('on')}else roll(cw,t,capEl)};
  /* 카메라: 휴대폰은 오른쪽 제자리에서 무대를 뚫고 나갈 만큼 커지고, 지금 누르는 곳이 화면 가운데 높이에 온다 */
- const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive()||ROT||LITE)return;const z0=z;z=Math.min(1.8,z0*1.25);
+ const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive())return;const z0=z;z=Math.min(1.8,z0*1.25);
   {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){el.scrollIntoView({block:'center',behavior:'smooth'});await w(550)}}
-  const fr=f.getBoundingClientRect(),r=el.getBoundingClientRect(),k=fr.width/402,sy=fr.top+(r.top+r.height/2)*k;
-  const sr=stage.getBoundingClientRect(),cr=cam.getBoundingClientRect(),mt=getComputedStyle(cam).transform,m=mt&&mt!=='none'?new DOMMatrix(mt):new DOMMatrix();
-  const camT=(cr.top-sr.top)/K-m.f,py=(sy-cr.top)/(m.a*K),cw=cam.offsetWidth,H=cam.offsetHeight*.94;
+  /* 무대 좌표로만 계산한다: 휴대폰에서 무대가 돌아가 있거나 작게 그려져 있어도 똑같이 맞는다 */
+  const r=el.getBoundingClientRect(),py=.94*(77+r.top+r.height/2),camT=cam.offsetTop+cam.offsetParent.offsetTop,cw=cam.offsetWidth,H=cam.offsetHeight*.94;
   const tx=-(z-1)*cw/2-10;let ty=540-camT-z*py;ty=Math.min(90-camT,Math.max(990-camT-z*H,ty));
   cam.style.transform=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${z})`;Z=z0;sec.classList.add('zoom');await w(ms)};
  const wide=async(ms=1000)=>{if(!cam)return;cam.style.transform='';Z=0;sec.classList.remove('zoom');await w(ms)};
