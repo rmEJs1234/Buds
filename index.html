@@ -34,7 +34,11 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
 .foot{margin:6px 0 0;font-size:13px;color:var(--mut);text-align:center;text-wrap:balance}
 .in{animation:up .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0)*70ms)}
 @keyframes up{from{transform:translateY(14px);opacity:.001}}
-@media (prefers-reduced-motion:reduce){.buds img,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
+.boot{position:fixed;inset:0;z-index:50;background:var(--g);display:grid;place-items:center;will-change:clip-path}
+.boot b{display:flex;font-family:"Bricolage Grotesque",var(--font);font-weight:800;font-size:64px;line-height:1;letter-spacing:-.05em;color:#000}
+.boot b span{display:inline-block;animation:lt .7s cubic-bezier(.3,1.35,.4,1) backwards;animation-delay:calc(.28s + var(--i)*45ms)}
+@keyframes lt{from{opacity:0;transform:translateY(46px) rotate(10deg)}}
+@media (prefers-reduced-motion:reduce){.boot b span{animation:none}.buds img,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
 </style></head><body>
 
 <style>
@@ -96,14 +100,21 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
   const wrap=document.getElementById('wrap');
   let last=null;try{last=localStorage.getItem('apps.last')}catch(_){}
   if(last){const b=document.getElementById(last);if(b)b.querySelector('.tag').classList.add('on')}
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  /* 갈무리: 판이 화면만큼 커지면서 초록 화면에 로고가 올라온다. 앱이 같은 화면에서 이어 받는다 */
+  const boot=b=>{const r=b.getBoundingClientRect(),W=innerWidth,H=innerHeight,el=document.createElement('div');el.className='boot';
+    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);
+    const from=`inset(${r.top}px ${W-r.right}px ${H-r.bottom}px ${r.left}px round 30px)`;
+    if(!reduce)el.animate([{clipPath:from},{clipPath:'inset(0px 0px 0px 0px round 0px)'}],{duration:560,easing:'cubic-bezier(.5,0,.15,1)'});
+    setTimeout(()=>{location.href=b.dataset.href+'?l=1'},reduce?150:1150)};
   document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
     try{localStorage.setItem('apps.last',b.id)}catch(_){}
+    if(b.id==='galmuri')return boot(b);
     wrap.classList.add('go');
-    const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
     setTimeout(()=>{location.href=b.dataset.href+'?l=1'},reduce?120:420);
   }));
   /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
-  addEventListener('pageshow',e=>{if(e.persisted)wrap.classList.remove('go')});
+  addEventListener('pageshow',e=>{if(e.persisted){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove())}});
 })();
 </script>
 </body></html>

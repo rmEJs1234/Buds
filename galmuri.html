@@ -16,7 +16,8 @@
   --card-bg:linear-gradient(180deg,#FFFFFF,#F4FAF6);
   --well-bg:linear-gradient(180deg,#CDE2D6,#E2EFE8);
   --ink-bg:linear-gradient(#11402E,#11402E);
-  --btn:#FFFFFF; --gb:#22D873; --gb-in:#1DC468;
+  --btn:#FFFFFF; --gb:#22D873; --gb-in:#1DC468; --gt:#0E8F47;
+  --navsh:0 -1px 0 rgba(var(--s),.08),0 -12px 30px -12px rgba(var(--s),.35);
   --g-bg:linear-gradient(180deg,#43EA8D,#14C663);
   --g-in:linear-gradient(180deg,#10B258,#1FD46F);
   --groove:rgba(var(--s),.13); --lip:rgba(255,255,255,.95); --line:var(--groove);
@@ -36,7 +37,8 @@
   /* 다크는 진짜 검정과 회색. 초록은 버튼과 물에만 */
   --bg:#000000; --card:#1C1C1E; --ink:#FFFFFF; --sub:#98989F; --faint:#5C5C61; --well:#111112;
   --gtx:#000000; --on-ink:#000000; --s:0,0,0; --scrim:rgba(0,0,0,.65);
-  --btn:#2C2C2E; --gb:#2BD877; --gb-in:#25C66C;
+  --btn:#2C2C2E; --gb:#2BD877; --gb-in:#25C66C; --gt:#2BD877;
+  --navsh:0 -1px 0 rgba(255,255,255,.07),0 -12px 30px -12px #000;
   --card-bg:linear-gradient(#1C1C1E,#1C1C1E);
   --well-bg:linear-gradient(#0E0E0F,#0E0E0F);
   --ink-bg:linear-gradient(#FFFFFF,#FFFFFF);
@@ -57,19 +59,21 @@
 .dk .tg[aria-pressed=false]{background:#39393D}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-html{font-size:16px;-webkit-text-size-adjust:100%}
+html{font-size:16px;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.45;-webkit-font-smoothing:antialiased}
 button,input{font:inherit;color:inherit;border:0;background:none;padding:0}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--g);outline-offset:2px}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
-#app{max-width:440px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+#app{max-width:440px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 
 /* 상단 */
 header{position:sticky;top:0;z-index:28;display:flex;align-items:center;gap:8px;height:calc(60px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 20px 0;background:var(--bg)}
 header::after{content:'';position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(var(--bg),transparent);pointer-events:none;opacity:0;transition:opacity .2s}
 header.sc::after{opacity:1}
-.sp{display:flex;align-items:center;gap:4px;font-weight:800;font-size:19px;height:44px;margin-right:auto;transition:transform .3s var(--spring)}
+.logo{display:flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:27px;line-height:1;letter-spacing:-.05em;padding:6px 4px 6px 0}
+.logo span{display:inline-block}
+.sp{display:flex;align-items:center;gap:2px;font-weight:700;font-size:14px;height:32px;padding:0 8px 0 12px;border-radius:16px;background:var(--btn);box-shadow:var(--up1);margin-right:auto;transition:transform .3s var(--spring)}
 .sp:active{transform:scale(.95)}
 .sp svg{transition:transform .4s var(--spring)}
 .sp[aria-expanded=true] svg{transform:rotate(180deg)}
@@ -112,6 +116,16 @@ h2.sm{font-size:15px;font-weight:700;color:var(--sub);padding:24px 24px 8px;lett
 .card>.row:first-child,.card>.srow:first-child{border-top:0;box-shadow:none}
 .rowb{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;text-align:left;transition:background .15s}
 button.rowb:active{background:var(--well)}
+.card.list{background:var(--card)}
+.list .row{position:relative}
+.list .rowb{position:relative;z-index:1;background:var(--card);touch-action:pan-y}
+.swb{position:absolute;left:0;right:0;top:0;height:0;display:flex;align-items:center;justify-content:flex-end;padding-right:24px;background:var(--gb);color:var(--gtx);font-weight:800;font-size:15px;opacity:0;pointer-events:none}
+.swb.sell{background:var(--ink-bg);color:var(--on-ink)}
+.swb span{transition:transform .35s var(--spring)}
+.swb.arm span{transform:scale(1.2)}
+.ptr{position:fixed;top:calc(60px + env(safe-area-inset-top,0px));left:50%;margin-left:-22px;z-index:27;width:44px;height:44px;border-radius:22px;background:var(--btn);box-shadow:var(--up1);display:grid;place-items:center;opacity:0;transform:translateY(-60px);transition:transform .45s var(--spring),opacity .2s;pointer-events:none}
+.ptr i{width:24px;height:24px;border-radius:50%;background:conic-gradient(var(--gb) calc(var(--p,0)*1turn),var(--well) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px))}
+.ptr.spin i{--p:.3;animation:spin .7s linear infinite}
 .rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .rt b{font-weight:700;font-size:16px;overflow-wrap:anywhere}
 .rt small{color:var(--sub);font-size:13px}
@@ -125,12 +139,20 @@ button.rowb:active{background:var(--well)}
 .ves::after,.jar::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 3px 6px rgba(var(--s),.42),inset 0 0 0 .5px rgba(var(--s),.2),inset 0 -1px 0 rgba(255,255,255,.25);pointer-events:none}
 .urg .ves::after{box-shadow:inset 0 0 0 2.5px var(--ink),inset 0 6px 7px rgba(var(--s),.4)}
 .ves em{font-style:normal;font-size:12px;font-weight:800;letter-spacing:-.02em}
-.fill{position:absolute;inset:0 0 -14px;background:var(--wave) repeat-x 0 0/26px 6px,var(--g-bg) no-repeat 0 5px/100% calc(100% - 5px);transform:translateY(60px);transition:transform .9s var(--spring);overflow:hidden;will-change:transform}
+.fill{position:absolute;inset:0 0 -14px;background:var(--g-bg) no-repeat 0 6px/100% calc(100% - 6px);transform:translateY(60px);transition:transform .9s var(--spring);overflow:hidden;will-change:transform}
+.fill::before,.fill::after{content:'';position:absolute;left:0;top:1px;width:calc(100% + 26px);height:6px;background:var(--wave) repeat-x 0 0/26px 6px;animation:wv 2.2s linear infinite;will-change:transform}
+.fill::after{top:0;opacity:.45;z-index:-1;animation-duration:3.4s;animation-direction:reverse}
+.ves.slosh .fill::before{animation-duration:.45s}.ves.slosh .fill::after{animation-duration:.6s}
+@keyframes wv{to{transform:translateX(var(--wl,-26px))}}
 .fill em{position:absolute;inset:0 0 14px;display:grid;place-items:center;color:var(--gtx);transform:translateY(-60px);transition:transform .9s var(--spring)}
-.jarw{flex:none;display:flex;flex-direction:column;align-items:center}
+.jarw{flex:none;display:flex;flex-direction:column;align-items:center;transform-origin:50% 100%}
 .lid{width:58px;height:13px;border-radius:6px;background:var(--ink-bg);box-shadow:var(--kup);margin-bottom:-3px;position:relative;z-index:1}
 .jar{position:relative;display:block;width:88px;height:112px;border-radius:22px 22px 30px 30px;background:var(--well-bg);box-shadow:0 1px 0 var(--lip);overflow:hidden}
-.jar .fill{transform:translateY(120px);background-size:40px 9px,100% calc(100% - 8px);background-position:0 0,0 8px}
+.jar .fill{inset:0 -16px -14px;transform:translateY(124px);background-size:100% calc(100% - 9px);background-position:0 9px;transform-origin:50% 0}
+.jar .fill::before,.jar .fill::after{height:9px;width:calc(100% + 40px);background-size:40px 9px;--wl:-40px}
+.jarw.big .jar{width:120px;height:152px;border-radius:30px 30px 40px 40px}
+.jarw.big .lid{width:80px;height:16px;border-radius:8px}
+.jarw.big .jar .fill{transform:translateY(164px)}
 .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .36s var(--out)}
 .open>.more{grid-template-rows:1fr}
 .more>div{overflow:hidden;min-height:0}
@@ -153,7 +175,10 @@ button.rowb:active{background:var(--well)}
 
 /* 맨 위: 큰 병 */
 .hero{display:flex;align-items:center;gap:14px;width:calc(100% - 40px);margin:4px 20px 0;padding:22px 20px 22px 22px;border-radius:32px;text-align:left;box-shadow:var(--up2);transition:transform .35s var(--spring)}
-.hero:active{transform:scale(.975)}
+.hero{cursor:pointer;-webkit-user-select:none;user-select:none}
+.hero:active{transform:scale(.985)}
+.go{transition:transform .3s var(--spring)}
+.go:active{transform:scale(.93)}
 .ht{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start}
 .hero .l{font-size:14px;color:var(--sub)}
 .hero strong{display:flex;align-items:baseline;font-size:36px;font-weight:800;letter-spacing:-.03em;margin-top:2px}
@@ -206,9 +231,9 @@ button.srow:active{background:var(--well)}
 
 /* 하단 탭, 추가 버튼 */
 nav,.fabw{position:fixed;left:0;right:0;display:flex;justify-content:center;pointer-events:none}
-nav{bottom:0;z-index:30;padding:0 16px calc(12px + env(safe-area-inset-bottom,0px))}
-#nav{pointer-events:auto;position:relative;display:flex;width:100%;max-width:408px;padding:6px;border-radius:32px;background:var(--card-bg);box-shadow:var(--up2)}
-.ind{position:absolute;top:6px;left:6px;width:calc((100% - 12px)/4);height:56px;border-radius:26px;background:var(--ink-bg);box-shadow:var(--kup);transition:transform .5s var(--spring);will-change:transform}
+nav{bottom:0;z-index:30}
+#nav{pointer-events:auto;position:relative;display:flex;width:100%;max-width:440px;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));border-radius:26px 26px 0 0;background:var(--card);box-shadow:var(--navsh)}
+.ind{position:absolute;top:6px;left:10px;width:calc((100% - 20px)/4);height:56px;border-radius:26px;background:var(--ink-bg);box-shadow:var(--kup);transition:transform .5s var(--spring);will-change:transform}
 .tab{position:relative;flex:1;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:700;color:var(--faint);transition:color .25s}
 .tab svg{transition:transform .5s var(--spring)}
 .tab:active svg{transform:scale(.8)}
@@ -217,7 +242,7 @@ nav{bottom:0;z-index:30;padding:0 16px calc(12px + env(safe-area-inset-bottom,0p
 @keyframes bump{40%{transform:translateY(-7px) scale(1.2)}}
 .tab u{position:absolute;top:9px;left:calc(50% + 8px);width:9px;height:9px;border-radius:5px;background:var(--g);box-shadow:0 0 0 2px var(--card);transform:scale(0);transition:transform .4s var(--spring)}
 .tab.new u{transform:scale(1)}
-.fabw{bottom:calc(94px + env(safe-area-inset-bottom,0px));z-index:29;padding:0 20px}
+.fabw{bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:29;padding:0 20px}
 .fabw>div{width:100%;max-width:400px;display:flex;justify-content:flex-end}
 .fab{pointer-events:auto;display:flex;align-items:center;gap:6px;height:52px;padding:0 20px 0 16px;border-radius:26px;background:var(--gb);color:var(--gtx);font-weight:800;font-size:15px;box-shadow:var(--gup),0 18px 26px -10px rgba(var(--s),.6);transition:transform .3s var(--spring),box-shadow .3s,padding .35s var(--out),gap .35s}
 .fab:active{transform:scale(.94);background:var(--gb-in);box-shadow:var(--gin)}
@@ -226,7 +251,7 @@ nav{bottom:0;z-index:30;padding:0 16px calc(12px + env(safe-area-inset-bottom,0p
 .fab.mini span{max-width:0;opacity:0}
 
 /* 토스트, 배너, 영수증 */
-.toast{position:fixed;left:0;right:0;bottom:calc(160px + env(safe-area-inset-bottom,0px));z-index:95;display:flex;justify-content:center;padding:0 20px;pointer-events:none}
+.toast{position:fixed;left:0;right:0;bottom:calc(146px + env(safe-area-inset-bottom,0px));z-index:95;display:flex;justify-content:center;padding:0 20px;pointer-events:none}
 .toast span{max-width:400px;background:var(--ink-bg);color:var(--on-ink);font-size:14px;font-weight:600;padding:12px 18px;border-radius:22px;box-shadow:var(--up2);transform:translateY(24px) scale(.9);opacity:0;transition:transform .45s var(--spring),opacity .2s}
 .toast.on span{transform:none;opacity:1}
 .ban{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;justify-content:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;pointer-events:none}
@@ -238,9 +263,11 @@ nav{bottom:0;z-index:30;padding:0 16px calc(12px + env(safe-area-inset-bottom,0p
 .ban button{width:40px;height:40px;display:grid;place-items:center;border-radius:20px}
 .rcp{position:fixed;top:calc(60px + env(safe-area-inset-top,0px));left:0;right:0;z-index:27;display:flex;justify-content:center;overflow:hidden;height:0;pointer-events:none}
 .rcp.on{height:280px}
-.pw{align-self:flex-start;transform:translateY(-105%);padding:0 24px 30px;filter:drop-shadow(0 10px 14px rgba(var(--s),.4))}
-.paper{width:240px;background:#fff;color:#0A2419;padding:16px 16px 22px;font-size:13px;clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),96.9% 100%,93.8% calc(100% - 8px),90.6% 100%,87.5% calc(100% - 8px),84.4% 100%,81.3% calc(100% - 8px),78.1% 100%,75% calc(100% - 8px),71.9% 100%,68.8% calc(100% - 8px),65.6% 100%,62.5% calc(100% - 8px),59.4% 100%,56.3% calc(100% - 8px),53.1% 100%,50% calc(100% - 8px),46.9% 100%,43.8% calc(100% - 8px),40.6% 100%,37.5% calc(100% - 8px),34.4% 100%,31.3% calc(100% - 8px),28.1% 100%,25% calc(100% - 8px),21.9% 100%,18.8% calc(100% - 8px),15.6% 100%,12.5% calc(100% - 8px),9.4% 100%,6.3% calc(100% - 8px),3.1% 100%,0 calc(100% - 8px))}
-.rcp.on .pw,.st .pw{animation:print 1s steps(9) forwards}
+.pw{align-self:flex-start;transform:translateY(-105%);padding:0 24px 30px;will-change:transform}
+.paper{position:relative;width:240px;background:#fff;color:#0A2419;padding:16px 16px 14px;font-size:13px;box-shadow:0 14px 22px -10px rgba(var(--s),.45)}
+.paper::after{content:'';position:absolute;left:0;right:0;top:100%;height:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8'%3E%3Cpath d='M0 0h16L8 8z' fill='%23fff'/%3E%3C/svg%3E") repeat-x 0 0/16px 8px}
+.rcp.on .pw,.st .pw{animation:print 1.1s cubic-bezier(.25,.8,.25,1) forwards}
+.rcp.fly{overflow:visible;z-index:31}
 .rcp.out .pw{animation:eject .4s cubic-bezier(.5,0,.8,.4) forwards}
 @keyframes print{to{transform:none}}
 @keyframes eject{from{transform:none}to{transform:translateY(-110%)}}
@@ -395,21 +422,62 @@ nav{bottom:0;z-index:30;padding:0 16px calc(12px + env(safe-area-inset-bottom,0p
 .soc{display:flex;align-items:center;justify-content:center;gap:10px}
 .soc i{display:grid;place-items:center;width:26px;height:26px;border-radius:9px;background:var(--well-bg);box-shadow:var(--in);font-style:normal;font-size:13px;font-weight:800;color:var(--sub)}
 .picks{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.picks .fc{display:inline-flex;align-items:center}
+.picks .tick{display:inline-flex;width:0;overflow:hidden;transition:width .3s var(--spring)}
+.picks .fc.on .tick{width:20px}
+.picks .tick svg{flex:none;width:16px;height:16px}
+.obi{touch-action:pan-y}
+.obwm{display:inline-flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:76px;line-height:1;letter-spacing:-.055em;color:var(--ink)}
+.obwm span{display:inline-block;animation:lt .8s var(--spring) backwards;animation-delay:calc(.25s + var(--i)*55ms)}
+.obwm.sm{font-size:30px}
+.obwm.sm span{animation:none}
+@keyframes lt{from{opacity:0;transform:translateY(50px) rotate(10deg)}}
+.lead{animation:fdu .7s .85s var(--out) backwards}
+@keyframes fdu{from{opacity:0;transform:translateY(10px)}}
+.obsm{margin-bottom:22px}
+.jarbtn{display:flex;flex-direction:column;align-items:center;gap:10px}
+.ob .fill,.ob .fill em{transition-duration:1.6s}
+.st3 .fill{transition-delay:calc(.2s + var(--i)*.2s)}
+.t1{gap:14px}
+.t1 .pw{padding:0}
+.t1 .paper{width:150px;padding:14px 14px 12px;font-size:12px}
+.t1 .paper b{font-size:14px}
+.t1 .paper li{display:block}
+.mini{width:156px;padding:12px;border-radius:20px;display:flex;flex-direction:column;gap:8px}
+.mini>b{font-size:13px;color:var(--sub)}
+.mr{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;animation:mr .55s var(--spring) backwards;animation-delay:calc(1.15s + var(--i)*.25s)}
+.mr .fill{transition-delay:calc(1.3s + var(--i)*.25s)}
+@keyframes mr{from{opacity:0;transform:translateX(-26px) scale(.85)}}
+.t3{flex-direction:column;gap:18px}
+.t3 .big{color:var(--ink)}
+.pcs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.pc{display:inline-flex;gap:6px;align-items:center;height:36px;padding:0 14px;border-radius:18px;background:var(--btn);box-shadow:var(--up1);font-size:13px;font-weight:700;animation:pcin .5s var(--spring) backwards;animation-delay:calc(.35s + var(--i)*.42s)}
+.pc b{color:var(--gt)}
+@keyframes pcin{from{opacity:0;transform:translateY(16px) scale(.8)}}
+.av{display:flex;margin-bottom:18px}
+.av i{width:72px;height:72px;border-radius:36px;display:grid;place-items:center;background:var(--ink-bg);color:var(--on-ink);box-shadow:var(--kup);font-style:normal;font-weight:800;font-size:28px}
+.splash{position:fixed;inset:0;z-index:100;background:#22D873;display:grid;place-items:center;transition:opacity .45s ease .1s}
+.splash.out{opacity:0;pointer-events:none}
+.splash b{display:flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:64px;letter-spacing:-.05em;color:#000;line-height:1}
+.splash b span{display:inline-block}
+.splash.out b{transform:scale(1.15);transition:transform .55s cubic-bezier(.5,0,.3,1)}
 
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}}
-.rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}}
+.rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
 </style>
 </head>
 <body>
 <div id="app">
   <header id="hdr">
-    <button class="sp" id="sp" data-a="menu" aria-expanded="false"><span id="spn"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button class="logo" data-a="logo" aria-label="Galmuri"><span>G</span><span>a</span><span>l</span><span>m</span><span>u</span><span>r</span><span>i</span><span>.</span></button>
+    <button class="sp" id="sp" data-a="menu" aria-expanded="false"><span id="spn"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 9l6 6 6-6"/></svg></button>
     <button class="cash" id="cash" data-a="tab" data-v="value" aria-label="받은 갈무리 머니"><i></i><span><span class="odo" data-k="hcash" data-num="0"></span>원</span></button>
     <button class="ib" data-a="settings" aria-label="설정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h8M18 7h2M4 17h2M12 17h8"/><circle cx="15" cy="7" r="2.6"/><circle cx="9" cy="17" r="2.6"/></svg></button>
     <div class="menu" id="menu"></div>
   </header>
   <main id="view"></main>
 </div>
+<div class="ptr" id="ptr" aria-hidden="true"><i></i></div>
 <div class="fabw"><div><button class="fab" data-a="add" aria-label="보관함에 넣기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>넣기</span></button></div></div>
 <nav><div id="nav"></div></nav>
 <div class="pgw" id="pgw"><section class="page" id="set" aria-label="설정">
@@ -530,10 +598,10 @@ function acts(i,home){const b=(a,t,k='s')=>`<button class="btn ${k}" data-a="${a
  if(i.cat==='durable')return (elec(i)?b('as','수리 접수하기'):'')+b('sell','팔기','p');
  if(i.cat==='consumable')return b('eaten','다 썼어요');
  return info}
-const vessel=(k,lv,lab)=>`<span class="ves"><em>${lab}</em><i class="fill" data-k="${k}" data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"><em>${lab}</em></i></span>`;
-const jar=(k,lv)=>`<span class="jarw"><i class="lid"></i><span class="jar"><i class="fill" data-k="${k}" data-h="112" data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"></i></span></span>`;
+const vessel=(k,lv,lab,h)=>`<span class="ves"${h?` style="width:${h}px;height:${h}px;border-radius:${Math.round(h*.32)}px"`:''}><em>${lab}</em><i class="fill" data-k="${k}"${h?` data-h="${h}"`:''} data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"><em>${lab}</em></i></span>`;
+const jar=(k,lv,big)=>`<span class="jarw${big?' big':''}"><i class="lid"></i><span class="jar"><i class="fill" data-k="${k}" data-h="${big?152:112}" data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"></i></span></span>`;
 function row(i,open,home,wrap){const a=acts(i,home),q=home?question(i):'',k=`data-r="i${i.id}"`;
- const h=`<div class="row${urgent(i)?' urg':''}${faded(i)?' dim':''}${open?' open':''}" ${wrap?'':k}>
+ const h=`<div class="row${urgent(i)?' urg':''}${faded(i)?' dim':''}${open?' open':''}" ${wrap?'':k}>${wrap?'':`<span class="swb${i.cat==='durable'?' sell':''}" aria-hidden="true"><span>${i.cat==='durable'?'팔기':'다 썼어요'}</span></span>`}
  <button class="rowb" data-a="open" data-v="${i.id}" aria-expanded="${!!open}">${vessel('v'+i.id,level(i),label(i))}
  <span class="rt"><b>${esc(i.name)}</b><small>${esc(where(i))}</small></span><span class="rs">${status(i)}</span></button>
  <div class="more"><div><div class="morein">${q?`<p class="q">${q}</p>`:`<p class="facts">${facts(i)}</p>`}${a?`<div class="btns">${a}</div>`:''}</div></div></div></div>`;
@@ -556,13 +624,13 @@ function famBody(){const fam=S.space==='family',w=fam?S.who:'me',my=S.items.filt
 
 const T={
 home(){const t=tasks(),d=durables(),tp=d.reduce((s,i)=>s+i.price,0),r=tp?total()/tp:0;
- return `<button class="hero card" data-a="tab" data-v="value"><span class="ht"><span class="l">안 쓰는 물건을 지금 다 팔면</span><strong>${odoT('total',total())}원</strong>
- <span class="cap">${d.length?`살 때 값의 ${Math.round(r*100)}%가 남아 있어요`:'팔 수 있는 물건이 없어요'}</span><span class="go">${d.length}개 보기${CHEV}</span></span>${jar('hjar',r)}</button>
+ return `<div class="hero card" data-a="jar"><span class="ht"><span class="l">안 쓰는 물건을 지금 다 팔면</span><strong>${odoT('total',total())}원</strong>
+ <span class="cap">${d.length?`살 때 값의 ${Math.round(r*100)}%가 남아 있어요`:'팔 수 있는 물건이 없어요'}</span><button class="go" data-a="tab" data-v="value">${d.length}개 보기${CHEV}</button></span>${jar('hjar',r)}</div>
  <h2>${t.length?`오늘 갈무리할 것 <span style="display:inline-flex;align-items:baseline">${odoT('cnt',t.length)}개</span>`:'오늘 갈무리할 것'}</h2>
  ${t.length?t.map(i=>row(i,true,true,true)).join(''):'<div class="tk"><div class="card"><p class="empty">오늘은 갈무리할 게 없어요.<br>기한이 다가오면 여기서 알려드릴게요</p></div></div>'}
  <div class="tk" style="padding-top:8px"><div class="card"><div class="srow"><div><b>마트에서 알려주기</b><small>집에 있는 걸 또 사지 않게 도착하면 알려드려요</small></div><button class="tg" data-a="radar" aria-pressed="${S.radar}" aria-label="마트에서 알려주기"><i></i></button></div></div></div>`},
 inv(){const l=S.items.filter(i=>S.filter==='all'||i.sub===S.filter);
- return `<section class="hd"><h1>보관함</h1><p>쇼핑몰 ${linked()}곳과 카드 결제에서 알아서 들어와요</p></section>
+ return `<section class="hd"><h1>보관함</h1><p>쇼핑몰 ${linked()}곳과 카드 결제에서 알아서 들어와요. 왼쪽으로 밀면 바로 정리돼요</p></section>
  <div class="chips" id="chips"><i class="pill"></i>${FILTERS.map(([k,t])=>`<button class="chip${S.filter===k?' on':''}" data-a="filter" data-v="${k}">${t}</button>`).join('')}</div>
  <div class="card grp list">${l.length?l.map(i=>row(i,S.openId===i.id)).join(''):'<p class="empty">여기엔 아직 아무것도 없어요.<br>아래 넣기 버튼으로 채울 수 있어요</p>'}</div>`},
 value(){const d=durables();
@@ -590,8 +658,7 @@ function post(r){
  const a=$('.chip.on',r),pl=$('.pill',r);let nw;
  if(a&&pl){nw={x:a.offsetLeft,w:a.offsetWidth};const c=CHIP||nw;pl.style.transition='none';pl.style.transform=`translateX(${c.x}px)`;pl.style.width=c.w+'px'}
  r.offsetHeight;
- fs.forEach(o=>{if(o.p!==o.v){setLv(o.e,o.v);if(!RM()){const big=o.e.dataset.h,off=big?8:5,w=big?120:78;
-   o.e.animate([{backgroundPosition:`0px 0px,0px ${off}px`},{backgroundPosition:`-${w}px 0px,0px ${off}px`}],{duration:1200,easing:'cubic-bezier(.2,.7,.2,1)'});
+ fs.forEach(o=>{if(o.p!==o.v){setLv(o.e,o.v);if(!RM()){const big=o.e.dataset.h;
    if(o.p!=null&&!big)o.e.parentNode.animate([{transform:'scale(1)'},{transform:'scale(1.14)'},{transform:'scale(1)'}],{duration:500,easing:'cubic-bezier(.3,1.35,.4,1)'})}}LV[o.k]=o.v});
  od.forEach(e=>$$('.col',e).forEach(c=>c.style.transform=`translateY(-${c.dataset.t*1.15}em)`));
  if(nw){pl.style.transition='';pl.style.transform=`translateX(${nw.x}px)`;pl.style.width=nw.w+'px';CHIP=nw}}
@@ -599,9 +666,9 @@ function render(dir){const v=$('#view'),ch=$('#chips'),sl=ch?ch.scrollLeft:0;
  v.innerHTML=T[S.tab]();const c2=$('#chips');if(c2&&dir==null)c2.scrollLeft=sl;
  post(v);
  if(dir!=null){window.scrollTo(0,0);if(!RM())v.animate([{opacity:0,transform:`translateX(${dir*24}px)`},{opacity:1,transform:'none'}],{duration:300,easing:'cubic-bezier(.2,.9,.2,1)'})}
- FRESH.forEach(k=>{const e=$(`[data-r="${k}"]`,v);if(!e||RM())return;const h=e.offsetHeight,pb=getComputedStyle(e).paddingBottom;e.style.overflow='hidden';
-  e.animate([{height:'0px',paddingBottom:'0px',opacity:0},{height:h+'px',paddingBottom:pb,opacity:1}],{duration:460,easing:'cubic-bezier(.2,1,.3,1)'}).onfinish=()=>e.style.overflow='';
-  (e.classList.contains('row')?e:($('.row',e)||e)).animate([{backgroundColor:'rgba(25,212,108,.5)'},{backgroundColor:'rgba(25,212,108,0)'}],{duration:1600,easing:'ease-out'})});
+ let fi=0;FRESH.forEach(k=>{const e=$(`[data-r="${k}"]`,v);if(!e||RM())return;const d=fi++*90;
+  e.animate([{opacity:0,transform:'translateY(-18px) scale(.97)'},{opacity:1,transform:'none'}],{duration:540,delay:d,easing:'cubic-bezier(.3,1.35,.4,1)',fill:'backwards'});
+  (e.classList.contains('row')?e:($('.row',e)||e)).animate([{backgroundColor:'rgba(34,216,115,.45)'},{backgroundColor:'rgba(34,216,115,0)'}],{duration:1600,delay:d,easing:'ease-out'})});
  FRESH.clear()}
 function chrome(){$('#spn').textContent=SPACES[S.space][0];
  $('#menu').innerHTML=Object.entries(SPACES).map(([k,[t,d]])=>`<button class="${S.space===k?'on':''}" data-a="space" data-v="${k}"><span>${t}<small>${d}</small></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>`).join('');
@@ -613,7 +680,7 @@ function leave(k,cb){const e=$(`#view [data-r="${k}"]`);if(!e||RM()){cb();return
  const f=$('.fill',e);if(f){f.style.transition=f.firstElementChild.style.transition='transform .28s cubic-bezier(.5,0,.8,.4)';setLv(f,0)}
  setTimeout(()=>{e.style.overflow='hidden';e.animate([{height:e.offsetHeight+'px',paddingBottom:getComputedStyle(e).paddingBottom,opacity:1},{height:'0px',paddingBottom:'0px',opacity:0}],{duration:340,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}).onfinish=cb},f?260:0)}
 let tt;function say(m,ms=2600){const t=$('#toast');$('span',t).textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms)}
-const menu=on=>{$('#menu').classList.toggle('on',on);$('#sp').setAttribute('aria-expanded',on)};
+const menu=on=>{$('#menu').style.left=($('#sp').offsetLeft-4)+'px';$('#menu').classList.toggle('on',on);$('#sp').setAttribute('aria-expanded',on)};
 function go(tab){if(tab===S.tab)return;const d=Math.sign(TABS.indexOf(tab)-TABS.indexOf(S.tab));S.tab=tab;CHIP=null;if(tab==='inv')$('.tab[data-v=inv]').classList.remove('new');chrome();render(d)}
 /* 새 물건을 보관함에 넣고, 들어오는 걸 보여 준다 */
 function putIn(list,msg){list.forEach(a=>FRESH.add('i'+a.id));S.items=[...list,...S.items];
@@ -626,7 +693,8 @@ function cashUp(gain){const c=$('#cash'),o=$('.odo',c);o.dataset.num=S.cash;
 
 /* ---- 시트 ---- */
 const sh=$('#sh');
-function openSheet(h){sh.innerHTML='<div class="grab"></div><div id="shc">'+h+'</div>';sh.style.transform='';$('#shw').classList.add('on');$('#scrim').classList.add('on');post(sh)}
+function openSheet(h){sh.innerHTML='<div class="grab"></div><div id="shc">'+h+'</div>';sh.style.transform='';$('#shw').classList.add('on');$('#scrim').classList.add('on');post(sh);
+ if(!RM())$$('#shc>*',sh).slice(0,8).forEach((e,k)=>e.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:440,delay:110+k*35,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
 function closeSheet(cb){sh.style.transition='';sh.style.transform='';$('#shw').classList.remove('on');$('#scrim').classList.remove('on');setTimeout(()=>{sh.innerHTML='';cb&&cb()},RM()?0:340)}
 function swapSheet(h){const c=$('#shc'),old=sh.offsetHeight;
  const put=()=>{c.innerHTML=h;c.scrollTop=0;post(sh);if(RM())return;const dh=old-sh.offsetHeight;
@@ -710,8 +778,11 @@ sh.addEventListener('pointerup',dragEnd);sh.addEventListener('pointercancel',dra
 
 function pay(){if(S.paying)return;S.paying=true;buzz();const add=[0,1,2].map(k=>({...POOL[(S.payN*3+k)%POOL.length],id:Date.now()+k,cat:'consumable',store:'이마트',date:TODAY}));S.payN++;
  const r=$('#rcp');r.innerHTML=`<div class="pw"><div class="paper"><b>이마트</b>카드 결제 ${won(add.reduce((s,a)=>s+a.price,0))}원<ul>${add.map(a=>`<li><span>${a.name}</span><span>${won(a.price)}</span></li>`).join('')}</ul></div></div>`;r.className='rcp on';
- setTimeout(()=>r.classList.add('out'),RM()?600:2500);
- setTimeout(()=>{r.className='rcp';r.innerHTML='';S.paying=false;putIn(add,'영수증에서 3개를 읽어 보관함에 넣었어요')},RM()?700:2900)}
+ setTimeout(()=>{const pw=$('.pw',r),t=$('.tab[data-v=inv]'),a=pw.getBoundingClientRect(),c=t.getBoundingClientRect();r.classList.add('fly');
+  const done=()=>{r.className='rcp';r.innerHTML='';S.paying=false;t.classList.add('bump');setTimeout(()=>t.classList.remove('bump'),700);putIn(add,'영수증에서 3개를 읽어 보관함에 넣었어요')};
+  if(RM())return done();
+  const dx=c.left+c.width/2-(a.left+a.width/2),dy=c.top+c.height/2-(a.top+a.height/2);
+  pw.animate([{transform:'none',opacity:1},{transform:`translate(${dx*.3}px,${dy*.15}px) scale(.72) rotate(-5deg)`,opacity:1,offset:.35},{transform:`translate(${dx}px,${dy}px) scale(.05) rotate(-12deg)`,opacity:.3}],{duration:640,easing:'cubic-bezier(.55,0,.35,1)',fill:'forwards'}).onfinish=done},RM()?500:2200)}
 
 /* ---- 설정, 쇼핑몰 ---- */
 const tgl=(k,on,a='tog')=>`<button class="tg" data-a="${a}" data-v="${k}" aria-pressed="${on}"><i></i></button>`;
@@ -753,32 +824,47 @@ const linkSheet=(id,n)=>`<h3>${esc(n)} 연결하기</h3><p class="sub">${esc(n)}
 /* ---- 처음 화면: 환영, 사용법 3장, 계정, 이름, 쇼핑몰 ---- */
 const OB={step:'hi',pick:new Set()};
 const PICKS=['coupang','naver','11st','gmarket','emart','kurly','musinsa','ably','oliveyoung','ali','taobao','temu'];
+const LOGO=(cls='')=>`<span class="obwm ${cls}" role="img" aria-label="Galmuri.">${[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}" aria-hidden="true">${c}</span>`).join('')}</span>`;
 function obHTML(){const s=OB.step,ti=['t1','t2','t3'].indexOf(s),late=s==='name'||s==='shops';
  const top=`<div class="obt">${ti>=0?`<span class="dots">${[0,1,2].map(k=>`<i class="${k===ti?'on':''}"></i>`).join('')}</span>`:'<span></span>'}${s==='acct'?'':`<button class="txt" data-a="${late?'obdone':'obskip'}">${late?'나중에 할게요':'건너뛰기'}</button>`}</div>`;
  const B=(t,a='obnext')=>`<button class="btn p big" data-a="${a}">${t}</button>`;
  const V={
- hi:[`<div class="st">${jar('ob0',.78)}</div><h1 class="wm">갈무리</h1><p>사 놓고 잊어버린 물건,\n대신 챙겨 드릴게요</p>`,B('시작하기')],
- t1:[`<div class="st"><div class="pw"><div class="paper"><b>이마트</b>카드 결제 45,190원<ul><li><span>대파 1단</span><span>2,990</span></li><li><span>삼겹살 600g</span><span>16,900</span></li><li><span>휴지 30롤</span><span>25,300</span></li></ul></div></div></div><h1>사면 알아서 들어와요</h1><p>카드 결제와 쇼핑몰 주문에서 뭘 샀는지 읽어서 보관함에 넣어요. 따로 적을 필요가 없어요</p>`,B('다음')],
- t2:[`<div class="st">${[['ob1',.9,'넉넉해요'],['ob2',.45,'절반 남음'],['ob3',.1,'곧 떨어져요']].map(([k,l,t])=>`<div class="st3">${jar(k,l)}${t}</div>`).join('')}</div><h1>남은 만큼 차 있어요</h1><p>초록 물이 줄어들수록 기한이나 양이 얼마 안 남은 거예요. 오늘 챙길 건 홈 맨 위에 모아 드려요</p>`,B('다음')],
- t3:[`<div class="st"><div class="st3"><span class="big" style="color:var(--ink)">${odoT('obv',485000)}원</span>에어팟, 운동화, 청소기를 지금 다 팔면</div></div><h1>안 쓰는 건 값으로 바꿔요</h1><p>지금 팔면 얼마인지 늘 계산해 둬요. 팔 때는 판매 글까지 대신 써 드려요</p>`,B('다음')],
- acct:[`<h1>계정을 만들까요?</h1><p>기기를 바꿔도 보관함이 그대로 따라와요</p>`,[['kakao','K','카카오로 시작하기'],['google','G','Google로 시작하기'],['email','@','이메일로 시작하기']].map(([k,c,t])=>`<button class="btn s big soc" data-a="oauth" data-v="${k}"><i>${c}</i><span>${t}</span></button>`).join('')+`<button class="txt" data-a="obdone">로그인 없이 둘러보기</button><small>미리보기라서 어떤 걸 눌러도 실제로 로그인되지는 않아요</small>`],
- name:[`<h1>어떻게 불러 드릴까요?</h1><p>가족에게도 이 이름으로 보여요</p><input class="inp" id="obname" style="margin-top:18px" autocomplete="off" aria-label="이름이나 별명" placeholder="이름이나 별명" maxlength="12" value="${esc(P.name)}">`,B('다음','obname')],
- shops:[`<h1>어디서 자주 사세요?</h1><p>고른 곳의 주문을 알아서 가져와요. 나중에 더 넣을 수 있어요</p><div class="picks">${PICKS.map(k=>`<button class="fc${OB.pick.has(k)?' on':''}" data-a="obpick" data-v="${k}" aria-pressed="${OB.pick.has(k)}">${shopName(k)}</button>`).join('')}</div>`,`<button class="btn p big" data-a="obdone" id="obgo">${OB.pick.size?OB.pick.size+'곳 연결하고 시작하기':'연결 없이 시작하기'}</button><small>미리보기라서 실제 계정에는 접속하지 않아요</small>`]}[s];
+ hi:[`<div class="st"><button class="jarbtn" data-a="jar" aria-label="병 흔들기">${jar('ob0',.74,1)}</button></div><h1>${LOGO()}</h1><p class="lead">사 놓고 잊어버린 물건,\n대신 챙겨 드릴게요</p>`,B('시작하기')],
+ t1:[`<div class="st t1"><div class="pw"><div class="paper"><b>이마트</b>카드 결제 45,190원<ul><li>대파 1단</li><li>삼겹살 600g</li><li>휴지 30롤</li></ul></div></div><div class="mini card"><b>보관함</b>${[['대파 1단',.7],['삼겹살 600g',.3],['휴지 30롤',1]].map(([n,l],k)=>`<div class="mr" style="--i:${k}">${vessel('obm'+k,l,'',28)}<span>${n}</span></div>`).join('')}</div></div><h1>사면 알아서 들어와요</h1><p>카드 결제와 쇼핑몰 주문에서 뭘 샀는지 읽어서 보관함에 넣어요. 따로 적을 필요가 없어요</p>`,B('다음')],
+ t2:[`<div class="st">${[['ob1',.9,'넉넉해요'],['ob2',.45,'절반 남음'],['ob3',.1,'곧 떨어져요']].map(([k,l,t],i)=>`<button class="st3 jarbtn" data-a="jar" style="--i:${i}" aria-label="${t}, 병 흔들기">${jar(k,l)}<span>${t}</span></button>`).join('')}</div><h1>남은 만큼 차 있어요</h1><p>초록 물이 줄어들수록 기한이나 양이 얼마 안 남은 거예요. 병을 눌러 보세요</p>`,B('다음')],
+ t3:[`<div class="st t3"><span class="big">${odoT('obv',0)}원</span><div class="pcs">${[['에어팟 프로',215000],['에어포스 1',75000],['코드제로 청소기',195000]].map(([n,p],k)=>`<span class="pc" style="--i:${k}">${n}<b>+${won(p)}</b></span>`).join('')}</div></div><h1>안 쓰는 건 값으로 바꿔요</h1><p>지금 팔면 얼마인지 늘 계산해 둬요. 팔 때는 판매 글까지 대신 써 드려요</p>`,B('다음')],
+ acct:[`<div class="obsm">${LOGO('sm')}</div><h1>계정을 만들까요?</h1><p>기기를 바꿔도 보관함이 그대로 따라와요</p>`,[['kakao','K','카카오로 시작하기'],['google','G','Google로 시작하기'],['email','@','이메일로 시작하기']].map(([k,c,t])=>`<button class="btn s big soc" data-a="oauth" data-v="${k}"><i>${c}</i><span>${t}</span></button>`).join('')+`<button class="txt" data-a="obdone">로그인 없이 둘러보기</button><small>미리보기라서 어떤 걸 눌러도 실제로 로그인되지는 않아요</small>`],
+ name:[`<div class="av"><i id="obav">${esc((P.name||'나')[0])}</i></div><h1>어떻게 불러 드릴까요?</h1><p>가족에게도 이 이름으로 보여요</p><input class="inp" id="obname" style="margin-top:18px" autocomplete="off" aria-label="이름이나 별명" placeholder="이름이나 별명" maxlength="12" value="${esc(P.name)}">`,B('다음','obname')],
+ shops:[`<h1>어디서 자주 사세요?</h1><p>고른 곳의 주문을 알아서 가져와요. 나중에 더 넣을 수 있어요</p><div class="picks">${PICKS.map(k=>`<button class="fc${OB.pick.has(k)?' on':''}" data-a="obpick" data-v="${k}" aria-pressed="${OB.pick.has(k)}"><i class="tick">${TICK}</i>${shopName(k)}</button>`).join('')}</div>`,`<button class="btn p big" data-a="obdone" id="obgo">${OB.pick.size?OB.pick.size+'곳 연결하고 시작하기':'연결 없이 시작하기'}</button><small>미리보기라서 실제 계정에는 접속하지 않아요</small>`]}[s];
  return `${top}<div class="obm">${V[0]}</div><div class="obf">${V[1]}</div>`}
-function obShow(step,dir=1){OB.step=step;const o=$('#obi');['ob0','ob1','ob2','ob3'].forEach(k=>delete LV[k]);NUM.obv=0;
+function obShow(step,dir=1){OB.step=step;(OB.tm||[]).forEach(clearTimeout);OB.tm=[];const o=$('#obi');
+ Object.keys(LV).filter(k=>/^ob/.test(k)).forEach(k=>delete LV[k]);NUM.obv=0;
  o.innerHTML=obHTML();post(o);
- if(!RM())$$('.obm,.obf',o).forEach((e,k)=>e.animate([{opacity:0,transform:`translateX(${dir*36}px)`},{opacity:1,transform:'none'}],{duration:420,delay:k*60,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
-function obStart(step='hi'){OB.pick=new Set(P.shops.filter(k=>PICKS.includes(k)));const o=$('#ob');o.hidden=false;o.classList.remove('out');obShow(step)}
+ if(step==='t3')[215000,290000,485000].forEach((v,k)=>OB.tm.push(setTimeout(()=>{const t=$('.t3',o);if(!t)return;$('.odo',t).dataset.num=v;post(t);buzz()},RM()?0:450+k*420)));
+ if(RM())return;
+ if(step==='hi'&&!OB.slid){OB.slid=1;return}
+ $$('.obm,.obf',o).forEach((e,k)=>e.animate([{opacity:0,transform:`translateX(${dir*40}px)`},{opacity:1,transform:'none'}],{duration:460,delay:k*70,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
+function obStart(step='hi'){OB.slid=step!=='hi'?1:0;OB.pick=new Set(P.shops.filter(k=>PICKS.includes(k)));const o=$('#ob');o.hidden=false;o.classList.remove('out');obShow(step)}
 function obEnd(){if(OB.step==='shops'){P.shops=[...new Set([...P.shops.filter(k=>!PICKS.includes(k)),...OB.pick])]}
  P.ob=true;save();const o=$('#ob');o.classList.add('out');setTimeout(()=>{o.hidden=true;$('#obi').innerHTML=''},RM()?0:600);
- Object.keys(LV).forEach(k=>delete LV[k]);render();say(P.name?P.name+'님, 반가워요':'둘러보는 중이에요. 설정에서 계정을 만들 수 있어요',3000)}
+ (OB.tm||[]).forEach(clearTimeout);Object.keys(LV).forEach(k=>delete LV[k]);render();intro();say(P.name?P.name+'님, 반가워요':'둘러보는 중이에요. 설정에서 계정을 만들 수 있어요',3000)}
+
+/* ---- 출렁임, 로고, 첫 등장 ---- */
+function slosh(j){if(!j||RM())return;const f=$('.fill',j),w=j.closest('.jarw'),y=f.style.transform||'';
+ f.animate([0,-10,8,-5,3,-1,0].map(a=>({transform:`${y} rotate(${a}deg)`})),{duration:1500,easing:'ease-out'});
+ if(w){w.animate([{transform:'none'},{transform:'rotate(5deg) scale(.97)'},{transform:'rotate(-3deg)'},{transform:'rotate(1deg)'},{transform:'none'}],{duration:700,easing:'cubic-bezier(.3,1.35,.4,1)'});
+  $('.lid',w).animate([{transform:'none'},{transform:'translateY(-7px) rotate(-7deg)'},{transform:'none'}],{duration:480,easing:'cubic-bezier(.3,1.35,.4,1)'})}}
+function logoWave(d=0){if(RM())return;$$('.logo span').forEach((e,k)=>e.animate([{transform:'none'},{transform:'translateY(-8px) rotate(-6deg)'},{transform:'none'}],{duration:520,delay:d+k*45,easing:'cubic-bezier(.3,1.35,.4,1)'}))}
+function intro(){if(RM())return;[$('#hdr'),...$$('#view>*'),$('#nav')].forEach((e,k)=>e&&e.animate([{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'none'}],{duration:650,delay:150+k*60,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}));logoWave(550)}
 
 /* ---- 동작 ---- */
 const A={
+jar:(v,b)=>{buzz();slosh($('.jar',b));S.shk=(S.shk||0)+1;clearTimeout(S.shkT);S.shkT=setTimeout(()=>S.shk=0,1600);if(S.shk===6)say('살살 흔들어 주세요. 거품 나요')},
+logo:()=>{buzz();logoWave()},
 tab:v=>{buzz();go(v)},
 menu:()=>menu(!$('#menu').classList.contains('on')),
 space:v=>{menu(false);if(v===S.space)return;S.space=v;S.who=null;if(v==='shop'&&S.tab!=='fam'){S.tab='fam';chrome();render(1)}else{chrome();render(S.tab==='fam'?0:undefined)}say(SPACES[v][0]+' 보기로 바꿨어요')},
-open:(v,b)=>{const r=b.closest('.row'),on=!r.classList.contains('open');if(S.tab==='inv'){$$('#view .row.open').forEach(x=>{x.classList.remove('open');$('.rowb',x).setAttribute('aria-expanded',false)});S.openId=on?+v:null}r.classList.toggle('open',on);b.setAttribute('aria-expanded',on)},
+open:(v,b)=>{const r=b.closest('.row'),on=!r.classList.contains('open'),vs=$('.ves',b);if(vs&&!RM()){vs.classList.add('slosh');clearTimeout(vs._t);vs._t=setTimeout(()=>vs.classList.remove('slosh'),900)}if(S.tab==='inv'){$$('#view .row.open').forEach(x=>{x.classList.remove('open');$('.rowb',x).setAttribute('aria-expanded',false)});S.openId=on?+v:null}r.classList.toggle('open',on);b.setAttribute('aria-expanded',on)},
 filter:v=>{if(v===S.filter)return;S.filter=v;S.openId=null;render();const l=$('#view .list');if(!RM())l.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:280,easing:'cubic-bezier(.2,.9,.2,1)'})},
 who:v=>{if(S.space!=='family')return;buzz();S.who=S.who===v?null:v;$$('#view .pp').forEach(p=>{const on=p.dataset.v===S.who;p.classList.toggle('on',on);p.setAttribute('aria-pressed',on)});
  const c=$('#famc');c.innerHTML=famBody();post(c);if(RM())return;
@@ -868,20 +954,62 @@ obname:()=>{P.name=$('#obname').value.trim();save();obShow('shops')},
 obpick:(v,b)=>{buzz();const on=!OB.pick.has(v);on?OB.pick.add(v):OB.pick.delete(v);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);$('#obgo').textContent=OB.pick.size?OB.pick.size+'곳 연결하고 시작하기':'연결 없이 시작하기'},
 obdone:()=>{if(OB.step==='name')P.name=$('#obname').value.trim();buzz();obEnd()}
 };
-document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!e.target.closest('#menu,#sp'))menu(false);if(!b||b.disabled)return;A[b.dataset.a]&&A[b.dataset.a](b.dataset.v,b,e)});
+document.addEventListener('click',e=>{const now=performance.now();if(now-(S.swiped||0)<350||now-(OB.noclick||0)<350)return;const b=e.target.closest('[data-a]');if(!e.target.closest('#menu,#sp'))menu(false);if(!b||b.disabled)return;A[b.dataset.a]&&A[b.dataset.a](b.dataset.v,b,e)});
 document.addEventListener('input',e=>{const t=e.target;
  if(t.id==='fname')$('.cta',sh).disabled=!t.value.trim();
 
  else if(t.id==='fprice'){const n=t.value.replace(/\D/g,'').slice(0,9);t.value=n?won(n):''}
 
  if(t.id==='aphone'){const d=t.value.replace(/\D/g,'').slice(0,11);t.value=d.length<4?d:d.length<8?d.slice(0,3)+'-'+d.slice(3):d.slice(0,3)+'-'+d.slice(3,d.length-4)+'-'+d.slice(-4)}
+ if(t.id==='obname'){const a=$('#obav');a.textContent=(t.value.trim()||'나')[0];if(!RM())a.animate([{transform:'scale(.85)'},{transform:'scale(1.08)'},{transform:'none'}],{duration:360,easing:'cubic-bezier(.3,1.35,.4,1)'})}
  if(t.id==='shopq')$('#shopl').innerHTML=shopList(t.value);
  if(['aname','aphone','aaddr'].includes(t.id))$('.cta',sh).disabled=!['aname','aphone','aaddr'].every(k=>$('#'+k).value.trim());});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='obname')A.obname();if(e.key==='Enter'&&e.target.id==='shopnew')A.shopadd();
  if(e.key!=='Escape')return;menu(false);if($('#shw').classList.contains('on'))A.closesheet();else if($('#pgw2').classList.contains('on'))A.shopx();else A.setx()});
 let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;$('#hdr').classList.toggle('sc',scrollY>4);$('.fab').classList.toggle('mini',scrollY>60)})},{passive:true});
+/* 보관함 줄을 왼쪽으로 밀어서 정리 */
+let sw=null;
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.list .rowb');if(!b||e.button>0)return;sw={b,x:e.clientX,y:e.clientY,dx:0,on:false,id:e.pointerId}},true);
+addEventListener('pointermove',e=>{if(!sw||e.pointerId!==sw.id)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y;
+ if(!sw.on){if(dx<-8&&Math.abs(dx)>Math.abs(dy)*1.4){sw.on=true;const r=sw.b.parentNode;if(r.classList.contains('open')){r.classList.remove('open');sw.b.setAttribute('aria-expanded',false);S.openId=null}
+   sw.bg=$('.swb',r);sw.bg.style.height=sw.b.offsetHeight+'px';sw.b.style.transition='none';try{sw.b.setPointerCapture(e.pointerId)}catch(_){}}
+  else if(Math.abs(dy)>8||dx>8){sw=null;return}else return}
+ let d=Math.min(0,dx);if(d<-120)d=-120+(d+120)*.25;sw.dx=d;sw.b.style.transform=`translateX(${d}px)`;sw.bg.style.opacity=Math.min(1,-d/50);
+ const arm=d<-90;if(arm!==!!sw.arm){sw.arm=arm;sw.bg.classList.toggle('arm',arm);if(arm)buzz()}});
+const swEnd=()=>{if(!sw)return;const s=sw;sw=null;if(!s.on)return;S.swiped=performance.now();s.b.style.transition='transform .45s cubic-bezier(.3,1.2,.4,1)';
+ const i=item(s.b.dataset.v);
+ if(s.arm&&i&&i.cat!=='durable'){s.b.style.transition='transform .22s ease-in';s.b.style.transform='translateX(-110%)';setTimeout(()=>A.eaten(i.id),170);return}
+ s.b.style.transform='';setTimeout(()=>{s.bg.style.opacity=0;s.bg.classList.remove('arm')},350);if(s.arm&&i)A.sell(i.id)};
+addEventListener('pointerup',swEnd);addEventListener('pointercancel',swEnd);
+
+/* 맨 위에서 당겨서 새 주문 가져오기 */
+let pt=null;const ptr=$('#ptr');
+addEventListener('touchstart',e=>{if(scrollY>0||e.touches.length>1||$('#shw').classList.contains('on')||!$('#ob').hidden||$('.pgw.on')||!['home','inv'].includes(S.tab)||S.rfing)return;pt={y:e.touches[0].clientY,arm:false}},{passive:true});
+addEventListener('touchmove',e=>{if(!pt)return;const d=e.touches[0].clientY-pt.y;if(d<=0){ptr.style.opacity=0;return}const p=Math.min(1,d/110);
+ ptr.style.transition='none';ptr.style.transform=`translateY(${Math.min(d*.55,80)-50}px) rotate(${p*220}deg)`;ptr.style.opacity=Math.min(1,d/40);ptr.style.setProperty('--p',p);
+ if(p>=1&&!pt.arm){pt.arm=true;buzz()}else if(p<1)pt.arm=false},{passive:true});
+addEventListener('touchend',()=>{if(!pt)return;const arm=pt.arm;pt=null;ptr.style.transition='';if(!arm){ptr.style.transform='';ptr.style.opacity=0;return}
+ S.rfing=1;ptr.classList.add('spin');ptr.style.transform='translateY(14px)';setTimeout(refresh,1100)});
+function refresh(){S.rfing=0;ptr.classList.remove('spin');ptr.style.transform='';ptr.style.opacity=0;
+ if(!P.shops.length){say('연결된 쇼핑몰이 없어요. 설정에서 연결할 수 있어요');return}
+ S.rf=(S.rf||0)+1;const id=P.shops[S.rf%P.shops.length],pool=SAMPLE[shopGroup(id)],sm=pool[S.rf%pool.length];
+ const it={cat:'consumable',warranty:null,serial:null,brand:'',...sm,id:Date.now(),store:shopName(id),date:TODAY};
+ S.items=[it,...S.items];FRESH.add('i'+it.id);if(S.tab!=='inv')$('.tab[data-v=inv]').classList.add('new');render();buzz();say(shopName(id)+'에서 새 주문 1개를 가져왔어요')}
+
+/* 처음 화면은 옆으로 밀어서도 넘긴다 */
+let obs=null;
+$('#ob').addEventListener('pointerdown',e=>{if(e.target.closest('input,.picks'))return;obs={x:e.clientX,y:e.clientY}});
+$('#ob').addEventListener('pointerup',e=>{if(!obs)return;const dx=e.clientX-obs.x,dy=e.clientY-obs.y;obs=null;if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.5)return;
+ const o=['hi','t1','t2','t3','acct'],i=o.indexOf(OB.step);if(i<0)return;
+ if(dx<0&&i<o.length-1){OB.noclick=performance.now();buzz();obShow(o[i+1],1)}else if(dx>0&&i>0){OB.noclick=performance.now();buzz();obShow(o[i-1],-1)}});
+
+/* 앱 고르는 화면에서 들어오면: 초록 화면에 로고가 떴다가 열린다 */
+function boot(){if(!P.ob)obStart();else intro()}
 chrome();render();post($('#cash'));
-if(!P.ob)obStart();
+if(/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash';sp.setAttribute('aria-hidden','true');
+ sp.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(sp);
+ setTimeout(()=>{sp.classList.add('out');boot();setTimeout(()=>sp.remove(),700)},RM()?100:450)}
+else boot();
 </script>
 </body>
 </html>
