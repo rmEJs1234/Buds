@@ -530,11 +530,17 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const w=async ms=>{await wait(ms*SP);if(!alive())throw 0};
  const q=s=>{try{return typeof s==='string'?doc.querySelector(s):s}catch(_){return null}};
  const hl=i=>{if(!fe)return;fe.classList.add('run');$$('li',fe).forEach((l,j)=>l.classList.toggle('cur',j===i))};
+ /* 앱 화면 안에서만 스크롤한다 (scrollIntoView는 바깥 발표 화면까지 밀어 버린다) */
+ const into=(el,center)=>{let p=el.parentElement;const root=p=>!p||p===doc.body||p===doc.documentElement;
+  while(!root(p)){const st=win.getComputedStyle(p);if(/(auto|scroll)/.test(st.overflowY)&&p.scrollHeight>p.clientHeight+2)break;p=p.parentElement}
+  const r=el.getBoundingClientRect(),m=r.top+r.height/2;let d=0;
+  if(!root(p)){const pr=p.getBoundingClientRect();d=center?m-(pr.top+pr.height/2):r.top<pr.top?r.top-pr.top-12:r.bottom>pr.bottom?r.bottom-pr.bottom+12:0;if(d)p.scrollBy({top:d,behavior:'smooth'})}
+  else{const vh=win.innerHeight;d=center?m-vh/2:r.top<70?r.top-80:r.bottom>vh-100?r.bottom-vh+110:0;if(d)win.scrollBy({top:d,behavior:'smooth'})}};
  const step=async(t,i)=>{await waitStep();if(!alive())throw 0;if(t)cap(t,i)};
  const cap=(t,i)=>{if(i!=null)hl(i);if(!capEl)return;const cw=$('.cw',capEl);if(!capEl.classList.contains('on')){cw.replaceChildren();roll(cw,t);capEl.classList.add('on')}else roll(cw,t,capEl)};
  /* 카메라: 휴대폰은 오른쪽 제자리에서 무대를 뚫고 나갈 만큼 커지고, 지금 누르는 곳이 화면 가운데 높이에 온다 */
  const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive())return;const z0=z;z=Math.min(1.8,z0*1.25);
-  {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){el.scrollIntoView({block:'center',behavior:'smooth'});await w(550)}}
+  {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){into(el,true);await w(550)}}
   /* 무대 좌표로만 계산한다: 휴대폰에서 무대가 돌아가 있거나 작게 그려져 있어도 똑같이 맞는다 */
   const r=el.getBoundingClientRect(),py=.94*(77+r.top+r.height/2),camT=cam.offsetTop+cam.offsetParent.offsetTop,cw=cam.offsetWidth,H=cam.offsetHeight*.94;
   const tx=-(z-1)*cw/2-10;let ty=540-camT-z*py;ty=Math.min(90-camT,Math.max(990-camT-z*H,ty));
@@ -549,7 +555,7 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const press=async()=>{fg.classList.add('dn');const r=document.createElement('i');r.className='rip';r.style.left=(fx*sc)+'px';r.style.top=(fy*sc+off)+'px';ips.appendChild(r);setTimeout(()=>r.remove(),650);await w(150)};
  const lift=()=>{if(!fg)return;fg.classList.remove('dn');clearTimeout(ft);ft=setTimeout(()=>fg&&fg.classList.remove('on'),1500)};
  const mid=el=>{const r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]};
- const tap=async(s,ms=0,follow=true)=>{if(!alive())throw 0;const el=q(s);if(!el){console.warn('demo: no target',String(s));return false}el.scrollIntoView({block:'nearest',behavior:'smooth'});await w(Z?260:140);
+ const tap=async(s,ms=0,follow=true)=>{if(!alive())throw 0;const el=q(s);if(!el){console.warn('demo: no target',String(s));return false}into(el);await w(Z?260:140);
   if(Z&&follow)await focus(el,Z,800);await fgo(...mid(el));await press();el.click();await w(110);lift();if(ms)await w(ms);return true};
  const type=async(s,text)=>{const el=q(s);if(!el)return;if(Z)await focus(el,Z,800);await fgo(...mid(el));await press();lift();el.focus({preventScroll:true});for(const ch of text){el.value+=ch;el.dispatchEvent(new win.Event('input',{bubbles:true}));await w(75)}el.blur()};
  const glide=(x,y)=>{fx=x;fy=y;fg.style.transition='none';fg.style.transform=pos(x,y)};
@@ -563,7 +569,7 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const pull=async()=>{win.scrollTo(0,0);await w(400);await drag(190,376)};
  const pullUp=async()=>drag(610,400);
  const scroll=async(y,ms=1400)=>{win.scrollTo({top:y,behavior:'smooth'});await w(ms)};
- return {alive,q,step,cap,hl,tap,w,type,swipe,pull,pullUp,scroll,focus,wide,doc,win}}
+ return {alive,q,into,step,cap,hl,tap,w,type,swipe,pull,pullUp,scroll,focus,wide,doc,win}}
 
 /* 시연 빠르기: 1이 원래 속도, 작을수록 빠르다 */
 const SP=.6;
@@ -590,7 +596,7 @@ async tasks(k){const{step,cap,tap,w,q,focus,wide}=k;const box=s=>{const e=q(s);r
  await step('다 썼을 것 같으면 먼저 물어봐요',1);await focus(box('[data-a=still]'),1.32,900);await tap('[data-a=still]',1900,false);
  await step('무상보증 끝나기 전에 점검',2);await focus(box('.hero .go'),1.28,900);await tap('.hero .go',300,false);await w(1500);await wide(1000)},
 async radar(k){const{step,cap,tap,w,q,focus,wide}=k;
- await w(1200);await step('마트 알림 켜기',0);const t=q('[data-a=radar]');if(t){t.scrollIntoView({block:'center',behavior:'smooth'});await w(1000)}
+ await w(1200);await step('마트 알림 켜기',0);const t=q('[data-a=radar]');if(t){k.into(t,true);await w(1000)}
  await focus('[data-a=radar]',1.32,1000);await tap('[data-a=radar]',900,false);
  cap('마트에 도착하면 바로 알려요',0);await focus('#ban>div',1.36);cap('계란이랑 두부는 집에 있어요',1);await w(3000);await wide(1000)},
 async sell(k){const{step,cap,tap,w,focus,wide}=k;
@@ -699,6 +705,8 @@ function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(t
  $('#num').textContent=`${n+1} / ${S.length}`;$('#bar').style.width=((n+1)/S.length*100)+'%';
  try{history.replaceState(null,'','#s'+(n+1))}catch(_){}
  if(nw.dataset.demo)setTimeout(()=>{if(cur===n)demo(nw)},mode==='morph'?0:mode==='none'?300:Math.max(0,T-200))}
+/* 발표 화면 자체는 어디도 스크롤되지 않는다 */
+document.addEventListener('scroll',e=>{const t=e.target===document?document.scrollingElement:e.target;if(t&&(t.scrollTop||t.scrollLeft)){t.scrollTop=0;t.scrollLeft=0}},true);
 const NAV=['ArrowRight','ArrowLeft','PageDown','PageUp',' ','Home','End','f','F'];
 function key(e){const k=e.key;if(k==='ArrowRight'||k==='PageDown'||k===' ')fwd();else if(k==='ArrowLeft'||k==='PageUp')show(cur-1,-1);else if(k==='Home')show(0,-1);else if(k==='End')show(S.length-1,1);else if(k==='f'||k==='F')fs()}
 addEventListener('keydown',e=>{if(NAV.includes(e.key)){e.preventDefault();key(e)}});
