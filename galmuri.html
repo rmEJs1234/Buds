@@ -925,17 +925,18 @@ const eofHTML=()=>`<button class="eof" data-a="eof" aria-label="병 흔들기"><
 const eofIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting||scrollY<80)return;const el=e.target;
  if(performance.now()-(S.eofT||0)<1500)return;S.eofT=performance.now();S.eofN=Math.min(EOF_MSG.length,(S.eofN||0)+1);
  const f=$('.fill',el),m=$('small',el);f.dataset.lv=eofLv().toFixed(3);post(el);
- m.style.opacity=0;setTimeout(()=>{m.textContent=EOF_MSG[S.eofN-1];m.style.opacity=1},200);if(S.eofN===EOF_MSG.length)buzz()}),{threshold:1}):null;
+ m.style.opacity=0;setTimeout(()=>{m.textContent=EOF_MSG[S.eofN-1];m.style.opacity=1},200);if(eofLv()>=1){buzz();setTimeout(burst,1300)}}),{threshold:1}):null;
 /* 거품: 병 안 물속 바닥에서 올라와 물 표면에서 톡 터진다 */
 function bubbles(j,n=7){if(RM()||!j)return;const W=j.offsetWidth,H=j.offsetHeight,f=$('.fill',j),lv=f?+f.dataset.lv||0:.6,top=H*(1-Math.max(.25,lv))+6;
  for(let k=0;k<n;k++){const b=document.createElement('i'),z=3+Math.random()*(W/9),x=W*(.18+Math.random()*.64)-z/2,rise=Math.max(10,H-top-z-6),dx=(Math.random()-.5)*W*.16,d=900+Math.random()*700;
   b.className='bub2';b.style.cssText=`width:${z}px;height:${z}px;left:${x}px;bottom:4px`;j.appendChild(b);
   b.animate([{transform:'translate(0,0) scale(.3)',opacity:0},{transform:`translate(${dx*.5}px,${-rise*.35}px) scale(1)`,opacity:1,offset:.25},{transform:`translate(${-dx*.4}px,${-rise*.92}px) scale(1)`,opacity:1,offset:.88},{transform:`translate(${dx*.2}px,${-rise}px) scale(1.6)`,opacity:0}],{duration:d,delay:k*80,easing:'cubic-bezier(.4,.2,.5,1)',fill:'backwards'}).onfinish=()=>b.remove()}}
 /* 바닥에서 더 끌어내리면 병뚜껑이 튀고 거품이 터진다. 한 번 당길 때 한 번만 */
-function burst(){const w=$('.eof .jarw');if(!w||RM())return;buzz();const j=$('.jar',w),m=$('.eof small');
+function burst(){const w=$('.eof .jarw');if(!w||RM()||eofLv()<1)return;buzz();const j=$('.jar',w),m=$('.eof small');
  $('.lid',w).animate([{transform:'none'},{transform:'translateY(-48px) rotate(-170deg)',offset:.42},{transform:'translateY(-6px) rotate(-340deg)',offset:.82},{transform:'rotate(-360deg)'}],{duration:1150,easing:'cubic-bezier(.3,.7,.4,1)'});
  j.animate([{transform:'none'},{transform:'scale(1.14,.84)',offset:.16},{transform:'scale(.93,1.08)',offset:.4},{transform:'none'}],{duration:720,easing:'cubic-bezier(.3,1.35,.4,1)'});
- bubbles(j,16);if(m){m.style.opacity=0;setTimeout(()=>{m.textContent='펑! 병이 터졌어요';m.style.opacity=1},180)}}
+ bubbles(j,16);if(m){m.style.opacity=0;setTimeout(()=>{m.textContent='펑! 꽉 차서 터졌어요. 다시 채워 봐요';m.style.opacity=1},180)}
+ S.eofN=0;const f=$('.fill',w);if(f)setTimeout(()=>{f.dataset.lv='0';post($('.eof'))},650)}
 function render(dir){const v=$('#view'),ch=$('#chips'),sl=ch?ch.scrollLeft:0;
  v.innerHTML=T[S.tab]()+eofHTML();if(eofIO)eofIO.observe($('.eof',v));const c2=$('#chips');if(c2&&dir==null)c2.scrollLeft=sl;
  post(v);
