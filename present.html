@@ -32,7 +32,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* 장. 여백 규칙: 모든 장은 양옆을 똑같이 160px 비운다.
    글과 그림이 한 줄에 같이 있으면 둘을 한 덩어리로 묶어 가운데에 둔다 */
-.s{position:absolute;inset:0;padding:110px 160px;visibility:hidden;background:var(--mint)}
+.s{position:absolute;inset:0;padding:110px 160px;visibility:hidden;background:radial-gradient(1200px 820px at 82% 12%,#F7FCF9 0,rgba(247,252,249,0) 72%),radial-gradient(900px 700px at 4% 100%,#DDEEE4 0,rgba(221,238,228,0) 70%),var(--mint)}
 .s.on,.s.out{visibility:visible}
 .s.on{z-index:2}.s.out{z-index:1}
 .s.edge{box-shadow:-30px 0 70px -10px rgba(var(--s),.32)}
@@ -181,6 +181,13 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .pl.main .pr,.pl.main .pr strong{color:#fff}
 .note{margin-top:40px;text-align:center;font-size:23px;font-weight:600;color:var(--sub)}
 
+/* 시연 단계: → 를 누를 때마다 한 칸씩 */
+.nx{display:flex;align-items:center;gap:16px;margin-top:46px;font-size:20px;font-weight:700;color:var(--faint)}
+.nx .dots{display:flex;gap:8px}
+.nx .dots i{width:26px;height:6px;border-radius:3px;background:#CDDFD4;transition:background .4s,width .55s var(--spring)}
+.nx .dots i.f{background:var(--g)}
+.nx .dots i.c{width:46px}
+.nx kbd{font:700 17px var(--font);min-width:34px;height:34px;display:inline-grid;place-items:center;border-radius:10px;background:#fff;color:var(--ink);box-shadow:0 0 0 .5px rgba(var(--s),.2),0 2px 0 rgba(var(--s),.25);margin-right:8px}
 /* 시연 장 */
 .demo{display:grid;grid-template-columns:1fr 520px;column-gap:90px;align-items:center}
 .demo .txt{align-self:center}
@@ -196,7 +203,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .phone{position:relative;width:520px;height:900px;display:flex;flex-direction:column;align-items:center}
 .cam{transform-origin:0 0;transition:transform .75s cubic-bezier(.6,0,.2,1)}
 .demo .txt{transition:opacity .8s ease,filter .8s ease,transform 1.15s cubic-bezier(.65,0,.25,1)}
-.demo.zoom .txt{opacity:.14;filter:blur(3px);transform:translateX(-24px)}
+
 .demo .cap{transition:opacity .35s,transform .55s var(--spring),left 1.15s cubic-bezier(.65,0,.25,1)}
 .demo .again{transition:opacity .4s,transform .3s var(--spring)}
 .demo.zoom .again{opacity:0;pointer-events:none}
@@ -208,7 +215,8 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 .cap{position:absolute;left:50%;top:-6px;z-index:6;transform:translate(-50%,-90%) scale(.96);white-space:nowrap;height:52px;padding:0 24px 0 22px;border-radius:26px;background:var(--ink);color:#fff;font-size:21px;font-weight:700;display:flex;align-items:center;gap:12px;opacity:0;overflow:hidden;transition:opacity .35s,transform .55s var(--spring);box-shadow:0 12px 26px -10px rgba(var(--s),.7)}
 .cap.on{opacity:1;transform:translate(-50%,-112%)}
-.demo.zoom .cap.on{transform:translate(-50%,-30%)}
+.demo.zoom .cap.on{transform:translate(-50%,10%)}
+.demo .phone{z-index:3}
 .cap::before{content:'';flex:none;width:10px;height:10px;border-radius:5px;background:var(--g);animation:blink 1.2s ease-in-out infinite}
 @keyframes blink{50%{opacity:.25}}
 .cw{position:relative;display:block;height:30px;line-height:30px;overflow:hidden}
@@ -495,7 +503,7 @@ function mount(box,src,before){box.querySelectorAll('iframe').forEach(f=>f.remov
  return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));r(f)},{once:true}))}
 
 /* 시연 장을 처음 상태로: 카메라 멀리, 자막 끄기, 강조 풀기 */
-function resetDemo(sec,hard){const cam=$('.cam',sec),cap=$('.cap',sec),fe=$('.feats',sec);sec.classList.remove('zoom');if(cap)cap.style.left='';
+function resetDemo(sec,hard){const cam=$('.cam',sec),cap=$('.cap',sec),fe=$('.feats',sec);sec.classList.remove('zoom');
  if(cam){if(hard){cam.style.transition='none';cam.style.transform='';cam.offsetWidth;cam.style.transition=''}else cam.style.transform=''}
  if(cap){cap.classList.remove('on');if(hard)$('.cw',cap).replaceChildren()}
  if(fe){fe.classList.remove('run');$$('li',fe).forEach(l=>l.classList.remove('cur'))}}
@@ -507,18 +515,17 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const w=async ms=>{await wait(ms*SP);if(!alive())throw 0};
  const q=s=>{try{return typeof s==='string'?doc.querySelector(s):s}catch(_){return null}};
  const hl=i=>{if(!fe)return;fe.classList.add('run');$$('li',fe).forEach((l,j)=>l.classList.toggle('cur',j===i))};
+ const step=async(t,i)=>{await waitStep();if(!alive())throw 0;if(t)cap(t,i)};
  const cap=(t,i)=>{if(i!=null)hl(i);if(!capEl)return;const cw=$('.cw',capEl);if(!capEl.classList.contains('on')){cw.replaceChildren();roll(cw,t);capEl.classList.add('on')}else roll(cw,t,capEl)};
- /* 카메라: 그 부분이 휴대폰 가운데 쪽으로 오도록 살짝 다가간다 */
- /* 카메라: 휴대폰을 무대 가운데로 데려오면서 그 부분에 다가간다 */
- const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive()||ROT)return;z=Math.min(z,1.2);
+ /* 카메라: 휴대폰은 오른쪽 제자리에서 무대를 뚫고 나갈 만큼 커지고, 지금 누르는 곳이 화면 가운데 높이에 온다 */
+ const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive()||ROT)return;const z0=z;z=Math.min(1.8,z0*1.25);
   {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){el.scrollIntoView({block:'center',behavior:'smooth'});await w(550)}}
   const fr=f.getBoundingClientRect(),r=el.getBoundingClientRect(),k=fr.width/402,sy=fr.top+(r.top+r.height/2)*k;
   const sr=stage.getBoundingClientRect(),cr=cam.getBoundingClientRect(),mt=getComputedStyle(cam).transform,m=mt&&mt!=='none'?new DOMMatrix(mt):new DOMMatrix();
-  const camL=(cr.left-sr.left)/K-m.e,camT=(cr.top-sr.top)/K-m.f,py=(sy-cr.top)/(m.a*K),cw=cam.offsetWidth,H=cam.offsetHeight*.94;
-  const tx=960-camL-z*cw/2;let Y=540-z*py;Y=Math.min(24,Math.max(1056-z*H,Y));const ty=Y-camT;
-  cam.style.transform=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${z})`;Z=z;sec.classList.add('zoom');
-  if(capEl){const pl=camL-cam.offsetLeft;capEl.style.left=(960-pl).toFixed(1)+'px'}await w(ms)};
- const wide=async(ms=1000)=>{if(!cam)return;cam.style.transform='';Z=0;sec.classList.remove('zoom');if(capEl)capEl.style.left='';await w(ms)};
+  const camT=(cr.top-sr.top)/K-m.f,py=(sy-cr.top)/(m.a*K),cw=cam.offsetWidth,H=cam.offsetHeight*.94;
+  const tx=-(z-1)*cw/2-10;let ty=540-camT-z*py;ty=Math.min(90-camT,Math.max(990-camT-z*H,ty));
+  cam.style.transform=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${z})`;Z=z0;sec.classList.add('zoom');await w(ms)};
+ const wide=async(ms=1000)=>{if(!cam)return;cam.style.transform='';Z=0;sec.classList.remove('zoom');await w(ms)};
  const desk=ips.classList.contains('ltin'),sc=desk?.5986:1,off=desk?0:54,pos=(x,y)=>`translate(${(x*sc).toFixed(1)}px,${(y*sc+off).toFixed(1)}px)`;
  ips.querySelectorAll('.fg,.rip,.tap,.fing').forEach(e=>e.remove());
  let fg=null,fx=0,fy=0,ft=0;
@@ -542,97 +549,102 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const pull=async()=>{win.scrollTo(0,0);await w(400);await drag(190,376)};
  const pullUp=async()=>drag(610,400);
  const scroll=async(y,ms=1400)=>{win.scrollTo({top:y,behavior:'smooth'});await w(ms)};
- return {alive,q,cap,hl,tap,w,type,swipe,pull,pullUp,scroll,focus,wide,doc,win}}
+ return {alive,q,step,cap,hl,tap,w,type,swipe,pull,pullUp,scroll,focus,wide,doc,win}}
 
 /* 시연 빠르기: 1이 원래 속도, 작을수록 빠르다 */
 const SP=.6;
 const RUN={
-async intro(k){const{cap,tap,w,type,focus,wide,q}=k;
- cap('처음 열면 이렇게 반겨요');await w(2600);
- cap('사용법은 세 장으로',0);await tap('[data-a=obnext]',2600);
+async intro(k){const{step,cap,tap,w,type,focus,wide,q}=k;
+ await step('사용법은 세 장으로',0);await tap('[data-a=obnext]',2600);
  cap('남은 만큼 차 있는 병',0);await tap('[data-a=obnext]',1500);
  const jb=[...k.doc.querySelectorAll('.jarbtn')].find(b=>b.getBoundingClientRect().width>0)||'.jarbtn';await focus(jb,1.3);await tap(jb,1500,false);await wide(700);
  await tap('[data-a=obnext]',2400);
- cap('계정 만들기',1);await tap('[data-a=obnext]',1300);await tap('[data-a=oauth][data-v=kakao]',1500);
+ await step('계정 만들기',1);await tap('[data-a=obnext]',1300);await tap('[data-a=oauth][data-v=kakao]',1500);
  cap('이름 넣기',1);await focus('#obname',1.36);await type('#obname','민준');await w(500);await tap('[data-a=obname]',1000);
- cap('자주 쓰는 쇼핑몰만 골라요',2);await w(500);await focus('.picks',1.28);await tap('[data-a=obpick][data-v=ably]',380,false);await tap('[data-a=obpick][data-v=taobao]',380,false);await tap('[data-a=obpick][data-v="11st"]',900,false);
+ await step('자주 쓰는 쇼핑몰만 골라요',2);await w(500);await focus('.picks',1.28);await tap('[data-a=obpick][data-v=ably]',380,false);await tap('[data-a=obpick][data-v=taobao]',380,false);await tap('[data-a=obpick][data-v="11st"]',900,false);
  await wide(900);cap('시작!');await tap('#obgo',2400)},
-async add(k){const{cap,tap,w,type,focus,wide}=k;
- await w(1200);cap('카드로 결제하면',0);await tap('[data-a=add]',900);await tap('[data-a=addpay]',500);
+async add(k){const{step,cap,tap,w,type,focus,wide}=k;
+ await w(1200);await step('카드로 결제하면',0);await tap('[data-a=add]',900);await tap('[data-a=addpay]',500);
  cap('결제 알림에서 산 물건을 읽어서',0);await w(1500);cap('보관함으로 쏙',0);await w(2600);
- cap('영수증 없는 건 직접',2);await tap('[data-a=add]',900);await tap('[data-a=addform]',1000);
+ await step('영수증 없는 건 직접',2);await tap('[data-a=add]',900);await tap('[data-a=addform]',1000);
  await focus('#fname',1.34);await type('#fname','올리브유 500ml');await w(300);await type('#fprice','12900');await w(500);
- cap('기한은 달력으로',2);await tap('[data-a=fcal]',1100);await focus('[data-a=fpick][data-v="14"]',1.34,900);await tap('[data-a=fpick][data-v="14"]',1300,false);
+ await step('기한은 달력으로',2);await tap('[data-a=fcal]',1100);await focus('[data-a=fpick][data-v="14"]',1.34,900);await tap('[data-a=fpick][data-v="14"]',1300,false);
  cap('보관함에 넣기',2);await tap('[data-a=fadd]',600);await wide(2000)},
-async tasks(k){const{cap,tap,w,q,focus,wide}=k;const box=s=>{const e=q(s);return e&&(e.closest('.tk,.card,.row')||e)};
- await w(1200);cap('기한이 가까운 것부터',0);await focus(box('[data-a=eaten]'),1.32);await w(900);
+async tasks(k){const{step,cap,tap,w,q,focus,wide}=k;const box=s=>{const e=q(s);return e&&(e.closest('.tk,.card,.row')||e)};
+ await w(1200);await step('기한이 가까운 것부터',0);await focus(box('[data-a=eaten]'),1.32);await w(900);
  cap('다 먹었으면 한 번에 정리',0);await tap('[data-a=eaten]',1900);
- cap('다 썼을 것 같으면 먼저 물어봐요',1);await focus(box('[data-a=still]'),1.32,900);await tap('[data-a=still]',1900,false);
- cap('무상보증 끝나기 전에 점검',2);await focus(box('.hero .go'),1.28,900);await tap('.hero .go',300,false);await w(1500);await wide(1000)},
-async radar(k){const{cap,tap,w,q,focus,wide}=k;
- await w(1200);cap('마트 알림 켜기',0);const t=q('[data-a=radar]');if(t){t.scrollIntoView({block:'center',behavior:'smooth'});await w(1000)}
+ await step('다 썼을 것 같으면 먼저 물어봐요',1);await focus(box('[data-a=still]'),1.32,900);await tap('[data-a=still]',1900,false);
+ await step('무상보증 끝나기 전에 점검',2);await focus(box('.hero .go'),1.28,900);await tap('.hero .go',300,false);await w(1500);await wide(1000)},
+async radar(k){const{step,cap,tap,w,q,focus,wide}=k;
+ await w(1200);await step('마트 알림 켜기',0);const t=q('[data-a=radar]');if(t){t.scrollIntoView({block:'center',behavior:'smooth'});await w(1000)}
  await focus('[data-a=radar]',1.32,1000);await tap('[data-a=radar]',900,false);
  cap('마트에 도착하면 바로 알려요',0);await focus('#ban>div',1.36);cap('계란이랑 두부는 집에 있어요',1);await w(3000);await wide(1000)},
-async sell(k){const{cap,tap,w,focus,wide}=k;
- await w(1100);cap('팔기와 수리 탭');await tap('[data-a=tab][data-v=value]',1400);
+async sell(k){const{step,cap,tap,w,focus,wide}=k;
+ await w(1100);await step('팔기와 수리 탭');await tap('[data-a=tab][data-v=value]',1400);
  cap('에어팟 팔기',0);await tap('[data-a=sell]',1500);
  cap('판매 글은 미리 써 뒀어요',0);await focus('#sh .desc',1.3);await w(1200);
- cap('당근, 번개장터도 사진만 찍으면',1);await tap('[data-a=dosell]',1000);await focus('.shots',1.3);
+ await step('당근, 번개장터도 사진만 찍으면',1);await tap('[data-a=dosell]',1000);await focus('.shots',1.3);
  for(let n=0;n<3;n++)await tap(`.shot[data-k="${n}"]`,300,false);
  cap('두 곳에 한 번에 올려요',1);await tap('[data-a=upload]',300);await wide(2000);
  await tap('.done [data-a=closesheet]',600);cap('팔리면 갈무리 머니로',1);await w(3000);
- cap('갈무리에 팔면 예상 가격부터',2);await tap('[data-a=sell]',1300);await tap('[data-a=method][data-v=partner]',800);await focus('#pfine',1.38);await w(1500);
+ await step('갈무리에 팔면 예상 가격부터',2);await tap('[data-a=sell]',1300);await tap('[data-a=method][data-v=partner]',800);await focus('#pfine',1.38);await w(1500);
  cap('사진을 보고 값을 매겨요',2);await tap('[data-a=dosell]',1000,false);await focus('.shots',1.3);
  for(let n=0;n<4;n++)await tap(`.shot[data-k="${n}"]`,260,false);
  await tap('[data-a=review]',300);await wide(2000);await tap('.done [data-a=closesheet]',1200);
- cap('검토가 어디까지 됐는지도 보여요',2);await tap('[data-a=rvst]',1100);await focus('#sh .steps',1.3);await w(2400);await wide(800);await tap('#sh .btns [data-a=closesheet]',900)},
-async market(k){const{cap,tap,w,focus,wide}=k;
- await w(1100);cap('갈무리 마켓');await tap('[data-a=tab][data-v=mkt]',1500);
+ await step('검토가 어디까지 됐는지도 보여요',2);await tap('[data-a=rvst]',1100);await focus('#sh .steps',1.3);await w(2400);await wide(800);await tap('#sh .btns [data-a=closesheet]',900)},
+async market(k){const{step,cap,tap,w,focus,wide}=k;
+ await w(1100);await step('갈무리 마켓');await tap('[data-a=tab][data-v=mkt]',1500);
  cap('갈무리가 사들여 검수한 중고',0);await focus('.mlist .row:nth-child(1)',1.3);await w(1300);await wide(800);
- cap('스마트기기만 보기',1);await tap('[data-a=mfilter][data-v=smart]',1300);
+ await step('스마트기기만 보기',1);await tap('[data-a=mfilter][data-v=smart]',1300);
  cap('등급과 새 제품 대비 할인',1);await tap('[data-a=mkt][data-v=m2]',1300);
  cap('사진을 눌러 크게 보기',1);await tap('#sh .gph',1900);await tap('.pvx',800);
  await focus('#sh .kv',1.3);await w(1400);
- cap('사면 보관함으로',2);await tap('[data-a=mbuy]',300);await wide(2000);await tap('.done [data-a=closesheet]',800);
+ await step('사면 보관함으로',2);await tap('[data-a=mbuy]',300);await wide(2000);await tap('.done [data-a=closesheet]',800);
  await tap('[data-a=tab][data-v=inv]',1300);cap('보증 3개월도 같이 챙겨요',2);await focus('.list .row:nth-child(1)',1.3);await w(1800);await wide(900)},
-async repair(k){const{cap,tap,w,doc,type,focus,wide}=k;
- await w(1100);await tap('[data-a=tab][data-v=value]',1300);
- cap('청소기 수리 접수',0);const b=[...doc.querySelectorAll('[data-a=as]')].pop();await tap(b,1300);
+async repair(k){const{step,cap,tap,w,doc,type,focus,wide}=k;
+ await w(600);await step('청소기 수리 접수',0);await tap('[data-a=tab][data-v=value]',1300);const b=[...doc.querySelectorAll('[data-a=as]')].pop();await tap(b,1300);
  cap('증상만 고르면 돼요',0);const sy=doc.querySelectorAll('.sym');await focus(sy[3],1.3);await tap(sy[3],800,false);
- cap('사진과 설명은 넣고 싶을 때만',1);await tap('.shot[data-k="0"]',500);await type('#asnote','전원이 자꾸 꺼져요');await w(600);
- cap('영수증과 보증서는 같이 보내요',2);await tap('[data-a=doas]',300);await wide(1900);
+ await step('사진과 설명은 넣고 싶을 때만',1);await tap('.shot[data-k="0"]',500);await type('#asnote','전원이 자꾸 꺼져요');await w(600);
+ await step('영수증과 보증서는 같이 보내요',2);await tap('[data-a=doas]',300);await wide(1900);
  cap('기사님이 곧 연락드려요',2);await w(1600);await tap('.done [data-a=closesheet]',900)},
-async family(k){const{cap,tap,w,q,focus,wide}=k;
- await w(1100);cap('가족 탭');await tap('[data-a=tab][data-v=fam]',1400);
+async family(k){const{step,cap,tap,w,q,focus,wide}=k;
+ await w(1100);await step('가족 탭');await tap('[data-a=tab][data-v=fam]',1400);
  cap('엄마 것만 보기');await tap('[data-a=who][data-v=mom]',1500);
- cap('약 받으신 소식',0);await focus('[data-a=news][data-v=mom0]',1.3);await tap('[data-a=news][data-v=mom0]',1600,false);await wide(800);
- cap('무슨 약인지, 주의할 점까지',1);await tap('[data-a=detailswap]',1800);
+ await step('약 받으신 소식',0);await focus('[data-a=news][data-v=mom0]',1.3);await tap('[data-a=news][data-v=mom0]',1600,false);await wide(800);
+ await step('무슨 약인지, 주의할 점까지',1);await tap('[data-a=detailswap]',1800);
  const c=q('#shc');if(c)c.scrollTo({top:999,behavior:'smooth'});await w(1700);
  await tap('#sh [data-a=closesheet]',1100);
  const vt=[...k.doc.querySelectorAll('.row.urg [data-a=detail]')].find(e=>e.getBoundingClientRect().height);
- if(vt){cap('떨어져 가면 다시 사 드리기',2);await focus(vt,1.3);await tap(vt,1300,false);const rg=q('#sh [data-a=regift]');if(rg){await focus(rg,1.34,1000);await w(1600)}await wide(1000)}},
-async detail(k){const{cap,tap,w,swipe,pull,pullUp,scroll,focus,wide}=k;
- await w(1100);cap('보관함');await tap('[data-a=tab][data-v=inv]',1300);
+ if(vt){await step('떨어져 가면 다시 사 드리기',2);await focus(vt,1.3);await tap(vt,1300,false);const rg=q('#sh [data-a=regift]');if(rg){await focus(rg,1.34,1000);await w(1600)}await wide(1000)}},
+async detail(k){const{step,cap,tap,w,swipe,pull,pullUp,scroll,focus,wide}=k;
+ await w(1100);await step('보관함');await tap('[data-a=tab][data-v=inv]',1300);
  cap('왼쪽으로 밀어서 정리',0);await focus('.list .row:nth-child(2)',1.3);await swipe('.list .row:nth-child(2) .rowb');await w(1600);await wide(900);
- cap('맨 위에서 당기면 새 주문',1);await pull();await w(2600);
+ await step('맨 위에서 당기면 새 주문',1);await pull();await w(2600);
  await tap('[data-a=tab][data-v=home]',1200);
- cap('바닥에서 더 당기면',2);await scroll(99999,1500);await pullUp();await w(1200);
+ await step('바닥에서 더 당기면',2);await scroll(99999,1500);await pullUp();await w(1200);
  cap('숨어 있던 병이 나와요',2);await focus('.eof',1.36);
  cap('누르면 병 안에서 거품이',2);await tap('.eof',1500,false);await tap('.eof',1500,false);await wide(900);await scroll(0,1600)},
-async desk(k){const{tap,w}=k;
- await w(1600);await tap('.sub[data-k=inv] button[data-v=fridge]',2200);await tap('[data-a=tab][data-v=value]',2200);await tap('[data-a=tab][data-v=mkt]',2200);await tap('[data-a=tab][data-v=fam]',2000);await tap('header [data-a=settings]',2600);await tap('#set [data-a=setx]',1300);await tap('[data-a=tab][data-v=home]',1500)}
+async desk(k){const{tap,w,step}=k;
+ await w(800);await step();await tap('.sub[data-k=inv] button[data-v=fridge]',2200);await tap('[data-a=tab][data-v=value]',2200);await tap('[data-a=tab][data-v=mkt]',2200);await tap('[data-a=tab][data-v=fam]',2000);await tap('header [data-a=settings]',2600);await tap('#set [data-a=setx]',1300);await tap('[data-a=tab][data-v=home]',1500)}
 };
 
+let gate=null,pend=0,left=0,steps=0;
+const waitStep=()=>new Promise(r=>{if(pend>0){pend--;r()}else gate=r});
+const stepCount=sec=>{const f=RUN[sec.dataset.demo];return f?(f.toString().match(/await step\(/g)||[]).length:0};
+function nxUpd(){const nx=$('.nx',S[cur]);if(!nx)return;const done=steps-left;$('.dots',nx).innerHTML=Array.from({length:steps},(_,i)=>`<i class="${i<done?'f':''}${i===done-1?' c':''}"></i>`).join('');
+ $('b',nx).innerHTML='<kbd>→</kbd>'+(done===0?'눌러서 시연 시작':left>0?'다음 시연':'다음 장으로')}
+/* 앞으로: 시연이 남았으면 시연 한 단계, 아니면 다음 장 */
+function fwd(){if(left>0){left--;nxUpd();if(gate){const g=gate;gate=null;g()}else pend++;return}show(cur+1,1)}
 async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)return;
  if(name==='desk'){const lt=$('#ltin'),dp=$('#dkphone .ips');
   const [f]=await Promise.all([mount(lt,'galmuri.html?ui=desk&demo=1&theme=light'),mount(dp,'galmuri.html?demo=1&theme=light',$('.iphome',dp))]);
-  if(my!==tok)return;try{await RUN.desk(kit(sec,f))}catch(_){}return}
+  if(my!==tok)return;try{await RUN.desk(kit(sec,f))}catch(_){}if(my===tok){left=0}return}
  resetDemo(sec,true);const ph=$('.phone',sec),ips=$('.ips',sec);
  const f=await mount(ips,'galmuri.html?theme=light&demo='+(name==='intro'?'intro':'1'),$('.iphome',ips));
  if(my!==tok)return;await wait(120);if(tr&&tr.nw===sec&&tr.morph){const dl=tr.after-performance.now();if(dl>0)await wait(dl);if(my!==tok)return}ph.classList.add('ready');
  if(tr&&tr.nw===sec&&tr.morph)setTimeout(tr.end,560);
  await wait(name==='intro'?250:150);
- try{await RUN[name](kit(sec,f));if(my===tok)setTimeout(()=>{if(my===tok)resetDemo(sec)},1600)}catch(e){if(e!==0)console.warn('demo',name,e)}}
+ try{await RUN[name](kit(sec,f));if(my===tok){left=0;nxUpd()}if(my===tok)setTimeout(()=>{if(my===tok)resetDemo(sec)},1600)}catch(e){if(e!==0)console.warn('demo',name,e)}}
 
 /* 넘기기 */
 const kind=s=>s.classList.contains('green')?'g':s.classList.contains('demo')?'d':'m';
@@ -645,7 +657,7 @@ function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(t
  $('.phone.ap',nw)?.classList.remove('ready');
  const zoomed=!!(old&&$('.cam',old)&&$('.cam',old).style.transform);
  if(old){old.classList.remove('on');old.classList.add('out');resetDemo(old)}
- nw.classList.add('on');cur=n;tok++;
+ nw.classList.add('on');cur=n;tok++;gate=null;pend=0;steps=left=stepCount(nw);nxUpd();
  const anims=[],A=(el,kf,o)=>{if(!el)return;anims.push(el.animate(kf,{fill:'both',...o}))};
  const E='cubic-bezier(.76,0,.16,1)';
  if(mode==='push'){nw.classList.add('edge');nw.classList.toggle('rev',d<0);
@@ -671,14 +683,15 @@ function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(t
  try{history.replaceState(null,'','#s'+(n+1))}catch(_){}
  if(nw.dataset.demo)setTimeout(()=>{if(cur===n)demo(nw)},mode==='morph'?0:mode==='none'?300:Math.max(0,T-200))}
 const NAV=['ArrowRight','ArrowLeft','PageDown','PageUp',' ','Home','End','f','F'];
-function key(e){const k=e.key;if(k==='ArrowRight'||k==='PageDown'||k===' ')show(cur+1,1);else if(k==='ArrowLeft'||k==='PageUp')show(cur-1,-1);else if(k==='Home')show(0,-1);else if(k==='End')show(S.length-1,1);else if(k==='f'||k==='F')fs()}
+function key(e){const k=e.key;if(k==='ArrowRight'||k==='PageDown'||k===' ')fwd();else if(k==='ArrowLeft'||k==='PageUp')show(cur-1,-1);else if(k==='Home')show(0,-1);else if(k==='End')show(S.length-1,1);else if(k==='f'||k==='F')fs()}
 addEventListener('keydown',e=>{if(NAV.includes(e.key)){e.preventDefault();key(e)}});
 function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(_){}}
-$('#prev').onclick=()=>show(cur-1,-1);$('#next').onclick=()=>show(cur+1,1);$('#fs').onclick=fs;
-stage.addEventListener('click',e=>{if(e.target.closest('.phone,.lt,button,a'))return;show(cur+1,1)});
-$$('.again').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();demo(b.closest('.s'))}));
+$('#prev').onclick=()=>show(cur-1,-1);$('#next').onclick=fwd;$('#fs').onclick=fs;
+stage.addEventListener('click',e=>{if(e.target.closest('.again,button,a'))return;fwd()});
+$$('.again').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const sec=b.closest('.s');gate=null;pend=1;steps=stepCount(sec);left=steps-1;nxUpd();demo(sec)}));
+$$('.demo .txt').forEach(t=>t.insertAdjacentHTML('beforeend','<div class="nx a" style="--d:.8s"><span class="dots"></span><b></b></div>'));
 let tx=null;const tpos=t=>ROT?t.clientY:t.clientX;addEventListener('touchstart',e=>{if(e.target.closest('.again'))return;tx=tpos(e.touches[0])},{passive:true});
-addEventListener('touchend',e=>{if(tx==null)return;const dx=tpos(e.changedTouches[0])-tx;tx=null;if(Math.abs(dx)>60)show(cur+(dx<0?1:-1),dx<0?1:-1)});
+addEventListener('touchend',e=>{if(tx==null)return;const dx=tpos(e.changedTouches[0])-tx;tx=null;if(Math.abs(dx)>60){dx<0?fwd():show(cur-1,-1)}});
 let ht;addEventListener('mousemove',()=>{$('#hud').classList.add('on');clearTimeout(ht);ht=setTimeout(()=>$('#hud').classList.remove('on'),1800)});
 
 /* 마지막 장의 QR */
