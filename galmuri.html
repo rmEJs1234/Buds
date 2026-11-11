@@ -252,9 +252,9 @@ nav{bottom:0;z-index:30}
 .tab.new u{transform:scale(1)}
 .fabw{bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:29;padding:0 20px}
 .fabw>div{width:100%;max-width:400px;display:flex;justify-content:flex-end}
-.fab{pointer-events:auto;position:relative;display:flex;align-items:center;gap:6px;width:98px;height:52px;padding:0 0 0 17px;border-radius:26px;overflow:hidden;background:var(--gb);color:var(--gtx);font-weight:800;font-size:15px;box-shadow:var(--gup),0 18px 26px -10px rgba(var(--s),.6);transition:width .45s cubic-bezier(.3,1.25,.4,1),transform .3s var(--spring),box-shadow .3s}
+.fab{pointer-events:auto;position:relative;display:flex;align-items:center;gap:6px;width:98px;height:52px;padding:0;border-radius:999px;overflow:hidden;background:var(--gb);color:var(--gtx);font-weight:800;font-size:15px;box-shadow:var(--gup),0 18px 26px -10px rgba(var(--s),.6);transition:width .45s cubic-bezier(.3,1.25,.4,1),transform .3s var(--spring),box-shadow .3s}
 .fab:active{transform:scale(.94);background:var(--gb-in);box-shadow:var(--gin)}
-.fab svg{flex:none;transition:transform .45s var(--spring)}
+.fab svg{position:absolute;left:17px;top:17px;display:block;width:18px;height:18px;transition:transform .45s var(--spring)}
 .fab span{position:absolute;left:41px;top:0;line-height:52px;white-space:nowrap;transition:opacity .2s,transform .35s var(--out)}
 .fab.mini{width:52px}
 .fab.mini span{opacity:0;transform:translateX(10px)}
