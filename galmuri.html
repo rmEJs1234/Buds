@@ -1337,6 +1337,12 @@ document.addEventListener('keydown',e=>{if(!$('#ob').hidden&&e.target.tagName!==
 function drip(){if(RM())return;const sp=$$('.logo span'),dot=sp[sp.length-1];buzz();
  dot.animate([{transform:'none'},{transform:'translateY(-16px)',offset:.28},{transform:'translateY(2px) scale(1.5,.6)',offset:.5},{transform:'translateY(-5px) scale(.9,1.1)',offset:.7},{transform:'none'}],{duration:760,easing:'ease-out'});
  sp.slice(0,-1).forEach((e,k)=>e.animate([{transform:'none'},{transform:'translateY(-4px)'},{transform:'none'}],{duration:420,delay:300+k*30,easing:'cubic-bezier(.3,1.35,.4,1)'}))}
+/* 손을 떼고 미끄러지다 끝에 닿으면 딱 멈추지 않고 살짝 튕긴다 */
+let lsY=scrollY,lsT=performance.now(),lsV=0,bnc=0;
+function edgeBounce(top,v){if(RM()||bnc||os||wv)return;const k=Math.min(1,Math.abs(v)/3),vw=$('#view');if(k<.12)return;bnc=1;
+ vw.animate([{transform:'none'},{transform:`translateY(${(top?1:-1)*k*26}px) scaleY(${1+k*.045})`,transformOrigin:top?'50% 0':'50% 100%',offset:.32},{transform:'none',transformOrigin:top?'50% 0':'50% 100%'}],{duration:560,easing:'cubic-bezier(.25,1.2,.4,1)'}).onfinish=()=>bnc=0}
+addEventListener('scroll',()=>{const t=performance.now(),y=scrollY,dt=t-lsT;if(dt>0)lsV=lsV*.4+((y-lsY)/dt)*.6;lsY=y;lsT=t;
+ const max=document.documentElement.scrollHeight-innerHeight;if(y<=0&&lsV<-.3)edgeBounce(true,lsV);else if(y>=max-1&&lsV>.3)edgeBounce(false,lsV)},{passive:true});
 let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;const y=scrollY;$('#hdr').classList.toggle('sc',y>4);$('.fab').classList.toggle('mini',y>80);
  if(y>700)S.far=1;if(y<=2&&S.far){S.far=0;drip()}})},{passive:true});
 /* 보관함 줄을 왼쪽으로 밀어서 정리 */
