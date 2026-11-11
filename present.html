@@ -27,7 +27,8 @@ html,body{height:100%;background:#000;overflow:hidden}
 body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;word-break:keep-all}
 button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
 #deck{position:fixed;inset:0;display:grid;place-items:center}
-#stage{position:relative;width:1920px;height:1080px;flex:none;overflow:hidden;transform-origin:50% 50%;background:var(--mint)}
+#deck{overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;margin:-540px 0 0 -960px;width:1920px;height:1080px;overflow:hidden;transform-origin:50% 50%;background:var(--mint)}
 
 /* 장. 여백 규칙: 모든 장은 양옆을 똑같이 160px 비운다.
    글과 그림이 한 줄에 같이 있으면 둘을 한 덩어리로 묶어 가운데에 둔다 */
@@ -207,6 +208,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 .cap{position:absolute;left:50%;top:-6px;z-index:6;transform:translate(-50%,-90%) scale(.96);white-space:nowrap;height:52px;padding:0 24px 0 22px;border-radius:26px;background:var(--ink);color:#fff;font-size:21px;font-weight:700;display:flex;align-items:center;gap:12px;opacity:0;overflow:hidden;transition:opacity .35s,transform .55s var(--spring);box-shadow:0 12px 26px -10px rgba(var(--s),.7)}
 .cap.on{opacity:1;transform:translate(-50%,-112%)}
+.demo.zoom .cap.on{transform:translate(-50%,-30%)}
 .cap::before{content:'';flex:none;width:10px;height:10px;border-radius:5px;background:var(--g);animation:blink 1.2s ease-in-out infinite}
 @keyframes blink{50%{opacity:.25}}
 .cw{position:relative;display:block;height:30px;line-height:30px;overflow:hidden}
@@ -463,7 +465,7 @@ S.forEach(s=>{s.insertAdjacentHTML('beforeend','<i class="shd"></i>');if(s.class
 $('#mark span').lastChild.textContent=' / '+S.length;
 
 /* 무대를 화면에 맞추기 */
-let K=1;const fit=()=>{K=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`scale(${K})`};
+let K=1,ROT=false;const fit=()=>{ROT=innerHeight>innerWidth*1.15&&innerWidth<820;const W=ROT?innerHeight:innerWidth,H=ROT?innerWidth:innerHeight;K=Math.min(W/1920,H/1080);stage.style.transform=`${ROT?'rotate(90deg) ':''}scale(${K})`};
 fit();addEventListener('resize',fit);
 
 /* 휴대폰 껍데기 */
@@ -505,12 +507,12 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const cap=(t,i)=>{if(i!=null)hl(i);if(!capEl)return;const cw=$('.cw',capEl);if(!capEl.classList.contains('on')){cw.replaceChildren();roll(cw,t);capEl.classList.add('on')}else roll(cw,t,capEl)};
  /* 카메라: 그 부분이 휴대폰 가운데 쪽으로 오도록 살짝 다가간다 */
  /* 카메라: 휴대폰을 무대 가운데로 데려오면서 그 부분에 다가간다 */
- const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive())return;
+ const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive()||ROT)return;z=Math.min(z,1.2);
   {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){el.scrollIntoView({block:'center',behavior:'smooth'});await w(550)}}
   const fr=f.getBoundingClientRect(),r=el.getBoundingClientRect(),k=fr.width/402,sy=fr.top+(r.top+r.height/2)*k;
   const sr=stage.getBoundingClientRect(),cr=cam.getBoundingClientRect(),mt=getComputedStyle(cam).transform,m=mt&&mt!=='none'?new DOMMatrix(mt):new DOMMatrix();
   const camL=(cr.left-sr.left)/K-m.e,camT=(cr.top-sr.top)/K-m.f,py=(sy-cr.top)/(m.a*K),cw=cam.offsetWidth,H=cam.offsetHeight*.94;
-  const tx=960-camL-z*cw/2;let Y=540-z*py;Y=Math.min(110,Math.max(970-z*H,Y));const ty=Y-camT;
+  const tx=960-camL-z*cw/2;let Y=540-z*py;Y=Math.min(24,Math.max(1056-z*H,Y));const ty=Y-camT;
   cam.style.transform=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${z})`;Z=z;sec.classList.add('zoom');
   if(capEl){const pl=camL-cam.offsetLeft;capEl.style.left=(960-pl).toFixed(1)+'px'}await w(ms)};
  const wide=async(ms=1000)=>{if(!cam)return;cam.style.transform='';Z=0;sec.classList.remove('zoom');if(capEl)capEl.style.left='';await w(ms)};
@@ -670,8 +672,8 @@ function fs(){try{document.fullscreenElement?document.exitFullscreen():document.
 $('#prev').onclick=()=>show(cur-1,-1);$('#next').onclick=()=>show(cur+1,1);$('#fs').onclick=fs;
 stage.addEventListener('click',e=>{if(e.target.closest('.phone,.lt,button,a'))return;show(cur+1,1)});
 $$('.again').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();demo(b.closest('.s'))}));
-let tx=null;addEventListener('touchstart',e=>{if(e.target.closest('.phone,.lt'))return;tx=e.touches[0].clientX},{passive:true});
-addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>60)show(cur+(dx<0?1:-1),dx<0?1:-1)});
+let tx=null;const tpos=t=>ROT?t.clientY:t.clientX;addEventListener('touchstart',e=>{if(e.target.closest('.again'))return;tx=tpos(e.touches[0])},{passive:true});
+addEventListener('touchend',e=>{if(tx==null)return;const dx=tpos(e.changedTouches[0])-tx;tx=null;if(Math.abs(dx)>60)show(cur+(dx<0?1:-1),dx<0?1:-1)});
 let ht;addEventListener('mousemove',()=>{$('#hud').classList.add('on');clearTimeout(ht);ht=setTimeout(()=>$('#hud').classList.remove('on'),1800)});
 
 /* 마지막 장의 QR */
