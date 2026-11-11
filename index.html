@@ -35,6 +35,11 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
 .tag{align-self:flex-start;font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.12);color:var(--ink);opacity:0;transition:opacity .3s}
 .tag.on{opacity:1}
 .galmuri .tag{background:rgba(4,40,26,.14);color:var(--gtx)}
+.deck{height:auto;flex-direction:row;align-items:center;justify-content:space-between;padding:20px 22px;background:var(--card);box-shadow:inset 0 0 0 .6px rgba(255,255,255,.14),inset 1.5px 1.5px 1px -1px rgba(255,255,255,.3)}
+.deck b{display:block;font-size:19px;font-weight:700}
+.deck small{display:block;font-size:14px;color:var(--mut);margin-top:2px}
+.deck svg{color:var(--mut);flex:none}
+.desk .deck{grid-column:1/-1;height:auto;padding:24px 30px}
 .foot{margin:6px 0 0;font-size:13px;color:var(--mut);text-align:center;text-wrap:balance}
 .in{animation:up .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0)*70ms)}
 @keyframes up{from{transform:translateY(14px);opacity:.001}}
@@ -126,7 +131,8 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
     <span class="tag">마지막으로 봄</span>
     <span class="wm" aria-hidden="true">Galmuri.</span>
   </button>
-  <p class="foot in" style="--k:3">앱 안에서 나가기를 누르면 이 화면으로 돌아와요</p>
+  <button class="app deck in" style="--k:3" data-href="present.html" id="present"><span><b>갈무리 소개</b><small>실제 앱으로 시연하는 발표 자료</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  <p class="foot in" style="--k:4">앱 안에서 나가기를 누르면 이 화면으로 돌아와요</p>
 </main>
 
 <script>
@@ -138,18 +144,19 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* 갈무리: 판이 화면만큼 커지면서 초록 화면에 로고가 올라온다. 앱이 같은 화면에서 이어 받는다 */
   const boot=b=>{const r=b.getBoundingClientRect(),W=innerWidth,el=document.createElement('div');el.className='boot';
-    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);const H=el.getBoundingClientRect().height;
+    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);const H=el.getBoundingClientRect().height;const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content='#22D873';
     const from=`inset(${r.top}px ${W-r.right}px ${H-r.bottom}px ${r.left}px round 30px)`;
     if(!reduce)el.animate([{clipPath:from},{clipPath:'inset(0px 0px 0px 0px round 0px)'}],{duration:560,easing:'cubic-bezier(.5,0,.15,1)'});
     setTimeout(()=>{location.href=b.dataset.href+'?l=1'+(window.__UI==='desk'?'&ui=desk':'')},reduce?150:1150)};
   document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
     try{localStorage.setItem('apps.last',b.id)}catch(_){}
+    if(b.id==='present'){wrap.classList.add('go');setTimeout(()=>{(window.top||window).location.href='present.html'},reduce?120:420);return}
     if(b.id==='galmuri')return boot(b);
     wrap.classList.add('go');
     setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:420);
   }));
   /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
-  addEventListener('pageshow',e=>{if(e.persisted){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove())}});
+  addEventListener('pageshow',e=>{if(e.persisted){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove());const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content='#000000'}});
 })();
 </script>
 </body></html>
