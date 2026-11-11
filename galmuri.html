@@ -327,7 +327,8 @@ html{touch-action:pan-y}
 .fold.off{grid-template-rows:0fr;opacity:0;margin-top:0}
 /* 거품 */
 /* iOS Safari는 둥근 모서리 + 움직이는 자식을 가끔 못 자른다: 병에 마스크를 걸어 확실히 자른다 */
-.jar{-webkit-mask-image:-webkit-radial-gradient(white,black);isolation:isolate}
+.zz .fill::before,.zz .fill::after{animation-play-state:paused}
+.jar{isolation:isolate;transform:translateZ(0)}
 .bub2{position:absolute;z-index:1;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95) 0 16%,rgba(255,255,255,.28) 34%,rgba(34,216,115,.12) 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.85),0 1px 2px rgba(0,60,30,.18)}
 /* 검토 진행 */
 .steps{list-style:none;padding:0;margin:18px 0 0;display:grid}
@@ -1001,9 +1002,11 @@ function spray(host,w){const r=w.getBoundingClientRect(),h=host.getBoundingClien
  for(let k=0;k<5;k++){const p=document.createElement('i');p.className='splat';const wd=20+Math.random()*30;p.style.cssText=`width:${wd}px;left:${cx-wd/2+(Math.random()-.5)*160}px;top:${floor+6}px`;host.appendChild(p);
   p.animate([{opacity:0,transform:'scaleX(.2)'},{opacity:1,transform:'none',offset:.3},{opacity:0,transform:'scaleX(1.3)'}],{duration:1500,delay:500+k*60,easing:'ease-out',fill:'backwards'}).onfinish=()=>p.remove()}}
 
+const waveIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('zz',!e.isIntersecting)),{rootMargin:'80px'}):null;
+const waveWatch=r=>{if(waveIO)$$('.ves,.jar',r).forEach(e=>{if(!e._w){e._w=1;waveIO.observe(e)}})};
 function render(dir){const v=$('#view'),ch=$('#chips'),sl=ch?ch.scrollLeft:0;
  v.innerHTML=T[S.tab]()+eofHTML();if(eofIO)eofIO.observe($('.eof',v));const c2=$('#chips');if(c2&&dir==null)c2.scrollLeft=sl;
- post(v);
+ post(v);waveWatch(v);maxT=0;
  if(dir!=null){window.scrollTo(0,0);enter(dir)}
  let fi=0;FRESH.forEach(k=>{const e=$(`[data-r="${k}"]`,v);if(!e||RM())return;const d=fi++*90;
   e.animate([{opacity:0,transform:'translateY(-18px) scale(.97)'},{opacity:1,transform:'none'}],{duration:540,delay:d,easing:'cubic-bezier(.3,1.35,.4,1)',fill:'backwards'});
@@ -1405,8 +1408,9 @@ function drip(){if(RM())return;const sp=$$('.logo span'),dot=sp[sp.length-1];buz
 let lsY=scrollY,lsT=performance.now(),lsV=0,bnc=0;
 function edgeBounce(top,v){if(RM()||bnc||os||wv)return;const k=Math.min(1,Math.abs(v)/3.5),vw=$('#view');if(k<.15)return;bnc=1;const d=(top?1:-1)*k*13;
  vw.animate([{transform:'none',easing:'cubic-bezier(.1,.7,.3,1)'},{transform:`translateY(${d}px)`,offset:.28,easing:'cubic-bezier(.45,0,.25,1)'},{transform:'none'}],{duration:760}).onfinish=()=>bnc=0}
-addEventListener('scroll',()=>{const t=performance.now(),y=scrollY,dt=t-lsT;if(dt>0)lsV=lsV*.4+((y-lsY)/dt)*.6;lsY=y;lsT=t;
- const max=document.documentElement.scrollHeight-innerHeight;if(y<=0&&lsV<-.3)edgeBounce(true,lsV);else if(y>=max-1&&lsV>.3)edgeBounce(false,lsV);if(y<max-220)eofHide()},{passive:true});
+var maxY=0,maxT=0,sq=0;const maxScroll=()=>{const t=performance.now();if(t-maxT>400){maxT=t;maxY=document.documentElement.scrollHeight-innerHeight}return maxY};
+addEventListener('scroll',()=>{if(sq)return;sq=requestAnimationFrame(()=>{sq=0;const t=performance.now(),y=scrollY,dt=t-lsT;if(dt>0)lsV=lsV*.4+((y-lsY)/dt)*.6;lsY=y;lsT=t;
+ const max=maxScroll();if(y<=0&&lsV<-.3)edgeBounce(true,lsV);else if(y>=max-1&&lsV>.3)edgeBounce(false,lsV);if(y<max-220)eofHide()})},{passive:true});
 let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;const y=scrollY;$('#hdr').classList.toggle('sc',y>4);$('.fab').classList.toggle('mini',y>80);
  if(y>700)S.far=1;if(y<=2&&S.far){S.far=0;drip()}})},{passive:true});
 /* 보관함 줄을 왼쪽으로 밀어서 정리 */
