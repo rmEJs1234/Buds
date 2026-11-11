@@ -303,6 +303,8 @@ html{touch-action:pan-y}
 .fold>span{overflow:hidden;min-height:0}
 .fold.off{grid-template-rows:0fr;opacity:0;margin-top:0}
 /* 거품 */
+/* iOS Safari는 둥근 모서리 + 움직이는 자식을 가끔 못 자른다: 병에 마스크를 걸어 확실히 자른다 */
+.jar{-webkit-mask-image:-webkit-radial-gradient(white,black);isolation:isolate}
 .bub2{position:absolute;z-index:1;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95) 0 16%,rgba(255,255,255,.28) 34%,rgba(34,216,115,.12) 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.85),0 1px 2px rgba(0,60,30,.18)}
 /* 검토 진행 */
 .steps{list-style:none;padding:0;margin:18px 0 0;display:grid}
