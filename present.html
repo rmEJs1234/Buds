@@ -233,7 +233,14 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .ipic svg{height:12px;width:auto;fill:currentColor;stroke:currentColor}
 .iphome{position:absolute;left:50%;bottom:8px;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:currentColor;opacity:.9;z-index:3;pointer-events:none;color:#000}
 .ipbtn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#5c5f65,#2f3135 60%,#55585d)}
-/* 손가락 */
+/* 손가락: 한 번 나타나면 다음 누를 곳까지 미끄러져 가서 꾹 누른다 */
+.fg{position:absolute;left:0;top:0;z-index:6;width:0;height:0;opacity:0;pointer-events:none;transition:opacity .25s;will-change:transform}
+.fg.on{opacity:1}
+.fg::after{content:'';position:absolute;left:-23px;top:-23px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.46);box-shadow:0 0 0 1.5px rgba(255,255,255,.96),0 0 0 2.5px rgba(10,36,25,.16),0 10px 22px rgba(0,0,0,.3);transition:transform .14s cubic-bezier(.3,1.4,.4,1),background .14s}
+.fg.dn::after{transform:scale(.74);background:rgba(34,216,115,.55)}
+.rip{position:absolute;z-index:5;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;box-shadow:0 0 0 2px rgba(34,216,115,.9);pointer-events:none;animation:rip .6s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rip{from{transform:scale(.7);opacity:1}to{transform:scale(2.3);opacity:0}}
+/* 손가락(옛 것) */
 .tap,.fing{position:absolute;z-index:5;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.38);box-shadow:0 0 0 2px rgba(255,255,255,.92),0 6px 18px rgba(0,0,0,.25);pointer-events:none}
 .tap{animation:tap .6s ease-out forwards}
 @keyframes tap{0%{transform:scale(.4);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(1.5);opacity:0}}
@@ -358,19 +365,19 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 <section class="s demo" aria-label="팔기" data-demo="sell">
   <div class="txt"><span class="pill a" style="--d:.05s">시연 5 · 3초 팔기</span><h2 style="--d:.15s">안 쓰는 건<br>값으로 바꿔요</h2>
-    <ul class="feats"><li class="a" style="--d:.45s">영수증으로 정품 인증, 판매 글은 미리 써 둬요</li><li class="a" style="--d:.55s">사진만 찍으면 당근, 번개장터에 한 번에</li><li class="a" style="--d:.65s">갈무리에 팔면 사진을 보고 값을 매겨요</li></ul></div>
+    <ul class="feats"><li class="a" style="--d:.45s">영수증으로 정품 인증, 판매 글은 미리 써 둬요</li><li class="a" style="--d:.55s">사진만 찍으면 당근, 번개장터에 한 번에</li><li class="a" style="--d:.65s">갈무리에 팔면 검토 진행까지 보여요</li></ul></div>
   <div class="phone ap" style="--d:.2s"></div>
 </section>
 
 <section class="s demo" aria-label="갈무리 마켓" data-demo="market">
   <div class="txt"><span class="pill a" style="--d:.05s">시연 6 · 갈무리 마켓</span><h2 style="--d:.15s">검수한 중고를<br>다시 사요</h2>
-    <ul class="feats"><li class="a" style="--d:.45s">회원에게 사들인 물건을 갈무리가 검수해요</li><li class="a" style="--d:.55s">상태 등급과 새 제품보다 얼마나 싼지 한눈에</li><li class="a" style="--d:.65s">사면 보관함에 들어가고 보증 3개월</li></ul></div>
+    <ul class="feats"><li class="a" style="--d:.45s">회원에게 사들인 물건을 갈무리가 검수해요</li><li class="a" style="--d:.55s">실제 사진, 등급, 새 제품 대비 할인까지</li><li class="a" style="--d:.65s">사면 보관함에 들어가고 보증 3개월</li></ul></div>
   <div class="phone ap" style="--d:.2s"></div>
 </section>
 
 <section class="s demo" aria-label="수리 접수" data-demo="repair">
   <div class="txt"><span class="pill a" style="--d:.05s">시연 7 · 수리 접수</span><h2 style="--d:.15s">고장 나면<br>증상만 고르세요</h2>
-    <ul class="feats"><li class="a" style="--d:.45s">영수증과 보증서를 같이 보내요</li><li class="a" style="--d:.55s">전자제품만 수리 접수, 옷과 신발은 팔기만</li></ul></div>
+    <ul class="feats"><li class="a" style="--d:.45s">증상만 고르면 접수 끝</li><li class="a" style="--d:.55s">사진과 설명은 넣고 싶을 때만</li><li class="a" style="--d:.65s">영수증과 보증서는 같이 보내요</li></ul></div>
   <div class="phone ap" style="--d:.2s"></div>
 </section>
 
@@ -382,14 +389,14 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 <section class="s demo" aria-label="디테일" data-demo="detail">
   <div class="txt"><span class="pill a" style="--d:.05s">시연 9 · 손맛</span><h2 style="--d:.15s">손에 붙는<br>작은 움직임</h2>
-    <ul class="feats"><li class="a" style="--d:.45s">왼쪽으로 밀어서 바로 정리</li><li class="a" style="--d:.55s">맨 위에서 당기면 새 주문 가져오기</li><li class="a" style="--d:.65s">끝까지 내리면 작은 병이 기다려요</li></ul></div>
+    <ul class="feats"><li class="a" style="--d:.45s">왼쪽으로 밀어서 바로 정리</li><li class="a" style="--d:.55s">맨 위에서 당기면 새 주문 가져오기</li><li class="a" style="--d:.65s">바닥에서 더 당기면 숨은 병이 나와요</li></ul></div>
   <div class="phone ap" style="--d:.2s"></div>
 </section>
 
 <section class="s" aria-label="휴대폰과 컴퓨터" data-demo="desk">
   <h2 style="--d:.1s;text-align:center">휴대폰에서도, 컴퓨터에서도</h2>
   <div class="both">
-    <div class="lt a" style="--d:.4s"><div class="lts"><div class="ltin" id="ltin"></div><img src="frame-mac.png" alt=""></div><p class="lab">컴퓨터: 왼쪽 메뉴, 넓은 두 줄 화면</p></div>
+    <div class="lt a" style="--d:.4s"><div class="lts"><div class="ltin" id="ltin"></div><img src="frame-mac.png" alt=""></div><p class="lab">컴퓨터: 왼쪽 메뉴, 옆에서 나오는 설정</p></div>
     <div class="a" style="--d:.6s"><div class="phone" id="dkphone" style="height:auto;width:auto"></div><p class="lab" style="margin-top:18px">휴대폰: 한 손으로 넘기는 화면</p></div>
   </div>
 </section>
@@ -507,21 +514,30 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
   cam.style.transform=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${z})`;Z=z;sec.classList.add('zoom');
   if(capEl){const pl=camL-cam.offsetLeft;capEl.style.left=(960-pl).toFixed(1)+'px'}await w(ms)};
  const wide=async(ms=1000)=>{if(!cam)return;cam.style.transform='';Z=0;sec.classList.remove('zoom');if(capEl)capEl.style.left='';await w(ms)};
- const dot=el=>{const r=el.getBoundingClientRect(),t=document.createElement('i');t.className='tap';t.style.left=(r.left+r.width/2)+'px';t.style.top=(54+r.top+r.height/2)+'px';ips.appendChild(t);setTimeout(()=>t.remove(),700)};
- const finger=(x,y)=>{const t=document.createElement('i');t.className='fing';const at=(x,y)=>{t.style.left=x+'px';t.style.top=(54+y)+'px'};at(x,y);ips.appendChild(t);return{at,up:()=>{t.classList.add('up');setTimeout(()=>t.remove(),400)}}};
- const tap=async(s,ms=0,follow=true)=>{if(!alive())throw 0;const el=q(s);if(!el)return false;el.scrollIntoView({block:'nearest',behavior:'smooth'});await w(Z?260:120);
-  if(Z&&follow)await focus(el,Z,800);dot(el);await w(160);el.click();if(ms)await w(ms);return true};
- const type=async(s,text)=>{const el=q(s);if(!el)return;if(Z)await focus(el,Z,800);dot(el);el.focus({preventScroll:true});for(const ch of text){el.value+=ch;el.dispatchEvent(new win.Event('input',{bubbles:true}));await w(80)}el.blur()};
+ const desk=ips.classList.contains('ltin'),sc=desk?.5986:1,off=desk?0:54,pos=(x,y)=>`translate(${(x*sc).toFixed(1)}px,${(y*sc+off).toFixed(1)}px)`;
+ ips.querySelectorAll('.fg,.rip,.tap,.fing').forEach(e=>e.remove());
+ let fg=null,fx=0,fy=0,ft=0;
+ const fgo=async(x,y)=>{if(!fg){fg=document.createElement('i');fg.className='fg';ips.appendChild(fg);fx=x+50;fy=y+110;fg.style.transform=pos(fx,fy);fg.offsetWidth}
+  clearTimeout(ft);fg.classList.add('on');const d=Math.hypot(x-fx,y-fy),t=Math.round(Math.min(640,Math.max(240,d*1.6)));
+  fg.style.transition=`transform ${t}ms cubic-bezier(.5,0,.15,1),opacity .25s`;fg.style.transform=pos(x,y);fx=x;fy=y;await w(t+40)};
+ const press=async()=>{fg.classList.add('dn');const r=document.createElement('i');r.className='rip';r.style.left=(fx*sc)+'px';r.style.top=(fy*sc+off)+'px';ips.appendChild(r);setTimeout(()=>r.remove(),650);await w(150)};
+ const lift=()=>{if(!fg)return;fg.classList.remove('dn');clearTimeout(ft);ft=setTimeout(()=>fg&&fg.classList.remove('on'),1500)};
+ const mid=el=>{const r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]};
+ const tap=async(s,ms=0,follow=true)=>{if(!alive())throw 0;const el=q(s);if(!el)return false;el.scrollIntoView({block:'nearest',behavior:'smooth'});await w(Z?260:140);
+  if(Z&&follow)await focus(el,Z,800);await fgo(...mid(el));await press();el.click();await w(110);lift();if(ms)await w(ms);return true};
+ const type=async(s,text)=>{const el=q(s);if(!el)return;if(Z)await focus(el,Z,800);await fgo(...mid(el));await press();lift();el.focus({preventScroll:true});for(const ch of text){el.value+=ch;el.dispatchEvent(new win.Event('input',{bubbles:true}));await w(75)}el.blur()};
+ const glide=(x,y)=>{fx=x;fy=y;fg.style.transition='none';fg.style.transform=pos(x,y)};
  const swipe=async s=>{const b=q(s);if(!b)return;const r=b.getBoundingClientRect(),y=r.top+r.height/2,x0=r.right-40;
   const ev=(t,x)=>new win.PointerEvent(t,{bubbles:true,cancelable:true,clientX:x,clientY:y,pointerId:9,pointerType:'touch',isPrimary:true,button:0});
-  const fg=finger(x0,y);b.dispatchEvent(ev('pointerdown',x0));for(let i=1;i<=16;i++){await w(20);const x=x0-i*11.5;fg.at(x,y);win.dispatchEvent(ev('pointermove',x))}await w(90);win.dispatchEvent(ev('pointerup',x0-184));fg.up()};
- /* 맨 위에서 손가락으로 끌어내리기 (앱의 당겨서 새로 고침) */
- const pull=async()=>{win.scrollTo(0,0);await w(400);const x=201,y0=190;let fg;
-  try{const T=y=>new win.Touch({identifier:7,target:doc.body,clientX:x,clientY:y,pageX:x,pageY:y,radiusX:10,radiusY:10,force:.5});
-   const fire=(type,y)=>{const t=T(y),L=type==='touchend'?[]:[t];doc.body.dispatchEvent(new win.TouchEvent(type,{bubbles:true,cancelable:true,touches:L,targetTouches:L,changedTouches:[t]}))};
-   fg=finger(x,y0);fire('touchstart',y0);for(let i=1;i<=24;i++){await w(24);const y=y0+i*7.6;fg.at(x,y);fire('touchmove',y)}await w(300);fire('touchend',y0+182);fg.up()}catch(e){if(fg)fg.up();if(e===0)throw 0}};
+  await fgo(x0,y);fg.classList.add('dn');await w(120);b.dispatchEvent(ev('pointerdown',x0));for(let i=1;i<=18;i++){await w(18);const x=x0-i*10.3;glide(x,y);win.dispatchEvent(ev('pointermove',x))}await w(110);win.dispatchEvent(ev('pointerup',x0-185));lift()};
+ /* 손가락으로 위아래로 끌기: 앱의 당겨서 새로 고침, 바닥에서 더 당기기 */
+ const drag=async(y0,y1)=>{const x=201;try{const T=y=>new win.Touch({identifier:7,target:doc.body,clientX:x,clientY:y,pageX:x,pageY:y+win.scrollY,radiusX:10,radiusY:10,force:.5});
+   const fire=(t,y)=>{const o=T(y),L=t==='touchend'?[]:[o];doc.body.dispatchEvent(new win.TouchEvent(t,{bubbles:true,cancelable:true,touches:L,targetTouches:L,changedTouches:[o]}))};
+   await fgo(x,y0);fg.classList.add('dn');await w(120);fire('touchstart',y0);for(let i=1;i<=26;i++){await w(20);const e=i/26,y=y0+(y1-y0)*(1-(1-e)*(1-e));glide(x,y);fire('touchmove',y)}await w(300);fire('touchend',y1);lift()}catch(e){lift();if(e===0)throw 0}};
+ const pull=async()=>{win.scrollTo(0,0);await w(400);await drag(190,376)};
+ const pullUp=async()=>drag(610,400);
  const scroll=async(y,ms=1400)=>{win.scrollTo({top:y,behavior:'smooth'});await w(ms)};
- return {alive,q,cap,hl,tap,w,type,swipe,pull,scroll,focus,wide,doc,win}}
+ return {alive,q,cap,hl,tap,w,type,swipe,pull,pullUp,scroll,focus,wide,doc,win}}
 
 const RUN={
 async intro(k){const{cap,tap,w,type,focus,wide,q}=k;
@@ -555,26 +571,30 @@ async sell(k){const{cap,tap,w,focus,wide}=k;
  cap('에어팟 팔기',0);await tap('[data-a=sell]',1500);
  cap('판매 글은 미리 써 뒀어요',0);await focus('#sh .desc',1.3);await w(1200);
  cap('당근, 번개장터도 사진만 찍으면',1);await tap('[data-a=dosell]',1000);await focus('.shots',1.3);
- for(let n=0;n<3;n++)await tap(`.shot[data-k="${n}"]`,420,false);
+ for(let n=0;n<3;n++)await tap(`.shot[data-k="${n}"]`,300,false);
  cap('두 곳에 한 번에 올려요',1);await tap('[data-a=upload]',300);await wide(2000);
  await tap('.done [data-a=closesheet]',600);cap('팔리면 갈무리 머니로',1);await w(3000);
- cap('갈무리에 팔면 예상 가격부터',2);await tap('[data-a=sell]',1300);await tap('[data-a=method][data-v=partner]',700);await focus('#pfine',1.38);await w(1500);
+ cap('갈무리에 팔면 예상 가격부터',2);await tap('[data-a=sell]',1300);await tap('[data-a=method][data-v=partner]',800);await focus('#pfine',1.38);await w(1500);
  cap('사진을 보고 값을 매겨요',2);await tap('[data-a=dosell]',1000,false);await focus('.shots',1.3);
- for(let n=0;n<4;n++)await tap(`.shot[data-k="${n}"]`,380,false);
- await tap('[data-a=review]',300);await wide(2000);await tap('.done [data-a=closesheet]',1400)},
+ for(let n=0;n<4;n++)await tap(`.shot[data-k="${n}"]`,260,false);
+ await tap('[data-a=review]',300);await wide(2000);await tap('.done [data-a=closesheet]',1200);
+ cap('검토가 어디까지 됐는지도 보여요',2);await tap('[data-a=rvst]',1100);await focus('#sh .steps',1.3);await w(2400);await wide(800);await tap('#sh .btns [data-a=closesheet]',900)},
 async market(k){const{cap,tap,w,focus,wide}=k;
  await w(1100);cap('갈무리 마켓');await tap('[data-a=tab][data-v=mkt]',1500);
  cap('갈무리가 사들여 검수한 중고',0);await focus('.mlist .row:nth-child(1)',1.3);await w(1300);await wide(800);
  cap('스마트기기만 보기',1);await tap('[data-a=mfilter][data-v=smart]',1300);
- cap('등급과 새 제품 대비 할인',1);await focus('[data-a=mkt][data-v=m2]',1.32);await tap('[data-a=mkt][data-v=m2]',1300,false);
+ cap('등급과 새 제품 대비 할인',1);await tap('[data-a=mkt][data-v=m2]',1300);
+ cap('사진을 눌러 크게 보기',1);await tap('#sh .gph',1900);await tap('.pvx',800);
  await focus('#sh .kv',1.3);await w(1400);
  cap('사면 보관함으로',2);await tap('[data-a=mbuy]',300);await wide(2000);await tap('.done [data-a=closesheet]',800);
  await tap('[data-a=tab][data-v=inv]',1300);cap('보증 3개월도 같이 챙겨요',2);await focus('.list .row:nth-child(1)',1.3);await w(1800);await wide(900)},
-async repair(k){const{cap,tap,w,doc,focus,wide}=k;
- await w(1100);await tap('[data-a=tab][data-v=value]',800);cap('전자제품은 수리, 옷과 신발은 팔기만',1);await w(1600);
+async repair(k){const{cap,tap,w,doc,type,focus,wide}=k;
+ await w(1100);await tap('[data-a=tab][data-v=value]',1300);
  cap('청소기 수리 접수',0);const b=[...doc.querySelectorAll('[data-a=as]')].pop();await tap(b,1300);
- cap('증상만 고르면',0);const sy=doc.querySelectorAll('.sym');await focus(sy[3],1.32);await tap(sy[3],700,false);
- cap('영수증과 보증서는 같이 보내요',0);await tap('[data-a=doas]',300);await wide(2200);await tap('.done [data-a=closesheet]',900)},
+ cap('증상만 고르면 돼요',0);const sy=doc.querySelectorAll('.sym');await focus(sy[3],1.3);await tap(sy[3],800,false);
+ cap('사진과 설명은 넣고 싶을 때만',1);await tap('.shot[data-k="0"]',500);await type('#asnote','전원이 자꾸 꺼져요');await w(600);
+ cap('영수증과 보증서는 같이 보내요',2);await tap('[data-a=doas]',300);await wide(1900);
+ cap('기사님이 곧 연락드려요',2);await w(1600);await tap('.done [data-a=closesheet]',900)},
 async family(k){const{cap,tap,w,q,focus,wide}=k;
  await w(1100);cap('가족 탭');await tap('[data-a=tab][data-v=fam]',1400);
  cap('엄마 것만 보기');await tap('[data-a=who][data-v=mom]',1500);
@@ -584,15 +604,16 @@ async family(k){const{cap,tap,w,q,focus,wide}=k;
  await tap('#sh [data-a=closesheet]',1100);
  const vt=[...k.doc.querySelectorAll('.row.urg [data-a=detail]')].find(e=>e.getBoundingClientRect().height);
  if(vt){cap('떨어져 가면 다시 사 드리기',2);await focus(vt,1.3);await tap(vt,1300,false);const rg=q('#sh [data-a=regift]');if(rg){await focus(rg,1.34,1000);await w(1600)}await wide(1000)}},
-async detail(k){const{cap,tap,w,swipe,pull,scroll,focus,wide}=k;
+async detail(k){const{cap,tap,w,swipe,pull,pullUp,scroll,focus,wide}=k;
  await w(1100);cap('보관함');await tap('[data-a=tab][data-v=inv]',1300);
  cap('왼쪽으로 밀어서 정리',0);await focus('.list .row:nth-child(2)',1.3);await swipe('.list .row:nth-child(2) .rowb');await w(1600);await wide(900);
  cap('맨 위에서 당기면 새 주문',1);await pull();await w(2600);
  await tap('[data-a=tab][data-v=home]',1200);
- cap('끝까지 내리면',2);await scroll(9999,1800);cap('바닥에 작은 병',2);await focus('.eof',1.36);
- cap('누르면 출렁',2);await tap('.eof',1400,false);await tap('.eof',1400,false);await wide(900);await scroll(0,1600)},
+ cap('바닥에서 더 당기면',2);await scroll(99999,1500);await pullUp();await w(1200);
+ cap('숨어 있던 병이 나와요',2);await focus('.eof',1.36);
+ cap('누르면 병 안에서 거품이',2);await tap('.eof',1500,false);await tap('.eof',1500,false);await wide(900);await scroll(0,1600)},
 async desk(k){const{tap,w}=k;
- await w(1600);await tap('.sub[data-k=inv] button[data-v=fridge]',2200);await tap('[data-a=tab][data-v=value]',2200);await tap('[data-a=tab][data-v=mkt]',2200);await tap('[data-a=tab][data-v=fam]',2200);await tap('[data-a=tab][data-v=home]',1500)}
+ await w(1600);await tap('.sub[data-k=inv] button[data-v=fridge]',2200);await tap('[data-a=tab][data-v=value]',2200);await tap('[data-a=tab][data-v=mkt]',2200);await tap('[data-a=tab][data-v=fam]',2000);await tap('header [data-a=settings]',2600);await tap('#set [data-a=setx]',1300);await tap('[data-a=tab][data-v=home]',1500)}
 };
 
 async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)return;
