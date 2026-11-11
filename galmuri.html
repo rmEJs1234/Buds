@@ -244,19 +244,17 @@ nav{bottom:0;z-index:30}
 .tab.new u{transform:scale(1)}
 .fabw{bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:29;padding:0 20px}
 .fabw>div{width:100%;max-width:400px;display:flex;justify-content:flex-end}
-.fab{pointer-events:auto;display:flex;align-items:center;gap:6px;height:52px;padding:0 20px 0 16px;border-radius:26px;background:var(--gb);color:var(--gtx);font-weight:800;font-size:15px;box-shadow:var(--gup),0 18px 26px -10px rgba(var(--s),.6);transition:transform .3s var(--spring),box-shadow .3s,padding .35s var(--out),gap .35s}
+.fab{pointer-events:auto;display:flex;align-items:center;gap:6px;height:52px;padding:0 20px 0 16px;border-radius:26px;background:var(--gb);color:var(--gtx);font-weight:800;font-size:15px;box-shadow:var(--gup),0 18px 26px -10px rgba(var(--s),.6);transition:transform .3s var(--spring),box-shadow .3s}
 .fab:active{transform:scale(.94);background:var(--gb-in);box-shadow:var(--gin)}
-.fab span{display:inline-block;max-width:60px;overflow:hidden;white-space:nowrap;transition:max-width .35s var(--out),opacity .2s}
-.fab.mini{padding:0 16px;gap:0}
-.fab.mini span{max-width:0;opacity:0}
+.fab span{white-space:nowrap}
 
 /* 토스트, 배너, 영수증 */
 .toast{position:fixed;left:0;right:0;bottom:calc(146px + env(safe-area-inset-bottom,0px));z-index:95;display:flex;justify-content:center;padding:0 20px;pointer-events:none}
 .toast span{max-width:400px;background:var(--ink-bg);color:var(--on-ink);font-size:14px;font-weight:600;padding:12px 18px;border-radius:22px;box-shadow:var(--up2);transform:translateY(24px) scale(.9);opacity:0;transition:transform .45s var(--spring),opacity .2s}
 .toast.on span{transform:none;opacity:1}
 .ban{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;justify-content:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;pointer-events:none}
-.ban>div{pointer-events:auto;display:flex;align-items:center;gap:12px;width:100%;max-width:416px;background:var(--ink-bg);color:var(--on-ink);border-radius:24px;padding:14px 10px 14px 18px;box-shadow:var(--up2);transform:translateY(-150%);transition:transform .55s var(--spring)}
-.ban.on>div{transform:none}
+.ban>div{pointer-events:auto;display:flex;align-items:center;gap:12px;width:100%;max-width:416px;background:var(--ink-bg);color:var(--on-ink);border-radius:24px;padding:14px 10px 14px 18px;box-shadow:var(--up2);transform:translateY(-150%);visibility:hidden;transition:transform .55s var(--spring),visibility 0s .55s}
+.ban.on>div{transform:none;visibility:visible;transition:transform .55s var(--spring)}
 .ban p{flex:1;font-size:14px}
 .ban b{display:block;font-size:15px}
 .ban em{font-style:normal;font-weight:800}
@@ -966,7 +964,7 @@ document.addEventListener('input',e=>{const t=e.target;
  if(['aname','aphone','aaddr'].includes(t.id))$('.cta',sh).disabled=!['aname','aphone','aaddr'].every(k=>$('#'+k).value.trim());});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='obname')A.obname();if(e.key==='Enter'&&e.target.id==='shopnew')A.shopadd();
  if(e.key!=='Escape')return;menu(false);if($('#shw').classList.contains('on'))A.closesheet();else if($('#pgw2').classList.contains('on'))A.shopx();else A.setx()});
-let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;$('#hdr').classList.toggle('sc',scrollY>4);$('.fab').classList.toggle('mini',scrollY>60)})},{passive:true});
+let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;$('#hdr').classList.toggle('sc',scrollY>4)})},{passive:true});
 /* 보관함 줄을 왼쪽으로 밀어서 정리 */
 let sw=null;
 document.addEventListener('pointerdown',e=>{const b=e.target.closest('.list .rowb');if(!b||e.button>0)return;sw={b,x:e.clientX,y:e.clientY,dx:0,on:false,id:e.pointerId}},true);
