@@ -151,8 +151,10 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
   if(last){const b=document.getElementById(last),t=b&&b.querySelector('.tag');if(t)t.classList.add('on')}
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* 갈무리: 판이 화면만큼 커지면서 초록 화면에 로고가 올라온다. 앱이 같은 화면에서 이어 받는다 */
+  /* 위쪽 상태 표시줄은 페이지 바탕색을 따라간다: 초록 화면이 열릴 때 바탕도 같이 초록으로 */
+  const paint=c=>{const o=document.querySelector('meta[name=theme-color]'),m=document.createElement('meta');m.name='theme-color';m.content=c;if(o)o.replaceWith(m);document.documentElement.style.background=c;document.body.style.background=c};
   const boot=b=>{const r=b.getBoundingClientRect(),W=innerWidth,el=document.createElement('div');el.className='boot';
-    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);const H=el.getBoundingClientRect().height;const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content='#22D873';
+    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);const H=el.getBoundingClientRect().height;paint('#22D873');
     const from=`inset(${r.top}px ${W-r.right}px ${H-r.bottom}px ${r.left}px round 30px)`;
     if(!reduce)el.animate([{clipPath:from},{clipPath:'inset(0px 0px 0px 0px round 0px)'}],{duration:560,easing:'cubic-bezier(.5,0,.15,1)'});
     setTimeout(()=>{location.href=b.dataset.href+'?l=1'+(window.__UI==='desk'?'&ui=desk':'')},reduce?150:1150)};
@@ -167,7 +169,7 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
     setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:420);
   }));
   /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
-  addEventListener('pageshow',e=>{going=0;if(e.persisted||document.querySelector('.boot')){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove());const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content='#000000'}});
+  addEventListener('pageshow',e=>{going=0;if(e.persisted||document.querySelector('.boot')){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove());paint('#000')}});
 })();
 </script>
 </body></html>
