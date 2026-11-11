@@ -359,6 +359,7 @@ textarea.inp{height:auto;min-height:86px;padding:13px 16px;resize:none;line-heig
 .gal::-webkit-scrollbar{display:none}
 .gph{flex:none;width:72%;aspect-ratio:1;border-radius:20px;overflow:hidden;scroll-snap-align:center;background:var(--well-bg);box-shadow:var(--in);transition:transform .3s var(--spring)}
 .gph:active{transform:scale(.97)}
+.gal .gph:only-child{width:100%;aspect-ratio:5/4}
 .pv{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.94);display:flex;flex-direction:column;justify-content:center}
 .pvs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .pvs::-webkit-scrollbar{display:none}
@@ -972,8 +973,8 @@ function bubbles(j,n=7){if(RM()||!j)return;const W=j.offsetWidth,H=j.offsetHeigh
  for(let k=0;k<n;k++){const b=document.createElement('i'),z=3+Math.random()*(W/9),x=W*(.18+Math.random()*.64)-z/2,rise=Math.max(10,H-top-z-6),dx=(Math.random()-.5)*W*.16,d=900+Math.random()*700;
   b.className='bub2';b.style.cssText=`width:${z}px;height:${z}px;left:${x}px;bottom:4px`;j.appendChild(b);
   b.animate([{transform:'translate(0,0) scale(.3)',opacity:0},{transform:`translate(${dx*.5}px,${-rise*.35}px) scale(1)`,opacity:1,offset:.25},{transform:`translate(${-dx*.4}px,${-rise*.92}px) scale(1)`,opacity:1,offset:.88},{transform:`translate(${dx*.2}px,${-rise}px) scale(1.6)`,opacity:0}],{duration:d,delay:k*80,easing:'cubic-bezier(.4,.2,.5,1)',fill:'backwards'}).onfinish=()=>b.remove()}}
-function eofShow(){const e=$('.eof');if(!e||e.classList.contains('show')||S.eofBusy)return;e.classList.add('show');buzz();
- S.eofN=Math.min(5,(S.eofN||0)+1);const f=$('.fill',e),m=$('small',e);f.dataset.lv=eofLv().toFixed(3);setTimeout(()=>post(e),280);
+function eofShow(){const e=$('.eof');if(!e||S.eofBusy||eofLv()>=1)return;const was=e.classList.contains('show');e.classList.add('show');buzz();if(was){const j=$('.jar',e);slosh(j);bubbles(j,5)}
+ S.eofN=Math.min(5,(S.eofN||0)+1);const f=$('.fill',e),m=$('small',e);f.dataset.lv=eofLv().toFixed(3);setTimeout(()=>post(e),was?0:280);
  m.textContent=eofLv()>=1?'꽉 찼어요…':EOF_MSG[Math.min(S.eofN,EOF_MSG.length)-1];
  setTimeout(()=>scrollTo({top:document.documentElement.scrollHeight,behavior:RM()?'auto':'smooth'}),80);
  if(eofLv()>=1)setTimeout(burst,1500)}
@@ -1402,8 +1403,8 @@ function drip(){if(RM())return;const sp=$$('.logo span'),dot=sp[sp.length-1];buz
  sp.slice(0,-1).forEach((e,k)=>e.animate([{transform:'none'},{transform:'translateY(-4px)'},{transform:'none'}],{duration:420,delay:300+k*30,easing:'cubic-bezier(.3,1.35,.4,1)'}))}
 /* 손을 떼고 미끄러지다 끝에 닿으면 딱 멈추지 않고 살짝 튕긴다 */
 let lsY=scrollY,lsT=performance.now(),lsV=0,bnc=0;
-function edgeBounce(top,v){if(RM()||bnc||os||wv)return;const k=Math.min(1,Math.abs(v)/3),vw=$('#view');if(k<.12)return;bnc=1;
- vw.animate([{transform:'none'},{transform:`translateY(${(top?1:-1)*k*26}px) scaleY(${1+k*.045})`,transformOrigin:top?'50% 0':'50% 100%',offset:.32},{transform:'none',transformOrigin:top?'50% 0':'50% 100%'}],{duration:560,easing:'cubic-bezier(.25,1.2,.4,1)'}).onfinish=()=>bnc=0}
+function edgeBounce(top,v){if(RM()||bnc||os||wv)return;const k=Math.min(1,Math.abs(v)/3.5),vw=$('#view');if(k<.15)return;bnc=1;const d=(top?1:-1)*k*13;
+ vw.animate([{transform:'none',easing:'cubic-bezier(.1,.7,.3,1)'},{transform:`translateY(${d}px)`,offset:.28,easing:'cubic-bezier(.45,0,.25,1)'},{transform:'none'}],{duration:760}).onfinish=()=>bnc=0}
 addEventListener('scroll',()=>{const t=performance.now(),y=scrollY,dt=t-lsT;if(dt>0)lsV=lsV*.4+((y-lsY)/dt)*.6;lsY=y;lsT=t;
  const max=document.documentElement.scrollHeight-innerHeight;if(y<=0&&lsV<-.3)edgeBounce(true,lsV);else if(y>=max-1&&lsV>.3)edgeBounce(false,lsV);if(y<max-220)eofHide()},{passive:true});
 let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;const y=scrollY;$('#hdr').classList.toggle('sc',y>4);$('.fab').classList.toggle('mini',y>80);
