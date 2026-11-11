@@ -769,7 +769,7 @@ const pgSync=()=>root.classList.toggle('pgon',!!$('.pgw.on'));
 $$('.pgw').forEach(w=>new MutationObserver(pgSync).observe(w,{attributes:true,attributeFilter:['class']}));
 function tint(c){const o=document.querySelector('meta[name=theme-color]'),m=document.createElement('meta');m.name='theme-color';m.content=c;if(o)o.replaceWith(m);else document.head.appendChild(m);
  root.style.background=c;document.body&&(document.body.style.background=c);requestAnimationFrame(()=>{const y=scrollY;scrollTo(0,y+1);requestAnimationFrame(()=>scrollTo(0,y))})}
-function theme(){root.classList.toggle('dk',isDark());root.classList.toggle('rm',P.rm);if(!$('.splash'))tint(isDark()?'#000000':'#E9F4EE')}
+function theme(){root.classList.toggle('dk',isDark());root.classList.toggle('rm',P.rm);if(!$('.splash:not(.out)'))tint(isDark()?'#000000':'#E9F4EE')}
 theme();sysDark.addEventListener('change',theme);new MutationObserver(theme).observe(root,{attributes:true,attributeFilter:['data-theme']});
 
 const INIT=JSON.stringify([
