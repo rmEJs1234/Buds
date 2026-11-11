@@ -1,4 +1,5 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="앱"><link rel="apple-touch-icon" href="buds.png"><title>앱 고르기</title>
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap" rel="stylesheet">
 <style>
@@ -10,6 +11,7 @@
   color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
+html{background:#000;scrollbar-width:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);word-break:keep-all;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .wrap{min-height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;gap:18px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
@@ -34,57 +36,88 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
 .foot{margin:6px 0 0;font-size:13px;color:var(--mut);text-align:center;text-wrap:balance}
 .in{animation:up .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0)*70ms)}
 @keyframes up{from{transform:translateY(14px);opacity:.001}}
-.boot{position:fixed;inset:0;z-index:50;background:var(--g);display:grid;place-items:center;will-change:clip-path}
+.boot{position:fixed;inset:0 0 -160px;padding-bottom:160px;z-index:50;background:var(--g);display:grid;place-items:center;will-change:clip-path}
 .boot b{display:flex;font-family:"Bricolage Grotesque",var(--font);font-weight:800;font-size:64px;line-height:1;letter-spacing:-.05em;color:#000}
 .boot b span{display:inline-block;animation:lt .7s cubic-bezier(.3,1.35,.4,1) backwards;animation-delay:calc(.28s + var(--i)*45ms)}
 @keyframes lt{from{opacity:0;transform:translateY(46px) rotate(10deg)}}
+.desk .wrap{max-width:980px;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-content:center}
+.desk h1,.desk .foot{grid-column:1/-1}
+.desk h1{font-size:40px;margin-bottom:10px}
+.desk .app{height:380px;padding:30px}
+.desk .buds img{width:250px;margin-top:-100px;right:30px}
+.desk .buds .nm{font-size:30px}
+.desk .galmuri .wm{font-size:100px}
+.dsk{display:none;font-size:13px;color:var(--mut);margin-top:10px}
+.desk .dsk{display:block}
+@media (hover:hover){.desk .app:hover{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.boot b span{animation:none}.buds img,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
 </style></head><body>
 
 <style>
-/* 컴퓨터에서 열면: 아이폰 목업 안에 띄움 */
-.mock body{overflow:hidden}
-.mock .wrap{display:none}
-.mk{position:fixed;inset:0;display:grid;place-items:center;
-  background:radial-gradient(60% 50% at 50% 38%,#1d2333 0%,#0b0d12 55%,#050507 100%);overflow:hidden}
-.mk-stage{display:flex;flex-direction:column;align-items:center;gap:20px;transform-origin:50% 50%}
-.mk-phone{position:relative;width:460px;height:909px;filter:drop-shadow(0 40px 60px rgba(0,0,0,.55))}
-.mk-frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;user-select:none}
-.mk-screen{position:absolute;left:35px;top:31px;width:390px;height:847px;border-radius:52px;overflow:hidden;background:#000}
-.mk-screen iframe{position:absolute;left:0;top:47px;width:390px;height:800px;border:0;background:#000}
-.mk-status{position:absolute;inset:0 0 auto;height:47px;z-index:2;pointer-events:none;color:#fff;
-  font:600 15px -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif}
-.mk-time{position:absolute;left:0;width:94px;top:15px;text-align:center}
-.mk-ic{position:absolute;right:0;width:94px;top:16px;display:flex;gap:5px;justify-content:center;align-items:center}
-.mk-ic svg{height:11px;width:auto}
-.mk-home{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:rgba(255,255,255,.75);z-index:3;pointer-events:none}
-.mk-cap{margin:0;color:#8e93a3;font:500 13px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;letter-spacing:.02em;text-align:center}
+/* 컴퓨터에서 열면: iPhone 18 Pro 목업, 또는 컴퓨터 화면. 위의 알약으로 바꾼다 */
+.mockw,.mockw body{overflow:hidden;height:100%}
+.mockw body>*:not(.mk):not(.uim){display:none!important}
+.mk{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;background:radial-gradient(70% 60% at 50% 42%,#23272d 0%,#0d0f12 60%,#060708 100%)}
+.mk-stage{display:flex;flex-direction:column;align-items:center;gap:26px;transform-origin:50% 50%;padding-top:40px}
+.ipb{position:relative;padding:5px;border-radius:77px;background:linear-gradient(140deg,#9a9da3 0%,#44474c 16%,#2a2c30 48%,#3d4045 80%,#a2a5ab 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 0 0 2px rgba(0,0,0,.35),0 60px 100px -30px rgba(0,0,0,.85),0 26px 44px -26px rgba(0,0,0,.95)}
+.ip{position:relative;width:426px;height:898px;border-radius:72px;padding:12px;background:#050505;box-shadow:inset 0 0 0 1.5px #1d1d1f}
+.ips{position:relative;width:402px;height:874px;border-radius:60px;overflow:hidden;background:#000;transition:background .3s}
+.ips iframe{position:absolute;left:0;top:54px;width:402px;height:820px;border:0;background:transparent}
+.ipdi{position:absolute;top:12px;left:50%;width:94px;height:30px;margin-left:-47px;border-radius:15px;background:#000;z-index:3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.ipsb{position:absolute;inset:0 0 auto;height:54px;z-index:2;color:#fff;font:600 16px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;pointer-events:none;transition:color .3s}
+.iptime{position:absolute;left:0;width:138px;top:20px;text-align:center}
+.ipic{position:absolute;right:0;width:138px;top:20px;display:flex;gap:6px;justify-content:center;align-items:center}
+.ipic svg{height:12px;width:auto;fill:currentColor;stroke:currentColor}
+.iphome{position:absolute;left:50%;bottom:8px;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:currentColor;opacity:.9;z-index:3;pointer-events:none;color:#fff;transition:color .3s}
+.ipbtn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#5c5f65,#2f3135 60%,#55585d)}
+.ipbtn.cc{width:3px;background:linear-gradient(90deg,#3a3d42,#1f2124)}
+.mk-cap{margin:0;color:#8e93a3;font:500 13px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:.01em;text-align:center}
+.uim{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1001;display:flex;padding:4px;border-radius:14px;background:rgba(36,38,42,.78);-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 10px 30px rgba(0,0,0,.35);font:600 13px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif}
+.uim button{position:relative;z-index:1;width:78px;height:32px;border:0;background:none;color:rgba(255,255,255,.55);cursor:pointer;font:inherit;transition:color .25s}
+.uim button[aria-pressed=true]{color:#fff}
+.uim button:focus-visible{outline:2px solid #fff;outline-offset:-2px;border-radius:10px}
+.uim i{position:absolute;top:4px;left:4px;width:78px;height:32px;border-radius:10px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .45s cubic-bezier(.3,1.3,.4,1)}
+body.uiout>*:not(.uim){opacity:0;transition:opacity .28s}
 </style>
 <script>
-(()=>{
-  const desk=matchMedia('(min-width: 700px) and (pointer: fine)').matches;
-  if(!desk||location.hash==='#phone')return;
-  document.documentElement.classList.add('mock');
-  const base=location.href.split('#')[0];
-  const mk=document.createElement('div');mk.className='mk';
-  mk.innerHTML=`<div class="mk-stage"><div class="mk-phone"><div class="mk-screen"><div class="mk-status"><span class="mk-time"></span><span class="mk-ic"><svg viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
-      <svg viewBox="0 0 16 12" fill="#fff"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg>
-      <svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke="#fff" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="#fff"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#fff" fill-opacity=".45"/></svg>
-    </span></div><iframe title="앱 고르기" src="${base}#phone"></iframe><div class="mk-home"></div></div><img class="mk-frame" src="frame.png" alt="" draggable="false"></div>
-    <p class="mk-cap">휴대폰으로 열면 전체 화면으로 보여요</p></div>`;
-  document.body.appendChild(mk);
-  const st=mk.querySelector('.mk-stage'),tm=mk.querySelector('.mk-time');
-  const fit=()=>{const s=Math.min(1,(innerHeight-40)/(909+20+18),(innerWidth-40)/460);st.style.transform=`scale(${s})`};
-  const clock=()=>{const d=new Date();tm.textContent=(d.getHours()%12||12)+':'+String(d.getMinutes()).padStart(2,'0')};
-  fit();clock();addEventListener('resize',fit);setInterval(clock,15000);
-  window.__MOCK=1;
+window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
+/* 휴대폰이나 목업 안에서는 아무것도 하지 않는다. 컴퓨터에서 직접 열었을 때만 */
+(()=>{const R=document.documentElement,q=new URLSearchParams(location.search),inF=window!==window.top;
+ let inMock=false;try{inMock=inF&&!!parent.document.querySelector('.mk')}catch(_){}
+ if(inMock)R.classList.add('inmock');
+ window.__UI='phone';
+ if(inF||!matchMedia('(min-width: 900px) and (pointer: fine)').matches)return;
+ let m=q.get('ui');if(!m)try{m=localStorage.getItem('apps.ui')}catch(_){}
+ m=m==='desk'?'desk':'phone';window.__UI=m;
+ const bar=document.createElement('div');bar.className='uim';bar.setAttribute('role','group');bar.setAttribute('aria-label','보기 방식');
+ bar.innerHTML=`<i style="transform:translateX(${m==='desk'?100:0}%)"></i><button data-m="phone" aria-pressed="${m==='phone'}">휴대폰</button><button data-m="desk" aria-pressed="${m==='desk'}">컴퓨터</button>`;
+ bar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.m===m)return;const n=b.dataset.m;try{localStorage.setItem('apps.ui',n)}catch(_){}
+  bar.querySelector('i').style.transform=`translateX(${n==='desk'?100:0}%)`;bar.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.body.classList.add('uiout');
+  setTimeout(()=>{const u=new URL(location.href);u.searchParams.set('ui',n);u.searchParams.delete('open');u.hash='';location.replace(u.href)},320)});
+ if(m==='desk'){R.classList.add('desk');document.body.appendChild(bar);return}
+ R.classList.add('mockw');window.__MOCK=1;
+ const src=window.__MOCKSRC?window.__MOCKSRC(q):(location.pathname.split('/').pop()||'index.html');
+ const mk=document.createElement('div');mk.className='mk';
+ mk.innerHTML=`<div class="mk-stage"><div class="ipb">
+  <i class="ipbtn" style="left:-3px;top:180px;height:34px"></i><i class="ipbtn" style="left:-3px;top:244px;height:64px"></i><i class="ipbtn" style="left:-3px;top:322px;height:64px"></i><i class="ipbtn" style="right:-3px;top:268px;height:100px"></i><i class="ipbtn cc" style="right:-3px;top:566px;height:60px"></i>
+  <div class="ip"><div class="ips"><div class="ipsb"><span class="iptime"></span><span class="ipic"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" stroke="none"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg><svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke-opacity=".4" fill="none"/><rect x="2" y="2" width="17" height="8" rx="2" stroke="none"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" stroke="none" fill-opacity=".45"/></svg></span></div>
+  <i class="ipdi"></i><iframe title="휴대폰 화면" src="${src}"></iframe><i class="iphome"></i></div></div></div>
+  <p class="mk-cap">iPhone 18 Pro 미리보기 · 휴대폰으로 열면 전체 화면으로 보여요</p></div>`;
+ document.body.appendChild(mk);document.body.appendChild(bar);
+ const st=mk.querySelector('.mk-stage'),tm=mk.querySelector('.iptime'),scr=mk.querySelector('.ips'),sb=mk.querySelector('.ipsb'),hm=mk.querySelector('.iphome'),fr=mk.querySelector('iframe');
+ const fit=()=>{const s=Math.min(1,(innerHeight-120)/(908+70),(innerWidth-60)/436);st.style.transform=`scale(${s})`};
+ const clock=()=>{const d=new Date();tm.textContent=(d.getHours()%12||12)+':'+String(d.getMinutes()).padStart(2,'0')};
+ /* 상태 표시줄 색을 안쪽 화면 배경에 맞춘다 */
+ const tint=()=>{try{const d=fr.contentDocument;if(!d||!d.body)return;const c=getComputedStyle(d.body).backgroundColor,v=(c.match(/[\d.]+/g)||[]).map(Number);if(v.length<3||v[3]===0)return;
+  scr.style.background=c;const l=(v[0]*299+v[1]*587+v[2]*114)/1000;sb.style.color=hm.style.color=l>150?'#000':'#fff'}catch(_){}};
+ fit();clock();addEventListener('resize',fit);setInterval(clock,15000);setInterval(tint,400);
 })();
 </script>
 <main class="wrap" id="wrap">
   <h1 class="in" style="--k:0">어떤 앱을 열까요?</h1>
   <button class="app buds in" style="--k:1" data-href="v4.html" id="buds">
     <span class="tag">마지막으로 봄</span>
-    <span><span class="nm" style="display:block">Galaxy Buds4 Pro</span><span class="ds" style="display:block">for iOS 27</span></span>
+    <span><span class="nm" style="display:block">Galaxy Buds4 Pro</span><span class="ds" style="display:block">for iOS 27</span><span class="dsk">휴대폰 화면으로 열려요</span></span>
     <img src="buds.png" alt="">
   </button>
   <button class="app galmuri in" style="--k:2" data-href="galmuri.html" id="galmuri" aria-label="Galmuri">
@@ -102,16 +135,16 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
   if(last){const b=document.getElementById(last);if(b)b.querySelector('.tag').classList.add('on')}
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* 갈무리: 판이 화면만큼 커지면서 초록 화면에 로고가 올라온다. 앱이 같은 화면에서 이어 받는다 */
-  const boot=b=>{const r=b.getBoundingClientRect(),W=innerWidth,H=innerHeight,el=document.createElement('div');el.className='boot';
-    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);
+  const boot=b=>{const r=b.getBoundingClientRect(),W=innerWidth,el=document.createElement('div');el.className='boot';
+    el.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(el);const H=el.getBoundingClientRect().height;
     const from=`inset(${r.top}px ${W-r.right}px ${H-r.bottom}px ${r.left}px round 30px)`;
     if(!reduce)el.animate([{clipPath:from},{clipPath:'inset(0px 0px 0px 0px round 0px)'}],{duration:560,easing:'cubic-bezier(.5,0,.15,1)'});
-    setTimeout(()=>{location.href=b.dataset.href+'?l=1'},reduce?150:1150)};
+    setTimeout(()=>{location.href=b.dataset.href+'?l=1'+(window.__UI==='desk'?'&ui=desk':'')},reduce?150:1150)};
   document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
     try{localStorage.setItem('apps.last',b.id)}catch(_){}
     if(b.id==='galmuri')return boot(b);
     wrap.classList.add('go');
-    setTimeout(()=>{location.href=b.dataset.href+'?l=1'},reduce?120:420);
+    setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:420);
   }));
   /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
   addEventListener('pageshow',e=>{if(e.persisted){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove())}});
