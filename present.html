@@ -219,7 +219,8 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .dev{transform:scale(.94);transform-origin:50% 0}
 /* 휴대폰 틀은 사진(frame-iphone.png, 900x1840)을 반으로. 화면 구멍은 x48 y46, 804x1748 */
 .frm{position:relative;width:450px;height:920px}
-.frm>img{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;user-select:none;filter:drop-shadow(0 40px 50px rgba(var(--s),.35)) drop-shadow(0 14px 18px rgba(0,0,0,.18))}
+.frm>img{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;user-select:none}
+.frm::before{content:'';position:absolute;inset:6px 8px;border-radius:70px;box-shadow:0 40px 60px -16px rgba(var(--s),.45),0 14px 22px -8px rgba(0,0,0,.2);pointer-events:none}
 .frm .ips{position:absolute;left:24px;top:23px;border-radius:56px}
 .ipb{position:relative;padding:5px;border-radius:77px;background:linear-gradient(140deg,#9a9da3 0%,#44474c 16%,#2a2c30 48%,#3d4045 80%,#a2a5ab 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 50px 90px -30px rgba(var(--s),.7),0 26px 44px -26px rgba(0,0,0,.6)}
 .ip{position:relative;width:426px;height:898px;border-radius:72px;padding:12px;background:#050505}
@@ -244,7 +245,8 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .both{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:end;gap:60px;margin-top:40px}
 .lt{display:flex;flex-direction:column;align-items:center}
 .lts{position:relative;width:1100px;height:724px;margin-top:-56px}
-.lts>img{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;user-select:none;filter:drop-shadow(0 34px 40px rgba(var(--s),.3))}
+.lts>img{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;user-select:none}
+.lts::before{content:'';position:absolute;left:5%;right:5%;bottom:6%;height:40%;border-radius:40px;box-shadow:0 40px 60px -20px rgba(var(--s),.45);pointer-events:none}
 .ltin{position:absolute;left:119px;top:79px;width:862px;height:566px;overflow:hidden;border-radius:14px;background:var(--mint)}
 .ltin iframe{position:absolute;left:0;top:0;width:1440px;height:946px;border:0;transform:scale(.5986);transform-origin:0 0}
 .both .dev{transform:scale(.74);transform-origin:50% 100%;margin:-239px -58px 0}

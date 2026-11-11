@@ -258,14 +258,17 @@ html{touch-action:pan-y}
 /* 컴퓨터 화면: 왼쪽 세로 탭, 넓은 본문 두 줄, 시트는 가운데 창, 설정은 오른쪽 판 */
 @property --dl{syntax:'<length>';inherits:true;initial-value:0px}
 .desk{--dl:max(0px,calc((100vw - 1320px)/2));transition:--dl .55s cubic-bezier(.3,.9,.3,1)}
-.desk.pgon{--dl:max(0px,calc((100vw - 500px - 1320px)/2))}
-.desk.pgon #view{max-width:min(1072px,calc(100vw - 500px - 248px - 24px))}
-.desk.pgon header{max-width:min(1072px,calc(100vw - 500px - 248px - 24px))}
+.desk.pgon{--dl:max(0px,calc((100vw - 488px - 1320px)/2))}
+.desk.pgon #view{max-width:min(1072px,calc(100vw - 488px - 248px - 24px))}
+.desk.pgon header{max-width:min(1072px,calc(100vw - 488px - 248px - 24px))}
 .desk #view,.desk header{transition:max-width .55s cubic-bezier(.3,.9,.3,1)}
-.desk .pgw{left:auto!important;right:0!important;width:480px!important;transform:none!important}
-.desk .page{border-radius:30px 0 0 30px;box-shadow:-24px 0 60px rgba(var(--s),.28),-1px 0 0 rgba(127,127,127,.18);transform:translateX(104%)}
-.desk .pgw.on .page{transform:none}
-.desk .pgh{padding-top:24px}
+.desk .pgw{left:auto!important;right:24px!important;top:24px!important;bottom:24px!important;width:440px!important;transform:none!important;overflow:visible!important}
+.desk .page{border-radius:30px;padding:0 0 28px;box-shadow:0 0 0 .5px rgba(127,127,127,.25),0 30px 70px -10px rgba(var(--s),.38),0 10px 24px -8px rgba(var(--s),.25);transform:translateX(calc(100% + 40px)) scale(.96);opacity:0;transition:transform .5s cubic-bezier(.2,1,.3,1),opacity .3s,visibility 0s .5s}
+.desk .pgw.on .page{transform:none;opacity:1;transition:transform .5s cubic-bezier(.2,1,.3,1),opacity .25s,visibility 0s}
+.desk .page .pgh{padding:22px 22px 10px}
+.desk .page .grp,.desk .page .card{margin-left:18px!important;margin-right:18px!important;width:auto}
+.desk .page h2.sm{padding:22px 24px 10px}
+.desk .page .ver,.desk .page .hd{padding-left:24px;padding-right:24px}
 .desk #app{max-width:none;margin:0;padding:0 0 72px calc(var(--dl) + 248px)}
 .desk header{height:84px;padding:0 40px;max-width:1072px}
 .desk header::after{display:none}
@@ -665,7 +668,8 @@ input{-webkit-user-select:text;user-select:text}
 .ipbtn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#5c5f65,#2f3135 60%,#55585d)}
 .ipbtn.cc{width:3px;background:linear-gradient(90deg,#3a3d42,#1f2124)}
 .frm2{position:relative;width:450px;height:920px}
-.frm2>img{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;user-select:none;filter:drop-shadow(0 50px 70px rgba(0,0,0,.75)) drop-shadow(0 18px 24px rgba(0,0,0,.6))}
+.frm2>img{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;user-select:none}
+.frm2::before{content:'';position:absolute;inset:6px 8px;border-radius:70px;box-shadow:0 50px 80px -20px rgba(0,0,0,.85),0 18px 30px -10px rgba(0,0,0,.6);pointer-events:none}
 .frm2 .ips{position:absolute;left:24px;top:23px;border-radius:56px}
 .mk-cap{margin:0;color:#8e93a3;font:500 13px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:.01em;text-align:center}
 .uim{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1001;display:flex;padding:4px;border-radius:14px;background:rgba(36,38,42,.78);-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 10px 30px rgba(0,0,0,.35);font:600 13px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif}
