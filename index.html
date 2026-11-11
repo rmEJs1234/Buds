@@ -1,53 +1,44 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="이어버드"><link rel="apple-touch-icon" href="buds.png"><title>Galaxy Buds4 Pro for iOS 27</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="앱"><link rel="apple-touch-icon" href="buds.png"><title>앱 고르기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap" rel="stylesheet">
 <style>
-/* Layout: one iPhone-width column — floating earbuds, a question, then a grouped list of versions like an iOS Settings section */
+/* 한 줄 기둥: 위에 질문, 아래에 앱 하나당 큰 판 하나. 판이 곧 그 앱의 얼굴이다 */
 :root{
-  --bg:#000;--card:rgba(255,255,255,.07);--card-hi:rgba(255,255,255,.12);--line:rgba(255,255,255,.1);
-  --ink:#f5f5f7;--mut:#98989f;--accent:#3a9cff;--new:#34c759;
+  --bg:#000;--ink:#f5f5f7;--mut:#98989f;--card:#1c1c1e;
+  --g:#22D873;--gtx:#04281A;
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,monospace;
   color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);word-break:keep-all;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.wrap{min-height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;gap:22px;
+.wrap{min-height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;gap:18px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-block:calc(28px + env(safe-area-inset-top,0px)) calc(28px + env(safe-area-inset-bottom,0px));
   transition:transform .5s cubic-bezier(.55,0,.8,.4),opacity .35s ease-in .1s,filter .5s ease-in}
 .wrap.go{transform:scale(1.08);opacity:0;filter:blur(14px)}
-.hero{display:grid;place-items:center;padding-top:10px;position:relative}
-.hero img{width:150px;height:auto;filter:drop-shadow(0 16px 24px rgba(0,0,0,.6));animation:fl 6s ease-in-out infinite}
-.hero::after{content:"";position:absolute;bottom:-6px;left:50%;width:96px;height:10px;margin-left:-48px;border-radius:50%;
-  background:radial-gradient(closest-side,rgba(255,255,255,.18),transparent);filter:blur(3px);animation:sh 6s ease-in-out infinite}
+h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.app{all:unset;cursor:pointer;position:relative;display:flex;flex-direction:column;justify-content:space-between;height:220px;padding:22px;border-radius:30px;overflow:hidden;
+  transition:transform .4s cubic-bezier(.3,1.35,.4,1)}
+.app:active{transform:scale(.97);transition-duration:.12s}
+.app:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.buds{background:var(--card);box-shadow:inset 0 0 0 .6px rgba(255,255,255,.14),inset 1.5px 1.5px 1px -1px rgba(255,255,255,.3)}
+.buds img{position:absolute;right:18px;top:50%;width:150px;height:auto;margin-top:-62px;filter:drop-shadow(0 16px 24px rgba(0,0,0,.6));animation:fl 6s ease-in-out infinite}
 @keyframes fl{50%{transform:translateY(-6px)}}
-@keyframes sh{50%{transform:scale(.85);opacity:.6}}
-.eyebrow{margin:0;font-size:13px;letter-spacing:.06em;color:var(--mut);text-align:center}
-h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-.02em;text-align:center;text-wrap:balance}
-.list{display:flex;flex-direction:column;border-radius:26px;background:var(--card);overflow:hidden;
-  box-shadow:inset 0 0 0 .6px rgba(255,255,255,.14),inset 1.5px 1.5px 1px -1px rgba(255,255,255,.35)}
-.v{all:unset;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px 16px;position:relative;transition:background .3s}
-.v+.v::before{content:"";position:absolute;top:0;left:62px;right:0;height:.5px;background:var(--line)}
-.v:active{background:var(--card-hi);transition:background .05s}
-.v:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:22px}
-.num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:600 13px var(--mono);color:var(--ink);
-  background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 .6px rgba(255,255,255,.2)}
-.v.latest .num{background:var(--accent);box-shadow:none;color:#fff}
-.tx{min-width:0;display:flex;flex-direction:column;gap:2px}
-.tt{font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ds{font-size:13px;color:var(--mut)}
-.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;letter-spacing:.02em}
-.tag.new{background:rgba(52,199,89,.16);color:var(--new)}
-.tag.last{background:rgba(58,156,255,.16);color:var(--accent)}
-.cv{width:9px;height:15px;color:var(--mut)}
-.foot{margin:0;font-size:13px;color:var(--mut);text-align:center;text-wrap:balance}
-.in{animation:up .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0)*60ms)}
+.buds .nm{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.buds .ds{font-size:14px;color:var(--mut);margin-top:4px}
+.galmuri{background:var(--g)}
+.galmuri .wm{font-family:"Bricolage Grotesque",var(--font);font-weight:800;font-size:64px;line-height:1;letter-spacing:-.045em;color:var(--gtx);align-self:flex-start;margin-top:auto}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.12);color:var(--ink);opacity:0;transition:opacity .3s}
+.tag.on{opacity:1}
+.galmuri .tag{background:rgba(4,40,26,.14);color:var(--gtx)}
+.foot{margin:6px 0 0;font-size:13px;color:var(--mut);text-align:center;text-wrap:balance}
+.in{animation:up .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0)*70ms)}
 @keyframes up{from{transform:translateY(14px);opacity:.001}}
-@media (prefers-reduced-motion:reduce){.hero img,.hero::after,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
+@media (prefers-reduced-motion:reduce){.buds img,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
 </style></head><body>
 
 <style>
-/* 컴퓨터에서 열면: 아이폰 목업(받은 프레임 이미지) 안에 앱을 띄움 */
+/* 컴퓨터에서 열면: 아이폰 목업 안에 띄움 */
 .mock body{overflow:hidden}
 .mock .wrap{display:none}
 .mk{position:fixed;inset:0;display:grid;place-items:center;
@@ -64,7 +55,6 @@ h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing
 .mk-ic svg{height:11px;width:auto}
 .mk-home{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:rgba(255,255,255,.75);z-index:3;pointer-events:none}
 .mk-cap{margin:0;color:#8e93a3;font:500 13px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;letter-spacing:.02em;text-align:center}
-.mk-cap b{color:#d9dce6;font-weight:600}
 </style>
 <script>
 (()=>{
@@ -76,8 +66,8 @@ h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing
   mk.innerHTML=`<div class="mk-stage"><div class="mk-phone"><div class="mk-screen"><div class="mk-status"><span class="mk-time"></span><span class="mk-ic"><svg viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
       <svg viewBox="0 0 16 12" fill="#fff"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg>
       <svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke="#fff" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="#fff"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#fff" fill-opacity=".45"/></svg>
-    </span></div><iframe title="Galaxy Buds4 Pro" src="${base}#phone"></iframe><div class="mk-home"></div></div><img class="mk-frame" src="frame.png" alt="" draggable="false"></div>
-    <p class="mk-cap"><b>Galaxy Buds4 Pro</b> for iOS 27 · 휴대폰으로 열면 전체 화면으로 보여요</p></div>`;
+    </span></div><iframe title="앱 고르기" src="${base}#phone"></iframe><div class="mk-home"></div></div><img class="mk-frame" src="frame.png" alt="" draggable="false"></div>
+    <p class="mk-cap">휴대폰으로 열면 전체 화면으로 보여요</p></div>`;
   document.body.appendChild(mk);
   const st=mk.querySelector('.mk-stage'),tm=mk.querySelector('.mk-time');
   const fit=()=>{const s=Math.min(1,(innerHeight-40)/(909+20+18),(innerWidth-40)/460);st.style.transform=`scale(${s})`};
@@ -87,28 +77,27 @@ h1{margin:4px 0 0;font-size:30px;line-height:1.15;font-weight:700;letter-spacing
 })();
 </script>
 <main class="wrap" id="wrap">
-  <div class="hero in" style="--k:0"><img src="buds.png" alt="Galaxy Buds4 Pro 이어버드"></div>
-  <div class="in" style="--k:1">
-    <p class="eyebrow">Galaxy Buds4 Pro for iOS 27</p>
-    <h1>어떤 버전으로 열까요?</h1>
-  </div>
-  <nav class="list in" style="--k:2" aria-label="버전 목록">
-    <button class="v latest" data-href="v4.html" id="v4"><span class="num">4</span><span class="tx"><span class="tt">개선 버전 <span class="tag new">최신</span></span><span class="ds">리퀴드 글라스 렌즈, 유리 툴바, 밀어서 뒤로가기까지 전부 다듬은 버전</span></span><svg class="cv" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L7 7l-5.5 5.5"/></svg></button>
-    <button class="v" data-href="v3.html" id="v3"><span class="num">3</span><span class="tx"><span class="tt">토글 · 블러 수정</span><span class="ds">토글 꾹 누르기와 이어버드 나올 때 블러까지 고친 버전</span></span><svg class="cv" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L7 7l-5.5 5.5"/></svg></button>
-    <button class="v" data-href="v2.html" id="v2"><span class="num">2</span><span class="tx"><span class="tt">꾹 누르기 수정</span><span class="ds">꾹 누르면 투명해지는 효과만 고친 버전</span></span><svg class="cv" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L7 7l-5.5 5.5"/></svg></button>
-    <button class="v" data-href="v1.html" id="v1"><span class="num">1</span><span class="tx"><span class="tt">이전 버전</span><span class="ds">처음 받은 그대로의 원본</span></span><svg class="cv" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L7 7l-5.5 5.5"/></svg></button>
-  </nav>
-  <p class="foot in" style="--k:3">앱 안에서 왼쪽 위 나가기 버튼을 누르면 이 화면으로 돌아와요</p>
+  <h1 class="in" style="--k:0">어떤 앱을 열까요?</h1>
+  <button class="app buds in" style="--k:1" data-href="v4.html" id="buds">
+    <span class="tag">마지막으로 봄</span>
+    <span><span class="nm" style="display:block">Galaxy Buds4 Pro</span><span class="ds" style="display:block">for iOS 27</span></span>
+    <img src="buds.png" alt="">
+  </button>
+  <button class="app galmuri in" style="--k:2" data-href="galmuri.html" id="galmuri" aria-label="Galmuri">
+    <span class="tag">마지막으로 봄</span>
+    <span class="wm" aria-hidden="true">Galmuri.</span>
+  </button>
+  <p class="foot in" style="--k:3">앱 안에서 나가기를 누르면 이 화면으로 돌아와요</p>
 </main>
 
 <script>
 (()=>{
   if(window.__MOCK)return;
   const wrap=document.getElementById('wrap');
-  let last=null;try{last=localStorage.getItem('buds.last')}catch(_){}
-  if(last){const b=document.getElementById(last);if(b){const t=document.createElement('span');t.className='tag last';t.textContent='마지막으로 봄';b.querySelector('.tt').appendChild(t)}}
-  document.querySelectorAll('.v').forEach(b=>b.addEventListener('click',()=>{
-    try{localStorage.setItem('buds.last',b.id)}catch(_){}
+  let last=null;try{last=localStorage.getItem('apps.last')}catch(_){}
+  if(last){const b=document.getElementById(last);if(b)b.querySelector('.tag').classList.add('on')}
+  document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
+    try{localStorage.setItem('apps.last',b.id)}catch(_){}
     wrap.classList.add('go');
     const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
     setTimeout(()=>{location.href=b.dataset.href+'?l=1'},reduce?120:420);
