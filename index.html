@@ -1,7 +1,7 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="앱"><link rel="apple-touch-icon" href="buds.png"><title>앱 고르기</title>
 <script>/* 홈 화면에 추가할 때: 마지막으로 연 앱의 아이콘과 이름을 쓴다 */
 try{if(localStorage.getItem('apps.last')!=='buds'){document.querySelector('link[rel=apple-touch-icon]').href='galmuri-icon.png';document.querySelector('meta[name=apple-mobile-web-app-title]').content='갈무리'}}catch(e){}</script>
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#000000"><link rel="prefetch" href="galmuri.html"><link rel="prefetch" href="frame-iphone.png"><script>document.documentElement.style.background="#000"</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap" rel="stylesheet">
 <style>
@@ -78,6 +78,9 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
 .iphome{position:absolute;left:50%;bottom:8px;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:currentColor;opacity:.9;z-index:3;pointer-events:none;color:#fff;transition:color .3s}
 .ipbtn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#5c5f65,#2f3135 60%,#55585d)}
 .ipbtn.cc{width:3px;background:linear-gradient(90deg,#3a3d42,#1f2124)}
+.frm2{position:relative;width:450px;height:920px}
+.frm2>img{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;user-select:none;filter:drop-shadow(0 50px 70px rgba(0,0,0,.75)) drop-shadow(0 18px 24px rgba(0,0,0,.6))}
+.frm2 .ips{position:absolute;left:24px;top:23px;border-radius:56px}
 .mk-cap{margin:0;color:#8e93a3;font:500 13px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:.01em;text-align:center}
 .uim{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1001;display:flex;padding:4px;border-radius:14px;background:rgba(36,38,42,.78);-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 10px 30px rgba(0,0,0,.35);font:600 13px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif}
 .uim button{position:relative;z-index:1;width:78px;height:32px;border:0;background:none;color:rgba(255,255,255,.55);cursor:pointer;font:inherit;transition:color .25s}
@@ -99,25 +102,30 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
  const bar=document.createElement('div');bar.className='uim';bar.setAttribute('role','group');bar.setAttribute('aria-label','보기 방식');
  bar.innerHTML=`<i style="transform:translateX(${m==='desk'?100:0}%)"></i><button data-m="phone" aria-pressed="${m==='phone'}">휴대폰</button><button data-m="desk" aria-pressed="${m==='desk'}">컴퓨터</button>`;
  bar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.m===m)return;const n=b.dataset.m;try{localStorage.setItem('apps.ui',n)}catch(_){}
-  bar.querySelector('i').style.transform=`translateX(${n==='desk'?100:0}%)`;bar.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.body.classList.add('uiout');
-  setTimeout(()=>{const u=new URL(location.href);u.searchParams.set('ui',n);u.searchParams.delete('open');u.hash='';location.replace(u.href)},320)});
- if(m==='desk'){R.classList.add('desk');document.body.appendChild(bar);return}
+  bar.querySelector('i').style.transform=`translateX(${n==='desk'?100:0}%)`;bar.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  try{sessionStorage.setItem('uiin',n)}catch(_){}
+  const t=document.querySelector('.mk-stage')||document.getElementById('app')||document.querySelector('.wrap')||document.body;
+  t.animate([{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:n==='desk'?'scale(1.08)':'scale(.94)',filter:'blur(8px)'}],{duration:340,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+  document.documentElement.animate([{backgroundColor:getComputedStyle(document.documentElement).backgroundColor},{backgroundColor:n==='desk'?(document.documentElement.classList.contains('dk')||!document.getElementById('app')?'#000':'#E9F4EE'):'#0d0f12'}],{duration:340,fill:'forwards'});
+  setTimeout(()=>{const u=new URL(location.href);u.searchParams.set('ui',n);u.searchParams.delete('open');u.hash='';location.replace(u.href)},330)});
+ let uin=null;try{uin=sessionStorage.getItem('uiin');sessionStorage.removeItem('uiin')}catch(_){}
+ const uiIn=el=>{if(!uin||!el)return;el.animate([{opacity:0,transform:uin==='desk'?'scale(.96)':'scale(1.08)',filter:'blur(8px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:520,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'})};
+ if(m==='desk'){R.classList.add('desk');document.body.appendChild(bar);uiIn(document.getElementById('app')||document.querySelector('.wrap'));return}
  R.classList.add('mockw');window.__MOCK=1;
  const src=window.__MOCKSRC?window.__MOCKSRC(q):(location.pathname.split('/').pop()||'index.html');
  const mk=document.createElement('div');mk.className='mk';
- mk.innerHTML=`<div class="mk-stage"><div class="ipb">
-  <i class="ipbtn" style="left:-3px;top:180px;height:34px"></i><i class="ipbtn" style="left:-3px;top:244px;height:64px"></i><i class="ipbtn" style="left:-3px;top:322px;height:64px"></i><i class="ipbtn" style="right:-3px;top:268px;height:100px"></i><i class="ipbtn cc" style="right:-3px;top:566px;height:60px"></i>
-  <div class="ip"><div class="ips"><div class="ipsb"><span class="iptime"></span><span class="ipic"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" stroke="none"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg><svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke-opacity=".4" fill="none"/><rect x="2" y="2" width="17" height="8" rx="2" stroke="none"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" stroke="none" fill-opacity=".45"/></svg></span></div>
-  <i class="ipdi"></i><iframe title="휴대폰 화면" src="${src}"></iframe><i class="iphome"></i></div></div></div>
+ mk.innerHTML=`<div class="mk-stage"><div class="frm2">
+  <div class="ips"><div class="ipsb"><span class="iptime"></span><span class="ipic"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" stroke="none"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg><svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke-opacity=".4" fill="none"/><rect x="2" y="2" width="17" height="8" rx="2" stroke="none"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" stroke="none" fill-opacity=".45"/></svg></span></div>
+  <iframe title="휴대폰 화면" src="${src}"></iframe><i class="iphome"></i></div><img src="frame-iphone.png" alt=""></div>
   <p class="mk-cap">iPhone 18 Pro 미리보기 · 휴대폰으로 열면 전체 화면으로 보여요</p></div>`;
  document.body.appendChild(mk);document.body.appendChild(bar);
  const st=mk.querySelector('.mk-stage'),tm=mk.querySelector('.iptime'),scr=mk.querySelector('.ips'),sb=mk.querySelector('.ipsb'),hm=mk.querySelector('.iphome'),fr=mk.querySelector('iframe');
- const fit=()=>{const s=Math.min(1,(innerHeight-120)/(908+70),(innerWidth-60)/436);st.style.transform=`scale(${s})`};
+ const fit=()=>{const s=Math.min(1,(innerHeight-120)/(920+70),(innerWidth-60)/450);st.style.transform=`scale(${s})`};
  const clock=()=>{const d=new Date();tm.textContent=(d.getHours()%12||12)+':'+String(d.getMinutes()).padStart(2,'0')};
  /* 상태 표시줄 색을 안쪽 화면 배경에 맞춘다 */
  const tint=()=>{try{const d=fr.contentDocument;if(!d||!d.body)return;const c=getComputedStyle(d.body).backgroundColor,v=(c.match(/[\d.]+/g)||[]).map(Number);if(v.length<3||v[3]===0)return;
   scr.style.background=c;const l=(v[0]*299+v[1]*587+v[2]*114)/1000;sb.style.color=hm.style.color=l>150?'#000':'#fff'}catch(_){}};
- fit();clock();addEventListener('resize',fit);setInterval(clock,15000);setInterval(tint,400);
+ fit();clock();addEventListener('resize',fit);uiIn(st);setInterval(clock,15000);setInterval(tint,400);
 })();
 </script>
 <main class="wrap" id="wrap">
@@ -148,7 +156,10 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
     const from=`inset(${r.top}px ${W-r.right}px ${H-r.bottom}px ${r.left}px round 30px)`;
     if(!reduce)el.animate([{clipPath:from},{clipPath:'inset(0px 0px 0px 0px round 0px)'}],{duration:560,easing:'cubic-bezier(.5,0,.15,1)'});
     setTimeout(()=>{location.href=b.dataset.href+'?l=1'+(window.__UI==='desk'?'&ui=desk':'')},reduce?150:1150)};
+  /* 한 번 누르면 확실히 들어간다: 겹친 누름은 무시하고, 혹시 이동이 멈추면 다시 시도한다 */
+  let going=0;
   document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
+    if(going)return;going=1;setTimeout(()=>{going=0},2500);
     try{localStorage.setItem('apps.last',b.id)}catch(_){}
     if(b.id==='present'){wrap.classList.add('go');setTimeout(()=>{(window.top||window).location.href='present.html'},reduce?120:420);return}
     if(b.id==='galmuri')return boot(b);
@@ -156,7 +167,7 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
     setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:420);
   }));
   /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
-  addEventListener('pageshow',e=>{if(e.persisted){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove());const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content='#000000'}});
+  addEventListener('pageshow',e=>{going=0;if(e.persisted||document.querySelector('.boot')){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove());const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content='#000000'}});
 })();
 </script>
 </body></html>
