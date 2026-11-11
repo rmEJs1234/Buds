@@ -68,6 +68,15 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .s:is(.on,.out) .wm span{animation:lt 1s var(--spring) both;animation-delay:calc(var(--t0,0s) + var(--d0,.2s) + var(--i)*55ms)}
 @keyframes lt{from{opacity:0;transform:translateY(90px) rotate(12deg);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
 
+/* 휴대폰용 가벼운 모드 */
+.lite .s:not(.on):not(.out){display:none}
+.lite .s:is(.on,.out) .a,.lite .s:is(.on,.out) .ap,.lite .s:is(.on,.out) .nt,.lite .s:is(.on,.out) .map .to{animation-name:lrise}
+.lite .s:is(.on,.out) .wm span{animation-name:lrise}
+.lite .s:is(.on,.out) .phone.ap{animation-name:lrise}
+@keyframes lrise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.lite .nt{-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff}
+.lite .fill::before,.lite .fill::after,.lite .wv i{animation:none}
+.lite .frm::before,.lite .lts::before{display:none}
 /* 위쪽 머리말: 로고와 쪽수. 초록 장에서는 숨는다 */
 #mark{position:absolute;left:160px;top:46px;z-index:30;display:flex;align-items:center;gap:18px;pointer-events:none;transition:opacity .5s .7s,transform .8s var(--out) .7s}
 #mark.hide{opacity:0;transform:translateY(-14px);transition-delay:0s}
@@ -476,7 +485,13 @@ S.forEach(s=>{s.insertAdjacentHTML('beforeend','<i class="shd"></i>');if(s.class
 $('#mark span').lastChild.textContent=' / '+S.length;
 
 /* 무대를 화면에 맞추기 */
-let K=1,ROT=false;const fit=()=>{ROT=innerHeight>innerWidth*1.15&&innerWidth<820;const W=ROT?innerHeight:innerWidth,H=ROT?innerWidth:innerHeight;K=Math.min(W/1920,H/1080);stage.style.transform=`${ROT?'rotate(90deg) ':''}scale(${K})`};
+/* 휴대폰은 메모리가 빠듯하다: 큰 무대를 줄여 그리는 대신 처음부터 작게 그리고(zoom), 흐림 효과와 겹치는 장면을 뺀다 */
+const LITE=matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<820,ZOOM=LITE&&window.CSS&&CSS.supports('zoom','0.5');
+if(LITE)document.documentElement.classList.add('lite');
+/* 사파리는 zoom 안의 iframe 화면 폭을 같이 줄여 버린다: 앱 화면만 원래 크기로 그리고 transform으로 줄인다 */
+const fz=f=>{if(!ZOOM)return;const lt=f.parentNode.classList.contains('ltin');f.style.zoom=1/K;f.style.transformOrigin='0 0';f.style.transform=`scale(${(lt?.5986:1)*K})`;f.style.top=(lt?0:54*K)+'px'};
+let K=1,ROT=false;const fit=()=>{ROT=innerHeight>innerWidth*1.15&&innerWidth<820;const W=ROT?innerHeight:innerWidth,H=ROT?innerWidth:innerHeight;K=Math.min(W/1920,H/1080);
+ if(ZOOM){stage.style.zoom=K;stage.style.transform=ROT?'rotate(90deg)':'';$$('iframe',stage).forEach(fz)}else stage.style.transform=`${ROT?'rotate(90deg) ':''}scale(${K})`};
 fit();addEventListener('resize',fit);
 
 /* 휴대폰 껍데기 */
@@ -499,7 +514,7 @@ setInterval(()=>{$$('.s.on .ips').forEach(sc=>{const f=$('iframe',sc);try{const 
 
 /* 앱 띄우기 */
 function mount(box,src,before){box.querySelectorAll('iframe').forEach(f=>f.remove());const f=document.createElement('iframe');f.title='갈무리 앱';f.src=src;
- before?box.insertBefore(f,before):box.appendChild(f);
+ before?box.insertBefore(f,before):box.appendChild(f);fz(f);
  return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));r(f)},{once:true}))}
 
 /* 시연 장을 처음 상태로: 카메라 멀리, 자막 끄기, 강조 풀기 */
@@ -518,7 +533,7 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const step=async(t,i)=>{await waitStep();if(!alive())throw 0;if(t)cap(t,i)};
  const cap=(t,i)=>{if(i!=null)hl(i);if(!capEl)return;const cw=$('.cw',capEl);if(!capEl.classList.contains('on')){cw.replaceChildren();roll(cw,t);capEl.classList.add('on')}else roll(cw,t,capEl)};
  /* 카메라: 휴대폰은 오른쪽 제자리에서 무대를 뚫고 나갈 만큼 커지고, 지금 누르는 곳이 화면 가운데 높이에 온다 */
- const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive()||ROT)return;const z0=z;z=Math.min(1.8,z0*1.25);
+ const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive()||ROT||LITE)return;const z0=z;z=Math.min(1.8,z0*1.25);
   {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){el.scrollIntoView({block:'center',behavior:'smooth'});await w(550)}}
   const fr=f.getBoundingClientRect(),r=el.getBoundingClientRect(),k=fr.width/402,sy=fr.top+(r.top+r.height/2)*k;
   const sr=stage.getBoundingClientRect(),cr=cam.getBoundingClientRect(),mt=getComputedStyle(cam).transform,m=mt&&mt!=='none'?new DOMMatrix(mt):new DOMMatrix();
@@ -650,9 +665,10 @@ async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)ret
 const kind=s=>s.classList.contains('green')?'g':s.classList.contains('demo')?'d':'m';
 function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(tr)tr.end();
  const d=dir||(n>cur?1:-1),old=S[cur],nw=S[n];
- const mode=!old||RM?'none':kind(nw)==='g'?'fill':kind(old)==='g'?'drain':kind(old)==='d'&&kind(nw)==='d'?'morph':'push';
- const T={none:0,fill:1250,drain:1250,morph:0,push:1050}[mode];
- nw.style.setProperty('--t0',{none:'0s',fill:'.55s',drain:'.5s',morph:'.2s',push:'.38s'}[mode]);
+ let mode=!old||RM?'none':kind(nw)==='g'?'fill':kind(old)==='g'?'drain':kind(old)==='d'&&kind(nw)==='d'?'morph':'push';
+ if(LITE&&mode!=='none'&&mode!=='morph')mode='fade';
+ const T={none:0,fill:1250,drain:1250,morph:0,push:1050,fade:320}[mode];
+ nw.style.setProperty('--t0',{none:'0s',fill:'.55s',drain:'.5s',morph:'.2s',push:'.38s',fade:'.1s'}[mode]);
  nw.dataset.from=mode==='morph'?'d':'';
  $('.phone.ap',nw)?.classList.remove('ready');
  const zoomed=!!(old&&$('.cam',old)&&$('.cam',old).style.transform);
@@ -660,6 +676,7 @@ function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(t
  nw.classList.add('on');cur=n;tok++;gate=null;pend=0;steps=left=stepCount(nw);nxUpd();
  const anims=[],A=(el,kf,o)=>{if(!el)return;anims.push(el.animate(kf,{fill:'both',...o}))};
  const E='cubic-bezier(.76,0,.16,1)';
+ if(mode==='fade')A(nw,[{opacity:0},{opacity:1}],{duration:T,easing:'ease-out'});
  if(mode==='push'){nw.classList.add('edge');nw.classList.toggle('rev',d<0);
   A(nw,[{transform:`translateX(${d*100}%)`},{transform:'none'}],{duration:T,easing:E});
   A(old,[{transform:'none'},{transform:`translateX(${-d*26}%) scale(.94)`}],{duration:T,easing:E});
@@ -672,7 +689,7 @@ function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(t
   [...old.children].filter(c=>!c.matches('.wv,.shd')).forEach(c=>A(c,[{opacity:1,filter:'blur(0)',transform:'none'},{opacity:0,filter:'blur(10px)',transform:'translateY(40px)'}],{duration:420,easing:'cubic-bezier(.4,0,.6,1)'}));
   A(old,[{transform:'none'},{transform:'translateY(calc(100% + 70px))'}],{duration:T,delay:200,easing:'cubic-bezier(.65,0,.3,1)'});
   A(nw,[{transform:'scale(1.05)'},{transform:'none'}],{duration:T+400,delay:150,easing:'cubic-bezier(.2,.8,.2,1)'})}
- if(mode==='morph'){nw.style.background='transparent';A($('.txt',old),[{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:'translateY(-26px)',filter:'blur(10px)'}],{duration:460,easing:'cubic-bezier(.4,0,.2,1)'})}
+ if(mode==='morph'){nw.style.background='transparent';A($('.txt',old),LITE?[{opacity:1},{opacity:0}]:[{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:'translateY(-26px)',filter:'blur(10px)'}],{duration:460,easing:'cubic-bezier(.4,0,.2,1)'})}
  let done=0;const end=()=>{if(done)return;done=1;anims.forEach(a=>a.cancel());nw.classList.remove('edge','rev');nw.style.background='';
   if(old){old.classList.remove('out');old.style.zIndex='';old.querySelectorAll('iframe').forEach(f=>f.remove());resetDemo(old,true);$('.phone.ap',old)?.classList.remove('ready')}
   if(tr&&tr.end===end)tr=null};
