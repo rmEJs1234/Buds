@@ -16,7 +16,7 @@
   --card-bg:linear-gradient(180deg,#FFFFFF,#F4FAF6);
   --well-bg:linear-gradient(180deg,#CDE2D6,#E2EFE8);
   --ink-bg:linear-gradient(#11402E,#11402E);
-  --btn:#FFFFFF; --gb:#22D873; --gb-in:#1DC468; --gt:#0E8F47;
+  --btn:#FFFFFF; --gb:#22D873; --gb-in:#1DC468; --gt:#0E8F47; --lid:#11402E;
   --navsh:0 -1px 0 rgba(var(--s),.08),0 -12px 30px -12px rgba(var(--s),.35);
   --g-bg:linear-gradient(180deg,#43EA8D,#14C663);
   --g-in:linear-gradient(180deg,#10B258,#1FD46F);
@@ -37,7 +37,7 @@
   /* 다크는 진짜 검정과 회색. 초록은 버튼과 물에만 */
   --bg:#000000; --card:#1C1C1E; --ink:#FFFFFF; --sub:#98989F; --faint:#5C5C61; --well:#111112;
   --gtx:#000000; --on-ink:#000000; --s:0,0,0; --scrim:rgba(0,0,0,.65);
-  --btn:#2C2C2E; --gb:#2BD877; --gb-in:#25C66C; --gt:#2BD877;
+  --btn:#2C2C2E; --gb:#2BD877; --gb-in:#25C66C; --gt:#2BD877; --lid:#3A3A3C;
   --navsh:0 -1px 0 rgba(255,255,255,.07),0 -12px 30px -12px #000;
   --card-bg:linear-gradient(#1C1C1E,#1C1C1E);
   --well-bg:linear-gradient(#0E0E0F,#0E0E0F);
@@ -146,13 +146,13 @@ button.rowb:active{background:var(--well)}
 @keyframes wv{to{transform:translateX(var(--wl,-26px))}}
 .fill em{position:absolute;inset:0 0 14px;display:grid;place-items:center;color:var(--gtx);transform:translateY(-60px);transition:transform .9s var(--spring)}
 .jarw{flex:none;display:flex;flex-direction:column;align-items:center;transform-origin:50% 100%}
-.lid{width:58px;height:13px;border-radius:6px;background:var(--ink-bg);box-shadow:var(--kup);margin-bottom:-3px;position:relative;z-index:1}
+.lid{width:66px;height:14px;border-radius:7px 7px 4px 4px;background:var(--lid);box-shadow:var(--kup);margin-bottom:-5px;position:relative;z-index:1}
 .jar{position:relative;display:block;width:88px;height:112px;border-radius:22px 22px 30px 30px;background:var(--well-bg);box-shadow:0 1px 0 var(--lip);overflow:hidden}
 .jar .fill{inset:0 -16px -14px;transform:translateY(124px);background-size:100% calc(100% - 9px);background-position:0 9px;transform-origin:50% 0}
 .jar .fill::before,.jar .fill::after{height:9px;width:calc(100% + 40px);background-size:40px 9px;--wl:-40px}
-.jarw.big .jar{width:120px;height:152px;border-radius:30px 30px 40px 40px}
-.jarw.big .lid{width:80px;height:16px;border-radius:8px}
-.jarw.big .jar .fill{transform:translateY(164px)}
+.jarw.jbig .jar{width:120px;height:152px;border-radius:30px 30px 40px 40px}
+.jarw.jbig .lid{width:90px;height:17px;border-radius:8px 8px 5px 5px;margin-bottom:-6px}
+.jarw.jbig .jar .fill{transform:translateY(164px)}
 .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .36s var(--out)}
 .open>.more{grid-template-rows:1fr}
 .more>div{overflow:hidden;min-height:0}
@@ -599,7 +599,7 @@ function acts(i,home){const b=(a,t,k='s')=>`<button class="btn ${k}" data-a="${a
  if(i.cat==='consumable')return b('eaten','다 썼어요');
  return info}
 const vessel=(k,lv,lab,h)=>`<span class="ves"${h?` style="width:${h}px;height:${h}px;border-radius:${Math.round(h*.32)}px"`:''}><em>${lab}</em><i class="fill" data-k="${k}"${h?` data-h="${h}"`:''} data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"><em>${lab}</em></i></span>`;
-const jar=(k,lv,big)=>`<span class="jarw${big?' big':''}"><i class="lid"></i><span class="jar"><i class="fill" data-k="${k}" data-h="${big?152:112}" data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"></i></span></span>`;
+const jar=(k,lv,big)=>`<span class="jarw${big?' jbig':''}"><i class="lid"></i><span class="jar"><i class="fill" data-k="${k}" data-h="${big?152:112}" data-lv="${Math.max(0,Math.min(1,lv)).toFixed(3)}"></i></span></span>`;
 function row(i,open,home,wrap){const a=acts(i,home),q=home?question(i):'',k=`data-r="i${i.id}"`;
  const h=`<div class="row${urgent(i)?' urg':''}${faded(i)?' dim':''}${open?' open':''}" ${wrap?'':k}>${wrap?'':`<span class="swb${i.cat==='durable'?' sell':''}" aria-hidden="true"><span>${i.cat==='durable'?'팔기':'다 썼어요'}</span></span>`}
  <button class="rowb" data-a="open" data-v="${i.id}" aria-expanded="${!!open}">${vessel('v'+i.id,level(i),label(i))}
