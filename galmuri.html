@@ -481,6 +481,20 @@ input{-webkit-user-select:text;user-select:text}
 .kv dt{font-size:12px;color:var(--faint)}
 .kv dd{font-size:14px;font-weight:600;color:var(--ink);overflow-wrap:anywhere;margin-top:2px}
 .desc{font-size:14px;color:var(--sub);margin-top:14px}
+.scan{position:relative;aspect-ratio:4/3;margin:16px 0 14px;border-radius:20px;overflow:hidden;background:#15181b;color:#fff;display:grid;place-items:center}
+.scan img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:fdu .4s var(--out)}
+.scan .sci{display:grid;justify-items:center;gap:12px;font-size:13px;opacity:.75}
+.scan .cn{position:absolute;inset:16% 12%;border-radius:14px;pointer-events:none;z-index:1;
+ background:linear-gradient(#fff,#fff) 0 0/22px 3px,linear-gradient(#fff,#fff) 0 0/3px 22px,linear-gradient(#fff,#fff) 100% 0/22px 3px,linear-gradient(#fff,#fff) 100% 0/3px 22px,linear-gradient(#fff,#fff) 0 100%/22px 3px,linear-gradient(#fff,#fff) 0 100%/3px 22px,linear-gradient(#fff,#fff) 100% 100%/22px 3px,linear-gradient(#fff,#fff) 100% 100%/3px 22px;background-repeat:no-repeat;transition:filter .3s}
+.scan.run img{filter:brightness(.8)}
+.scan .ln{position:absolute;left:14%;right:14%;top:18%;height:2px;z-index:2;border-radius:1px;background:#22D873;box-shadow:0 0 14px 2px rgba(34,216,115,.8);animation:scl 1s ease-in-out infinite alternate}
+@keyframes scl{to{top:82%}}
+.scan.fail .ln{display:none}
+.scan.fail .cn{filter:drop-shadow(0 0 0 #ff5a4f) hue-rotate(0deg);background-image:none;box-shadow:inset 0 0 0 3px #ff5a4f;animation:shk .4s}
+@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.scm{text-align:center;font-size:14px;font-weight:700;color:var(--sub);padding:14px 0}
+.scr{margin-bottom:14px}.scr b{display:block;font-size:17px}.scr small{display:block;color:var(--sub);font-size:13px;margin-top:4px;line-height:1.5}
+@media (prefers-reduced-motion:reduce){.scan .ln,.scan.fail .cn{animation:none}}
 .dh{display:flex;align-items:center;gap:14px}
 .dh>div{min-width:0}
 .info{margin-top:16px;display:grid;gap:14px}
@@ -1168,8 +1182,20 @@ function calHTML(){const y=F.cy,m=F.cm,st=new Date(Date.UTC(y,m,1)).getUTCDay(),
 function updDays(){const o=$('#ffold .odo');if(!o)return;o.dataset.num=F.days;post($('#ffold'));$('#funtil').textContent=dayStr(F.days)+'까지';if(!$('#fcalw').classList.contains('off'))$('#fcal').innerHTML=calHTML()}
 const addMenu=()=>`<h3>보관함에 넣기</h3><p class="sub">뭘 샀는지는 이렇게 알아내요</p><div class="card">
  <button class="srow" data-a="addform"><div><b>직접 적어 넣기</b><small>영수증 없는 물건도 넣을 수 있어요</small></div>${CHEV}</button>
+ <button class="srow" data-a="addscan"><div><b>바코드 찍어 넣기</b><small>상품 뒷면 바코드를 찍으면 이름을 찾아요</small></div>${CHEV}</button>
  <button class="srow" data-a="addshops"><div><b>쇼핑몰 연결하기</b><small>지금 ${linked()}곳에서 주문을 가져오고 있어요</small></div>${CHEV}</button>
  <button class="srow" data-a="addpay"><div><b>카드 결제 흉내 내 보기</b><small>결제 알림이 오면 이렇게 들어와요</small></div>${CHEV}</button></div>`;
+/* 바코드: 미리보기라서 실제 상품 정보는 없다. 사진을 찍으면 훑어보는 시늉을 하고 못 찾았다고 알려 준다 */
+const SCANI=`<svg width="54" height="40" viewBox="0 0 54 40" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="3" height="40"/><rect x="6" y="0" width="1.5" height="40"/><rect x="10" y="0" width="4" height="40"/><rect x="17" y="0" width="1.5" height="40"/><rect x="21" y="0" width="3" height="40"/><rect x="27" y="0" width="1.5" height="40"/><rect x="31" y="0" width="4" height="40"/><rect x="38" y="0" width="1.5" height="40"/><rect x="42" y="0" width="3" height="40"/><rect x="48" y="0" width="1.5" height="40"/><rect x="51" y="0" width="3" height="40"/></svg>`;
+const scanSheet=()=>`<h3>바코드 찍어 넣기</h3><p class="sub">상품 뒷면 바코드가 네모 안에 들어오게 찍어 주세요</p>
+ <div class="scan" id="scan"><i class="cn"></i><div class="sci">${SCANI}<span>사진을 찍으면 여기서 바코드를 찾아요</span></div></div>
+ <div id="scst"><button class="btn p big" data-a="scanshot">사진 찍기</button></div>
+ <input type="file" id="scanf" accept="image/*" capture="environment" hidden>`;
+document.addEventListener('change',e=>{const i=e.target;if(i.id!=='scanf')return;if(i.files[0])scanRun(i.files[0]);i.value=''});
+function scanRun(f){const b=$('#scan'),st=$('#scst');if(!b)return;b.classList.remove('fail');
+ const u=URL.createObjectURL(f);b.innerHTML=`<img alt="찍은 사진" src="${u}"><i class="cn"></i><i class="ln"></i>`;b.classList.add('run');st.innerHTML='<p class="scm">바코드를 찾는 중이에요</p>';
+ setTimeout(()=>{if(!$('#scan'))return;b.classList.remove('run');b.classList.add('fail');buzz();
+  st.innerHTML=`<div class="scr"><b>바코드를 찾을 수 없어요</b><small>바코드가 흐리거나 잘렸을 수 있어요. 밝은 곳에서 다시 찍거나 직접 적어 넣어 주세요</small></div><div class="btns"><button class="btn s" data-a="scanshot">다시 찍기</button><button class="btn p" data-a="addform">직접 적어 넣기</button></div>`},RM()?600:2200)}
 const formSheet=()=>`<h3>직접 적어 넣기</h3>
  <label class="lb" for="fname">이름</label><input class="inp" id="fname" autocomplete="off" placeholder="예: 올리브유 500ml">
  <span class="lb" id="fcl">종류</span><div class="fcs" role="group" aria-labelledby="fcl">${CATS.map(([k,t])=>`<button class="fc${F.cat===k?' on':''}" data-a="fcat" data-v="${k}" aria-pressed="${F.cat===k}">${t}</button>`).join('')}</div>
@@ -1345,6 +1371,8 @@ banx:()=>$('#ban').classList.remove('on'),
 order:(v,b)=>{S.orders[v]=1;buzz();b.className='btn s';b.disabled=true;b.textContent='발주했어요';say(v+' 발주했어요')},
 /* 넣기 */
 add:()=>{buzz();openSheet(addMenu())},
+addscan:()=>{buzz();swapSheet(scanSheet())},
+scanshot:()=>{const i=$('#scanf');if(i)i.click()},
 addform:()=>{F.cat='fridge';F.days=7;F.cy=2026;F.cm=10;NUM.fdn=7;swapSheet(formSheet())},
 addshops:()=>closeSheet(()=>A.shops()),
 addpay:()=>closeSheet(pay),
