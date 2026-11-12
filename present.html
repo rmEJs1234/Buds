@@ -521,7 +521,9 @@ setInterval(()=>{$$('.s.on .ips').forEach(sc=>{const f=$('iframe',sc);try{const 
  sc.style.background=c;const l=(v[0]*299+v[1]*587+v[2]*114)/1000;$('.ipsb',sc).style.color=$('.iphome',sc).style.color=l>150?'#000':'#fff'}catch(_){}})},400);
 
 /* 앱 띄우기 */
-function mount(box,src,before){box.querySelectorAll('iframe').forEach(f=>f.remove());const f=document.createElement('iframe');f.title='갈무리 앱';f.src=src;
+/* 발표를 열 때마다 앱을 새로 받는다(한 번 받은 뒤엔 그 발표 내내 같은 걸 쓴다): 옛 앱이 남아 시연이 어긋나지 않게 */
+const BLD=Date.now().toString(36);
+function mount(box,src,before){src+='&b='+BLD;box.querySelectorAll('iframe').forEach(f=>f.remove());const f=document.createElement('iframe');f.title='갈무리 앱';f.src=src;
  before?box.insertBefore(f,before):box.appendChild(f);fz(f);
  return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));r(f)},{once:true}))}
 
