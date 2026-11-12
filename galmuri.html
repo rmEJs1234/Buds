@@ -368,7 +368,7 @@ textarea.inp{height:auto;min-height:86px;padding:13px 16px;resize:none;line-heig
 .pvs img{width:100%;max-width:520px;aspect-ratio:1;object-fit:contain;border-radius:18px}
 .pvx{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;border-radius:22px;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center}
 .pvn{position:absolute;left:0;right:0;bottom:calc(30px + env(safe-area-inset-bottom,0px));text-align:center;color:rgba(255,255,255,.75);font-size:14px;font-weight:700}
-.sp.gone{display:none!important}
+.sp.gone{width:0;padding:0;opacity:0;visibility:hidden;overflow:hidden;pointer-events:none;box-shadow:none}
 a.lkb{text-decoration:none;color:var(--ink);display:flex;gap:4px;align-items:center}
 .srow>.lkb+.lkb{margin-left:6px}
 a.cta{text-decoration:none;display:flex;align-items:center;justify-content:center}
@@ -1055,7 +1055,7 @@ function chrome(){$('#spn').textContent=SPACES[S.space][0];
  if(!$('.sub',nv))buildSubs();
  $$('.tab',nv).forEach(b=>{const k=b.dataset.v;b.classList.toggle('on',k===S.tab);b.setAttribute('aria-current',k===S.tab?'page':'false');$('span',b).textContent=names[k]});
  $('.ind',nv).style.transform=indT(TABS.indexOf(S.tab));subSync();
- const sp=$('#sp');sp.classList.toggle('gone',S.tab==='mkt');if(S.tab==='mkt'&&$('#menu').classList.contains('on'))menu(false)}
+ spShow(S.tab!=='mkt');if(S.tab==='mkt'&&$('#menu').classList.contains('on'))menu(false)}
 function buildSubs(){S.sub=S.sub||{inv:true};const chev='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
  const mk=(k,items,act,lab)=>$(`.tab[data-v=${k}]`).insertAdjacentHTML('afterend',`<button class="tgl" data-a="subt" data-v="${k}" aria-label="${lab} 펼치기" aria-expanded="${!!S.sub[k]}">${chev}</button><div class="sub${S.sub[k]?' on':''}" data-k="${k}"><div>${items.map(([v,l])=>`<button data-a="${act}" data-v="${v}">${l}</button>`).join('')}</div></div>`);
  mk('inv',FILTERS,'subf','보관함 종류');mk('fam',[['mom','엄마'],['dad','아빠'],['me','나']],'subw','가족')}
@@ -1066,6 +1066,12 @@ function leave(k,cb){const e=$(`#view [data-r="${k}"]`);if(!e||RM()){cb();return
  const f=$('.fill',e);if(f){f.style.transition=f.firstElementChild.style.transition='transform .28s cubic-bezier(.5,0,.8,.4)';setLv(f,0)}
  setTimeout(()=>{e.style.overflow='hidden';e.animate([{height:e.offsetHeight+'px',paddingBottom:getComputedStyle(e).paddingBottom,opacity:1},{height:'0px',paddingBottom:'0px',opacity:0}],{duration:340,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}).onfinish=cb},f?260:0)}
 let tt;function say(m,ms=2600){const t=$('#toast');$('span',t).textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms)}
+/* 마켓에서는 우리 집 고르기를 접는다: 폭과 투명도가 함께 줄었다 늘어난다 */
+function spShow(on){const sp=$('#sp');if(sp.classList.contains('gone')!==on)return;sp.getAnimations().forEach(a=>a.cancel());
+ if(RM()){sp.classList.toggle('gone',!on);return}
+ sp.classList.remove('gone');const w=sp.offsetWidth,o={duration:420,easing:'cubic-bezier(.3,.9,.3,1)'},
+  k=[{width:w+'px',opacity:1,transform:'none',filter:'blur(0)'},{width:'0px',paddingLeft:'0px',paddingRight:'0px',opacity:0,transform:'scale(.7)',filter:'blur(4px)'}];
+ sp.style.overflow='hidden';const a=sp.animate(on?k.reverse():k,o);a.onfinish=()=>{sp.style.overflow='';if(!on)sp.classList.add('gone')}}
 const menu=on=>{$('#menu').style.left=($('#sp').offsetLeft-4)+'px';$('#menu').classList.toggle('on',on);$('#sp').setAttribute('aria-expanded',on)};
 function enter(d){if(RM())return;const kids=$$('#view>*').filter(e=>e.getBoundingClientRect().top<innerHeight+40).slice(0,7);
  kids.forEach((e,k)=>e.animate([{opacity:0,transform:`translateX(${d*64}px) rotate(${d*1.2}deg)`},{opacity:1,transform:'none'}],{duration:620,delay:k*48,easing:'cubic-bezier(.2,.95,.25,1.04)',fill:'backwards'}))}
