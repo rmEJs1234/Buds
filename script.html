@@ -14,7 +14,9 @@
 :root{--bg:#000;--panel:#1C1C1E;--ink:#fff;--sub:#98989F;--faint:#5C5C61;--g:#fff;--gd:#2C2C2E;--line:rgba(255,255,255,.07);--fs:27px;
  --ease:cubic-bezier(.22,1,.36,1)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);overflow:hidden;overscroll-behavior:none}
+/* 사파리 아래 툴바 자리는 html 배경색으로 칠해져서 툴바 색과 맞춘다. 위 상태바는 theme-color로 검정 */
+html{height:100%;background:#1C1C1E;overflow:hidden;overscroll-behavior:none}
+body{height:100%;background:var(--bg);overflow:hidden;overscroll-behavior:none}
 body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:var(--ink);word-break:keep-all;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
 .app{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 10px) 0 0}
 /* 위 */
