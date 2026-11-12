@@ -16,7 +16,7 @@
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);overflow:hidden;overscroll-behavior:none}
 body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:var(--ink);word-break:keep-all;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
-.app{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 10px) 0 calc(env(safe-area-inset-bottom) + 10px)}
+.app{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 10px) 0 0;height:100vh;height:100dvh}
 /* 위 */
 .top{display:flex;align-items:center;gap:12px;padding:6px 20px 14px;position:relative;z-index:3}
 .ib{flex:none;width:42px;height:42px;border-radius:21px;border:0;display:grid;place-items:center;background:var(--panel);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);text-decoration:none;cursor:pointer}
@@ -28,7 +28,7 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
 .bar i{display:block;height:100%;width:0;background:var(--g);border-radius:2px;transition:width .5s var(--ease)}
 /* 가운데 */
 .stage{flex:1;position:relative;overflow:hidden}
-.card{position:absolute;inset:0;overflow-y:auto;padding:30px 24px 40px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.card{position:absolute;inset:0;overflow-y:auto;padding:30px 24px 64px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .card::-webkit-scrollbar{display:none}
 .card .in{max-width:880px;margin:0 auto}
 .no{display:flex;align-items:baseline;gap:12px}
@@ -40,7 +40,7 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
 .say{font-size:var(--fs);line-height:1.62;font-weight:600;letter-spacing:-.012em}
 .say .c{color:var(--faint);font-weight:500;font-size:.78em}
 .cue{font-size:calc(var(--fs)*.74);line-height:1.5;font-weight:600;color:var(--sub);padding:12px 16px;border-radius:14px;background:var(--panel);box-shadow:inset 3px 0 0 var(--faint)}
-.nx{display:inline-flex;align-items:center;gap:4px;height:1.25em;padding:0 .5em;margin-left:.2em;border-radius:.62em;background:#2C2C2E;color:var(--ink);font-size:.62em;font-weight:800;vertical-align:.22em;letter-spacing:0}
+.nx{display:inline-flex;align-items:center;gap:4px;height:1.25em;padding:0 .5em;margin-left:.2em;border-radius:.62em;background:#2BD877;color:#000;font-size:.62em;font-weight:800;vertical-align:.22em;letter-spacing:0}
 .nx svg{width:.9em;height:.9em}
 /* 장 바뀌는 움직임 */
 .card{will-change:transform,opacity}
@@ -56,11 +56,14 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
 .flash.on{animation:fl .5s ease-out}
 @keyframes fl{0%{opacity:1}100%{opacity:0}}
 /* 아래: 다음 장 미리 보기 */
-.foot{display:flex;align-items:center;gap:12px;padding:12px 20px 4px;position:relative;z-index:3}
-.next{flex:1;min-width:0;height:54px;padding:0 18px;border-radius:27px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--sub);overflow:hidden}
+.foot{flex:none;display:flex;align-items:center;gap:8px;padding:10px 16px calc(env(safe-area-inset-bottom) + 10px);position:relative;z-index:3;background:rgba(28,28,30,.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 -1px 0 rgba(255,255,255,.07)}
+.foot::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:48px;background:linear-gradient(transparent,#000);pointer-events:none}
+.foot .fb{flex:none;height:46px;min-width:50px;padding:0 12px;border-radius:23px;border:0;background:#2C2C2E;color:var(--ink);font:800 15px Pretendard,sans-serif;cursor:pointer}
+.foot .fb:active{transform:scale(.94)}
+.next{flex:1;min-width:0;height:46px;padding:0 4px 0 6px;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--sub);overflow:hidden}
 .next em{flex:none;font-style:normal;font-weight:800;color:var(--ink)}
 .next span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%);z-index:4;padding:10px 16px;border-radius:20px;background:rgba(28,28,30,.94);box-shadow:inset 0 0 0 1px var(--line);font-size:14px;font-weight:600;color:var(--sub);white-space:nowrap;transition:opacity .5s}
+.hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 84px);transform:translateX(-50%);z-index:4;padding:10px 16px;border-radius:20px;background:rgba(28,28,30,.94);box-shadow:inset 0 0 0 1px var(--line);font-size:14px;font-weight:600;color:var(--sub);white-space:nowrap;transition:opacity .5s}
 .hint.off{opacity:0;pointer-events:none}
 /* 목록 */
 .sheet{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden}
@@ -95,7 +98,7 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
     <button class="tap l" id="tl" aria-label="이전 장"></button><button class="tap r" id="tr" aria-label="다음 장"></button>
     <i class="flash l" id="fl"></i><i class="flash r" id="fr"></i>
   </div>
-  <div class="foot"><div class="next" id="next"></div></div>
+  <div class="foot"><div class="next" id="next"></div><button class="fb" id="fm2" aria-label="글자 작게">가−</button><button class="fb" id="fp2" aria-label="글자 크게">가+</button></div>
   <div class="hint" id="hint">왼쪽을 누르면 이전 장, 오른쪽을 누르면 다음 장</div>
 </div>
 <div class="sheet" id="sheet" aria-hidden="true"><div class="scrim" id="scrim"></div>
@@ -144,7 +147,7 @@ $('menu').onclick=()=>sheet(1);$('scrim').onclick=()=>sheet(0);
 $('lst').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;const d=i>cur?1:-1;sheet(0);if(i!==cur){cur=i;draw(cur,d)}};
 let fs=0;try{fs=+localStorage.getItem('script.fs2')||0}catch(e){}
 const setFs=v=>{fs=Math.max(-3,Math.min(5,v));document.documentElement.style.setProperty('--fs',`calc(${innerWidth>=900?34:27}px + ${fs*3}px)`);try{localStorage.setItem('script.fs2',fs)}catch(e){}};setFs(fs);
-$('fm').onclick=()=>setFs(fs-1);$('fp').onclick=()=>setFs(fs+1);
+$('fm').onclick=$('fm2').onclick=()=>setFs(fs-1);$('fp').onclick=$('fp2').onclick=()=>setFs(fs+1);
 draw(cur,0);
 </script>
 </body>
