@@ -801,7 +801,10 @@ function fwd(){if(isBusy())return;if(BLK){blk(0);busy=performance.now()+900;retu
 async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)return;
  if(name==='desk'){const lt=$('#ltin'),dp=$('#dkphone .ips');
   const [f]=await Promise.all([mount(lt,'galmuri.html?ui=desk&demo=1&theme=light'),mount(dp,'galmuri.html?demo=1&theme=light',$('.iphome',dp))]);
-  if(my!==tok)return;try{await RUN.desk(kit(sec,f))}catch(_){}if(my===tok){left=0}return}
+  if(my!==tok)return;
+   /* 컴퓨터와 휴대폰 둘 다 직접 만질 수 있다. 사람이 누르는 순간(진짜 터치·클릭만) 자동 시연은 멈추고 손에 넘긴다 */
+   [lt,dp].forEach(box=>{const fr=$('iframe',box);try{fr.contentWindow.addEventListener('pointerdown',e=>{if(!e.isTrusted||my!==tok)return;tok++;gate=null;pend=0;left=0;$$('.fg',sec).forEach(x=>x.classList.remove('on','dn'))},true)}catch(_){}});
+   try{await RUN.desk(kit(sec,f))}catch(_){}if(my===tok){left=0}return}
  resetDemo(sec,true);const ph=$('.phone',sec),ips=$('.ips',sec);
  const f=await mount(ips,'galmuri.html?theme=light&demo='+(name==='intro'?'intro':'1'),$('.iphome',ips));
  if(my!==tok)return;await wait(120);if(tr&&tr.nw===sec&&tr.morph){const dl=tr.after-performance.now();if(dl>0)await wait(dl);if(my!==tok)return}ph.classList.add('ready');
