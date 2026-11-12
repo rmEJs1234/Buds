@@ -49,7 +49,7 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
 @keyframes inR{from{opacity:0;transform:translateX(56px)}}@keyframes inL{from{opacity:0;transform:translateX(-56px)}}
 @keyframes outL{to{opacity:0;transform:translateX(-56px)}}@keyframes outR{to{opacity:0;transform:translateX(56px)}}
 /* 누르는 자리: 왼쪽 반은 이전, 오른쪽 반은 다음 */
-.tap{position:absolute;top:0;bottom:0;width:50%;z-index:2;border:0;background:transparent;cursor:pointer}
+.tap{touch-action:manipulation;position:absolute;top:0;bottom:0;width:50%;z-index:2;border:0;background:transparent;cursor:pointer}
 .tap.l{left:0}.tap.r{right:0}
 .flash{position:absolute;top:0;bottom:0;width:50%;pointer-events:none;z-index:1;opacity:0}
 .flash.l{left:0;background:linear-gradient(90deg,rgba(255,255,255,.06),transparent)}.flash.r{right:0;background:linear-gradient(-90deg,rgba(255,255,255,.06),transparent)}
@@ -100,7 +100,7 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
     <i class="flash l" id="fl"></i><i class="flash r" id="fr"></i>
   </div>
   <div class="foot"><div class="next" id="next"></div><button class="fb" id="fm2" aria-label="글자 작게">가−</button><button class="fb" id="fp2" aria-label="글자 크게">가+</button></div>
-  <div class="hint" id="hint">왼쪽을 누르면 이전 장, 오른쪽을 누르면 다음 장</div>
+  <div class="hint" id="hint">왼쪽 탭탭은 이전 장, 오른쪽 탭탭은 다음 장</div>
 </div>
 <div class="sheet" id="sheet" aria-hidden="true"><div class="scrim" id="scrim"></div>
   <div class="pan"><div class="ph"><b>장 목록</b><div class="fsz"><button id="fm" aria-label="글자 작게">가−</button><button id="fp" aria-label="글자 크게">가+</button></div></div><div class="lst" id="lst"></div></div>
@@ -129,11 +129,13 @@ function go(d){const n=cur+d;if(n<0||n>=S.length){nudge(d);return}if(busy)return
 function nudge(d){if(!el)return;el.animate([{transform:'translateX(0)'},{transform:`translateX(${d*-14}px)`},{transform:'translateX(0)'}],{duration:280,easing:'ease-out'})}
 function flash(d){const f=$(d>0?'fr':'fl');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}
 /* 탭: 왼쪽 반 이전, 오른쪽 반 다음 / 밀기도 된다 / 위아래로 움직이면 글을 넘겨 읽는 것으로 본다 */
-let sx=0,sy=0,moved=0;
+let sx=0,sy=0,moved=0,lt=0,lid='';
 ['tl','tr'].forEach(id=>{const b=$(id);
  b.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;moved=0});
  b.addEventListener('pointermove',e=>{if(Math.abs(e.clientY-sy)>10){moved=1;if(el)el.scrollTop-=e.movementY||0}});
- b.addEventListener('click',e=>{const dx=e.clientX-sx;if(Math.abs(dx)>50)return go(dx<0?1:-1);if(moved)return;go(id==='tr'?1:-1)})});
+ b.addEventListener('click',e=>{const dx=e.clientX-sx;if(Math.abs(dx)>50){lt=0;return go(dx<0?1:-1)}if(moved)return;
+  /* 같은 쪽을 빠르게 두 번 눌러야 넘어간다. 한 번은 실수로 눌러도 안 넘어감 */
+  const now=Date.now();if(lid===id&&now-lt<380){lt=0;go(id==='tr'?1:-1)}else{lt=now;lid=id}})});
 stage.addEventListener('wheel',e=>{if(el)el.scrollTop+=e.deltaY},{passive:true});
 addEventListener('keydown',e=>{if($('sheet').classList.contains('on')){if(e.key==='Escape')sheet(0);return}
  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(1)}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(-1)}});
