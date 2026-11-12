@@ -644,6 +644,8 @@ input{-webkit-user-select:text;user-select:text}
 .av i{width:72px;height:72px;border-radius:36px;display:grid;place-items:center;background:var(--ink-bg);color:var(--on-ink);box-shadow:var(--kup);font-style:normal;font-weight:800;font-size:28px}
 .splash{position:fixed;inset:0 0 -160px;padding-bottom:160px;z-index:100;background:#22D873;display:grid;place-items:center;transition:opacity .45s ease .1s}
 .splash.out{opacity:0;pointer-events:none}
+/* 로고가 떠 있는 동안 뒤의 앱 화면을 숨긴다: 사파리 아래 투명한 도구 막대 너머로 비치지 않게 */
+html.spl body>:not(.splash){visibility:hidden}
 .splash b{display:flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:64px;letter-spacing:-.05em;color:#000;line-height:1}
 .splash b span{display:inline-block}
 .splash.mo b span{animation:lt .7s cubic-bezier(.3,1.35,.4,1) backwards;animation-delay:calc(.28s + var(--i)*45ms)}
@@ -1512,8 +1514,8 @@ if(!window.__MOCK){chrome();render();post($('#cash'));
 const QR=/[?&]qr=1/.test(location.search);
 if(QR||/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash';sp.setAttribute('aria-hidden','true');
  tint('#22D873');
- sp.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(sp);
- const go=ms=>setTimeout(()=>{sp.classList.add('out');theme();boot();setTimeout(()=>sp.remove(),700)},ms);
+ sp.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(sp);root.classList.add('spl');
+ const go=ms=>setTimeout(()=>{sp.classList.add('out');root.classList.remove('spl');theme();boot();setTimeout(()=>sp.remove(),700)},ms);
  if(QR&&!RM()){const f=document.fonts?document.fonts.load('800 64px "Bricolage Grotesque"'):Promise.resolve();Promise.race([f,new Promise(r=>setTimeout(r,900))]).catch(()=>{}).then(()=>{sp.classList.add('mo');go(1450)})}
  else go(RM()?100:450)}
 else boot();}
