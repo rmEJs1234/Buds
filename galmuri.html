@@ -1097,7 +1097,7 @@ function cashUp(gain){const c=$('#cash'),o=$('.odo',c);o.dataset.num=S.cash;
 
 /* ---- 시트 ---- */
 const sh=$('#sh');
-function openSheet(h){sh.innerHTML='<div class="grab"></div><div id="shc">'+h+'</div>';sh.style.transform='';$('#shw').classList.add('on');$('#scrim').classList.add('on');post(sh);
+function openSheet(h){$('#toast').classList.remove('on');sh.innerHTML='<div class="grab"></div><div id="shc">'+h+'</div>';sh.style.transform='';$('#shw').classList.add('on');$('#scrim').classList.add('on');post(sh);
  if(!RM())$$('#shc>*',sh).slice(0,8).forEach((e,k)=>e.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:440,delay:110+k*35,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
 function closeSheet(cb){scanStop();sh.style.transition='';sh.style.transform='';$('#shw').classList.remove('on');$('#scrim').classList.remove('on');setTimeout(()=>{sh.innerHTML='';cb&&cb()},RM()?0:340)}
 function swapSheet(h){scanStop();const c=$('#shc'),old=sh.offsetHeight;
