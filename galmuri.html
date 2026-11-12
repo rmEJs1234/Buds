@@ -1580,7 +1580,7 @@ const QR=/[?&]qr=1/.test(location.search);
 if(QR||/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash';sp.setAttribute('aria-hidden','true');
  tint('#22D873');
  sp.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(sp);root.classList.add('spl');
- const go=ms=>setTimeout(()=>{sp.classList.add('out');root.classList.remove('spl');theme();boot();setTimeout(()=>sp.remove(),700)},ms);
+ const go=ms=>setTimeout(()=>{sp.classList.add('out');root.classList.remove('spl');theme();boot();setTimeout(()=>{sp.remove();theme()},700)},ms);
  if(QR&&!RM()){const f=document.fonts?document.fonts.load('800 64px "Bricolage Grotesque"'):Promise.resolve();Promise.race([f,new Promise(r=>setTimeout(r,900))]).catch(()=>{}).then(()=>{sp.classList.add('mo');go(1450)})}
  else go(RM()?100:450)}
 else boot();}
