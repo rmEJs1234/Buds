@@ -292,7 +292,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .qr small{font-size:23px;font-weight:700;color:rgba(0,0,0,.6)}
 
 /* 아래 진행 막대와 버튼 */
-#blk{position:fixed;inset:0;background:#000;z-index:60;opacity:0;pointer-events:none;transition:opacity .9s cubic-bezier(.4,0,.2,1);cursor:none}#blk.on{opacity:1;pointer-events:auto}
+#blk{position:fixed;inset:0;background:#000;z-index:60;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.4,0,.2,1);cursor:none}#blk.on{opacity:1;pointer-events:auto}
 .hud{position:fixed;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity .3s;z-index:5}
 .hud.on,.hud:hover{opacity:1}
 .hud button{width:44px;height:44px;border-radius:22px;background:rgba(30,32,34,.8);color:#fff;display:grid;place-items:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
@@ -730,7 +730,10 @@ let ht;addEventListener('mousemove',()=>{$('#hud').classList.add('on');clearTime
 try{const q=qrcode(0,'M');q.addData('https://rmejs1234.github.io/Buds/galmuri.html?qr=1');q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:8,margin:0,scalable:true})}catch(_){$('#qr').innerHTML='<b style="font-size:28px;text-align:center">rmejs1234.github.io/Buds</b>'}
 
 /* 시작은 검은 화면: 한 번 넘기면 첫 장이 뜨고, 첫 장에서 뒤로 가면 다시 검게 */
-let BLK=0;function blk(on){BLK=on;$('#blk').classList.toggle('on',!!on);if(!on&&cur<0)show(0,1)}
+/* 검은 막이 걷히는 동안 로고 글자가 한 자씩 튀어 오르게: 첫 장의 등장을 막이 걷힐 만큼 늦춘다 */
+let BLK=0;function blk(on){BLK=on;$('#blk').classList.toggle('on',!!on);if(on)return;const t=S[0];
+ if(cur<0)show(0,1);else if(cur===0){t.classList.remove('on');void t.offsetWidth;t.classList.add('on')}
+ t.style.setProperty('--t0','.4s')}
 $('#blk').onclick=fwd;
 const h=+(location.hash.match(/^#s(\d+)$/)||[])[1];if(h){$('#blk').classList.remove('on');show(h-1,1)}else BLK=1;
 </script>
