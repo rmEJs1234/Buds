@@ -609,7 +609,7 @@ input{-webkit-user-select:text;user-select:text}
 .soc i{display:grid;place-items:center;width:26px;height:26px;border-radius:9px;background:var(--well-bg);box-shadow:var(--in);font-style:normal;font-size:13px;font-weight:800;color:var(--sub)}
 .picks{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .picks .fc{display:inline-flex;align-items:center}
-.picks .tick{display:inline-flex;width:0;overflow:hidden;transition:width .3s var(--spring)}
+.picks .tick{display:inline-flex;width:0;overflow:hidden}
 .picks .fc.on .tick{width:20px}
 .picks .tick svg{flex:none;width:16px;height:16px}
 .obi{touch-action:pan-y}
@@ -1384,7 +1384,13 @@ obnext:()=>{buzz();const o=['hi','t1','t2','t3','acct'];obShow(o[o.indexOf(OB.st
 obskip:()=>obShow('acct'),
 oauth:(v,b)=>{buzz();b.classList.add('busy');setTimeout(()=>{P.acct=v;save();obShow('name')},RM()?0:900)},
 obname:()=>{P.name=$('#obname').value.trim();save();obShow('shops')},
-obpick:(v,b)=>{buzz();const on=!OB.pick.has(v);on?OB.pick.add(v):OB.pick.delete(v);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);$('#obgo').textContent=OB.pick.size?OB.pick.size+'곳 연결하고 시작하기':'연결 없이 시작하기'},
+obpick:(v,b)=>{buzz();const on=!OB.pick.has(v);on?OB.pick.add(v):OB.pick.delete(v);const cs=[...b.parentNode.children],r0=cs.map(c=>c.getBoundingClientRect());b.classList.toggle('on',on);
+ if(!RM()){const r1=cs.map(c=>c.getBoundingClientRect()),d=r1[cs.indexOf(b)].width-r0[cs.indexOf(b)].width,T={duration:460,easing:'cubic-bezier(.2,.9,.25,1)'},tk=$('.tick',b);
+  /* 체크 너비는 서서히 늘고, 그만큼 바깥 여백을 줄여서 줄 배치는 처음부터 끝 모양으로 잡아 둔다. 칸들은 원래 자리에서 새 자리로 미끄러진다 */
+  tk.animate([{width:(on?0:20)+'px'},{width:(on?20:0)+'px'}],T);b.animate([{marginRight:d+'px'},{marginRight:'0px'}],T);
+  $('svg',tk).animate([{transform:on?'scale(.3)':'none',opacity:on?0:1},{transform:on?'none':'scale(.3)',opacity:on?1:0}],T);
+  cs.forEach((c,i)=>{const dx=r0[i].left-r1[i].left,dy=r0[i].top-r1[i].top;if(dx||dy)c.animate([{translate:dx+'px '+dy+'px'},{translate:'0 0'}],T)})}
+ b.setAttribute('aria-pressed',on);$('#obgo').textContent=OB.pick.size?OB.pick.size+'곳 연결하고 시작하기':'연결 없이 시작하기'},
 obdone:()=>{if(OB.step==='name')P.name=$('#obname').value.trim();buzz();obEnd()}
 };
 document.addEventListener('click',e=>{const now=performance.now();if(now-(S.swiped||0)<350||now-(OB.noclick||0)<350)return;const b=e.target.closest('[data-a]');if(!e.target.closest('#menu,#sp'))menu(false);if(!b||b.disabled)return;A[b.dataset.a]&&A[b.dataset.a](b.dataset.v,b,e)});
@@ -1504,10 +1510,12 @@ $('#ob').addEventListener('pointerup',e=>{if(!obs)return;const dx=e.clientX-obs.
 function boot(){if(!P.ob)obStart();else intro()}
 if(!window.__MOCK){chrome();render();post($('#cash'));
 const QR=/[?&]qr=1/.test(location.search);
-if(QR||/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash'+(QR?' mo':'');sp.setAttribute('aria-hidden','true');
+if(QR||/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash';sp.setAttribute('aria-hidden','true');
  tint('#22D873');
  sp.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(sp);
- setTimeout(()=>{sp.classList.add('out');theme();boot();setTimeout(()=>sp.remove(),700)},RM()?100:QR?1650:450)}
+ const go=ms=>setTimeout(()=>{sp.classList.add('out');theme();boot();setTimeout(()=>sp.remove(),700)},ms);
+ if(QR&&!RM()){const f=document.fonts?document.fonts.load('800 64px "Bricolage Grotesque"'):Promise.resolve();Promise.race([f,new Promise(r=>setTimeout(r,900))]).catch(()=>{}).then(()=>{sp.classList.add('mo');go(1450)})}
+ else go(RM()?100:450)}
 else boot();}
 </script>
 </body>
