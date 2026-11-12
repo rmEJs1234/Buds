@@ -198,7 +198,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .nx .dots i.c{width:46px}
 .nx kbd{font:700 17px var(--font);min-width:34px;height:34px;display:inline-grid;place-items:center;border-radius:10px;background:#fff;color:var(--ink);box-shadow:0 0 0 .5px rgba(var(--s),.2),0 2px 0 rgba(var(--s),.25);margin-right:8px}
 /* 시연 장 */
-.demo{display:grid;grid-template-columns:1fr 520px;column-gap:90px;align-items:center}
+.demo{display:grid;grid-template-columns:1fr 520px;column-gap:90px;align-items:center;padding-right:420px}
 .demo .txt{align-self:center}
 .feats{list-style:none;padding:0;margin-top:46px;display:grid;gap:20px}
 .feats li{display:flex;align-items:center;gap:18px;font-size:28px;font-weight:600;transition:color .5s ease,translate .7s var(--spring)}
@@ -539,7 +539,7 @@ function kit(sec,f){const my=tok,doc=f.contentDocument,win=f.contentWindow,ips=f
  const step=async(t,i)=>{await waitStep();if(!alive())throw 0;if(t)cap(t,i)};
  const cap=(t,i)=>{if(i!=null)hl(i);if(!capEl)return;const cw=$('.cw',capEl);if(!capEl.classList.contains('on')){cw.replaceChildren();roll(cw,t);capEl.classList.add('on')}else roll(cw,t,capEl)};
  /* 카메라: 휴대폰은 오른쪽 제자리에서 무대를 뚫고 나갈 만큼 커지고, 지금 누르는 곳이 화면 가운데 높이에 온다 */
- const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive())return;const z0=z;z=Math.min(1.8,z0*1.25);
+ const focus=async(s,z=1.34,ms=1150)=>{const el=q(s);if(!cam||!el||!alive())return;const z0=z;z=Math.min(2.05,z0*1.5);
   {const b=el.getBoundingClientRect();if(b.top<70||b.bottom>win.innerHeight-90){into(el,true);await w(550)}}
   /* 무대 좌표로만 계산한다: 휴대폰에서 무대가 돌아가 있거나 작게 그려져 있어도 똑같이 맞는다 */
   const r=el.getBoundingClientRect(),py=.94*(77+r.top+r.height/2),camT=cam.offsetTop+cam.offsetParent.offsetTop,cw=cam.offsetWidth,H=cam.offsetHeight*.94;
