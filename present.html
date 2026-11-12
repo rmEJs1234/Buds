@@ -740,7 +740,7 @@ const stepCount=sec=>RUN[sec.dataset.demo]?1:0;
 function nxUpd(){const nx=$('.nx',S[cur]);if(!nx)return;const done=steps-left;$('.dots',nx).innerHTML=Array.from({length:steps},(_,i)=>`<i class="${i<done?'f':''}${i===done-1?' c':''}"></i>`).join('');
  $('b',nx).innerHTML='<kbd>→</kbd>'+(done===0?'눌러서 시연 보기':'다음 장으로')}
 /* 앞으로: 시연이 남았으면 시연 한 단계, 아니면 다음 장 */
-function fwd(){if(BLK){blk(0);return}if(left>0){left--;nxUpd();if(gate){const g=gate;gate=null;g()}else pend++;return}show(cur+1,1)}
+function fwd(){if(isBusy())return;if(BLK){blk(0);busy=performance.now()+900;return}if(left>0){left--;nxUpd();if(gate){const g=gate;gate=null;g()}else pend++;return}show(cur+1,1)}
 async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)return;
  if(name==='desk'){const lt=$('#ltin'),dp=$('#dkphone .ips');
   const [f]=await Promise.all([mount(lt,'galmuri.html?ui=desk&demo=1&theme=light'),mount(dp,'galmuri.html?demo=1&theme=light',$('.iphome',dp))]);
@@ -754,11 +754,13 @@ async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)ret
 
 /* 넘기기 */
 const kind=s=>s.classList.contains('green')?'g':s.classList.contains('demo')?'d':'m';
-function show(n,dir){if(n<0&&cur===0&&!BLK){blk(1);return}n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(tr)tr.end();
+/* 넘기는 장면이 끝나기 전에 누른 건 무시한다: 장면이 중간에 잘리지 않게 */
+let busy=0;const isBusy=()=>performance.now()<busy;
+function show(n,dir){if(isBusy())return;if(n<0&&cur===0&&!BLK){blk(1);busy=performance.now()+500;return}n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(tr)tr.end();
  const d=dir||(n>cur?1:-1),old=S[cur],nw=S[n];
  let mode=!old||RM?'none':kind(nw)==='g'?'fill':kind(old)==='g'?'drain':kind(old)==='d'&&kind(nw)==='d'?'morph':'push';
  if(LITE&&mode!=='none'&&mode!=='morph')mode='fade';
- const T={none:0,fill:1250,drain:1250,morph:0,push:1050,fade:320}[mode];
+ const T={none:0,fill:1250,drain:1250,morph:0,push:1050,fade:320}[mode];busy=performance.now()+(mode==='morph'?700:T);
  nw.style.setProperty('--t0',{none:'0s',fill:'.55s',drain:'.5s',morph:'.2s',push:'.38s',fade:'.1s'}[mode]);
  nw.dataset.from=mode==='morph'?'d':'';nw.classList.toggle('nosh',mode==='morph');
  $('.phone.ap',nw)?.classList.remove('ready');
