@@ -224,6 +224,12 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .rd b{display:block;font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:10px}
 .rd ul{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px;font-size:23px;line-height:1.4}
 .rd li{display:flex;gap:12px}.rd li::before{content:'';flex:none;width:9px;height:9px;border-radius:5px;background:var(--g);margin-top:12px}
+/* 끝: 초록이 차오르고 로고가 한 자씩, 마지막에 인사 */
+.outro{align-items:center;text-align:center}
+.outro .wm{font-size:260px;color:#000}
+.outro .ot{margin-top:34px;font-size:40px;font-weight:700;color:var(--gtx);letter-spacing:-.02em}
+.s.outro.on .wm{animation:otf 6s 2.4s ease-in-out infinite alternate}
+@keyframes otf{to{transform:translateY(-10px)}}
 .note{margin-top:40px;text-align:center;font-size:23px;font-weight:600;color:var(--sub)}
 
 /* 시연 단계: → 를 누를 때마다 한 칸씩 */
@@ -525,6 +531,11 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
     <div class="rd a" style="--d:.85s"><em>1년 안에</em><b>더 넓게 챙기기</b><ul><li>가전 연동으로 고장을 미리 알기</li><li>못 판 물건은 나눔과 기부로</li><li>회사, 학교 비품 관리 버전</li></ul></div>
     <i class="rline a" style="--d:.5s"></i>
   </div>
+</section>
+
+<section class="s green outro" aria-label="끝">
+  <div class="wm" style="--d0:.35s" role="img" aria-label="Galmuri.">Galmuri.</div>
+  <p class="ot a" style="--d:1.5s">감사합니다</p>
 </section>
 </div></div>
 <div class="bar" id="bar"></div>
