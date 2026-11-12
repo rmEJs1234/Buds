@@ -17,7 +17,7 @@
 :root{
   --mint:#E9F4EE; --ink:#0A2419; --sub:#527064; --faint:#92AB9E; --g:#22D873; --gtx:#053220; --well:#D9EADF;
   --s:14,96,104;
-  --up:0 0 0 .5px rgba(var(--s),.12),0 1px 1.5px rgba(var(--s),.22),0 6px 12px -4px rgba(var(--s),.18),0 22px 34px -14px rgba(var(--s),.4);
+  --up:0 0 0 1px rgba(var(--s),.07),0 1px 2px rgba(var(--s),.12),0 8px 18px -8px rgba(var(--s),.16),0 32px 60px -28px rgba(var(--s),.34);
   --font:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
   --wm:'Bricolage Grotesque',var(--font);
   --spring:cubic-bezier(.3,1.35,.4,1); --out:cubic-bezier(.2,.9,.2,1); --soft:cubic-bezier(.2,.8,.2,1);
@@ -32,13 +32,16 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* 장. 여백 규칙: 모든 장은 양옆을 똑같이 160px 비운다.
    글과 그림이 한 줄에 같이 있으면 둘을 한 덩어리로 묶어 가운데에 둔다 */
-.s{position:absolute;inset:0;padding:110px 160px;visibility:hidden;background:radial-gradient(1200px 820px at 82% 12%,#F7FCF9 0,rgba(247,252,249,0) 72%),radial-gradient(900px 700px at 4% 100%,#DDEEE4 0,rgba(221,238,228,0) 70%),var(--mint)}
+.s{position:absolute;inset:0;padding:110px 160px;visibility:hidden;background:radial-gradient(1100px 760px at 100% 104%,rgba(34,216,115,.13) 0,rgba(34,216,115,0) 70%),radial-gradient(1200px 820px at 82% 12%,#F7FCF9 0,rgba(247,252,249,0) 72%),radial-gradient(900px 700px at 4% 100%,#DDEEE4 0,rgba(221,238,228,0) 70%),var(--mint)}
 .s.on,.s.out{visibility:visible}
 .s.on{z-index:2}.s.out{z-index:1}
 .s.edge{box-shadow:-30px 0 70px -10px rgba(var(--s),.32)}
 .s.edge.rev{box-shadow:30px 0 70px -10px rgba(var(--s),.32)}
 .shd{position:absolute;inset:0;background:#05261A;opacity:0;pointer-events:none;z-index:20}
 .green{background:var(--g)}
+/* 큰 화면에서 납작해 보이지 않게 아주 옅은 결을 깐다 */
+.s:not(.green)::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:multiply;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .04 0 0 0 0 .14 0 0 0 0 .1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
+.lite .s::before{display:none}
 .s:not(.demo):not(.wid):not(.title):not(.end){display:flex;flex-direction:column;justify-content:center}
 .title,.end{align-content:center}
 /* 초록 장 윗변의 물결: 장이 차오르거나 빠질 때만 보인다 */
@@ -60,8 +63,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .s:is(.on,.out) .kw>i{animation:kw 1.05s cubic-bezier(.2,.8,.1,1) both;animation-delay:calc(var(--t0,0s) + var(--d,.15s) + var(--k)*55ms)}
 @keyframes kw{from{transform:translateY(115%) rotate(5deg)}to{transform:none}}
 
-h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-wrap:balance}
-.lead{font-size:30px;line-height:1.55;color:var(--sub);margin-top:24px;max-width:760px;text-wrap:pretty}
+h2{font-size:80px;line-height:1.14;font-weight:800;letter-spacing:-.035em;text-wrap:balance}
+.lead{font-size:32px;line-height:1.55;color:var(--sub);margin-top:24px;max-width:760px;text-wrap:pretty}
 .pill{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:22px;background:var(--ink);color:#fff;font-size:19px;font-weight:700;margin-bottom:30px}
 .wm{font-family:var(--wm);font-weight:800;letter-spacing:-.055em;line-height:1}
 .wm span{display:inline-block;opacity:0}
@@ -82,7 +85,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 #mark.hide{opacity:0;transform:translateY(-14px);transition-delay:0s}
 #mark b{font-family:var(--wm);font-weight:800;font-size:28px;letter-spacing:-.05em;color:var(--ink)}
 #mark i{width:1px;height:18px;background:rgba(var(--s),.3)}
-#mark span{display:flex;font:700 18px/22px var(--font);font-variant-numeric:tabular-nums;color:var(--faint)}
+#mark span{display:flex;white-space:pre;font:700 18px/22px var(--font);font-variant-numeric:tabular-nums;color:var(--faint)}
 #pgn{position:relative;display:block;height:22px;overflow:hidden;min-width:22px}
 #pgn em{display:block;font-style:normal}
 
@@ -259,7 +262,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .demo{display:grid;grid-template-columns:1fr 520px;column-gap:90px;align-items:center;padding-right:420px}
 .demo .txt{align-self:center}
 .feats{list-style:none;padding:0;margin-top:46px;display:grid;gap:20px}
-.feats li{display:flex;align-items:center;gap:18px;font-size:28px;font-weight:600;transition:color .5s ease,translate .7s var(--spring)}
+.feats li{display:flex;align-items:center;gap:18px;font-size:30px;font-weight:600;transition:color .5s ease,translate .7s var(--spring)}
 .feats li::before{content:'';flex:none;width:34px;height:34px;border-radius:12px;background:var(--g) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053220' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 7.5L10 16.5l-4-4'/%3E%3C/svg%3E") center/22px no-repeat;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 8px -2px rgba(20,190,95,.5);transition:background-color .45s,box-shadow .45s,transform .6s var(--spring)}
 /* 시연이 도는 동안: 지금 보여 주는 기능만 진하게 */
 .feats.run li{color:#A3B9AE}
