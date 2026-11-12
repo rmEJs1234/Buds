@@ -11,8 +11,7 @@ var dk=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').mat
 if(dk)R.classList.add('dk');
 var bg=dk?'#000000':'#E9F4EE',top=window===window.top,wide=top&&matchMedia('(min-width: 900px) and (pointer: fine)').matches;
 var ui=q.get('ui');if(!ui)try{ui=localStorage.getItem('apps.ui')}catch(e){}
-var sw=0;try{sw=!!sessionStorage.getItem('uiin')}catch(e){}
-if((/[?&](l|sp)=1/.test(location.search)||(top&&!q.has('demo')&&!sw))&&!(wide&&ui!=='desk'))bg='#22D873';
+if(/[?&](l|qr)=1/.test(location.search)&&!(wide&&ui!=='desk'))bg='#22D873';
 if(wide&&ui!=='desk')bg='#0d0f12';
 R.style.background=bg;var t=document.createElement('meta');t.name='theme-color';t.content=bg;document.head.appendChild(t)})();</script>
 <title>갈무리 Galmuri</title>
@@ -647,6 +646,8 @@ input{-webkit-user-select:text;user-select:text}
 .splash.out{opacity:0;pointer-events:none}
 .splash b{display:flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:64px;letter-spacing:-.05em;color:#000;line-height:1}
 .splash b span{display:inline-block}
+.splash.mo b span{animation:lt .7s cubic-bezier(.3,1.35,.4,1) backwards;animation-delay:calc(.28s + var(--i)*45ms)}
+@media (prefers-reduced-motion:reduce){.splash.mo b span{animation:none}}
 .splash.out b{transform:scale(1.15);transition:transform .55s cubic-bezier(.5,0,.3,1)}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}}
@@ -714,7 +715,7 @@ body.uiout>*:not(.uim){opacity:0;transition:opacity .28s}
 <div class="toast" id="toast" role="status"><span></span></div>
 
 <script>
-window.__MOCKSRC=q=>'galmuri.html'+(q.has('l')?'?l=1':window.__UISW?'':'?sp=1');
+window.__MOCKSRC=q=>'galmuri.html'+(q.has('l')?'?l=1':q.has('qr')?'?qr=1':'');
 /* 휴대폰이나 목업 안에서는 아무것도 하지 않는다. 컴퓨터에서 직접 열었을 때만 */
 (()=>{const R=document.documentElement,q=new URLSearchParams(location.search),inF=window!==window.top;
  let inMock=false;try{inMock=inF&&!!parent.document.querySelector('.mk')}catch(_){}
@@ -733,7 +734,7 @@ window.__MOCKSRC=q=>'galmuri.html'+(q.has('l')?'?l=1':window.__UISW?'':'?sp=1');
   t.animate([{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:n==='desk'?'scale(1.08)':'scale(.94)',filter:'blur(8px)'}],{duration:340,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
   document.documentElement.animate([{backgroundColor:getComputedStyle(document.documentElement).backgroundColor},{backgroundColor:n==='desk'?(document.documentElement.classList.contains('dk')||!document.getElementById('app')?'#000':'#E9F4EE'):'#0d0f12'}],{duration:340,fill:'forwards'});
   setTimeout(()=>{const u=new URL(location.href);u.searchParams.set('ui',n);u.searchParams.delete('open');u.hash='';location.replace(u.href)},330)});
- let uin=null;try{uin=sessionStorage.getItem('uiin');sessionStorage.removeItem('uiin')}catch(_){}window.__UISW=!!uin;
+ let uin=null;try{uin=sessionStorage.getItem('uiin');sessionStorage.removeItem('uiin')}catch(_){}
  const uiIn=el=>{if(!uin||!el)return;el.animate([{opacity:0,transform:uin==='desk'?'scale(.96)':'scale(1.08)',filter:'blur(8px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:520,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'})};
  if(m==='desk'){R.classList.add('desk');document.body.appendChild(bar);uiIn(document.getElementById('app')||document.querySelector('.wrap'));return}
  R.classList.add('mockw');window.__MOCK=1;
@@ -1499,13 +1500,14 @@ $('#ob').addEventListener('pointerup',e=>{if(!obs)return;const dx=e.clientX-obs.
  const o=['hi','t1','t2','t3','acct'],i=o.indexOf(OB.step);if(i<0)return;
  if(dx<0&&i<o.length-1){OB.noclick=performance.now();buzz();obShow(o[i+1],1)}else if(dx>0&&i>0){OB.noclick=performance.now();buzz();obShow(o[i-1],-1)}});
 
-/* 앱을 열면 초록 화면에 로고가 떴다가 열린다 (시연 화면과 보기 전환 때는 빼고) */
+/* 앱 고르는 화면에서 오면 이어 받은 로고가 사라지며 열리고, 발표 QR로 오면 로고 글자가 튀어 오른 뒤 열린다 */
 function boot(){if(!P.ob)obStart();else intro()}
 if(!window.__MOCK){chrome();render();post($('#cash'));
-if(/[?&](l|sp)=1/.test(location.search)||(window===window.top&&!/[?&]demo=/.test(location.search)&&!window.__UISW)){const sp=document.createElement('div');sp.className='splash';sp.setAttribute('aria-hidden','true');
+const QR=/[?&]qr=1/.test(location.search);
+if(QR||/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash'+(QR?' mo':'');sp.setAttribute('aria-hidden','true');
  tint('#22D873');
  sp.innerHTML='<b>'+[...'Galmuri.'].map((c,k)=>`<span style="--i:${k}">${c}</span>`).join('')+'</b>';document.body.appendChild(sp);
- setTimeout(()=>{sp.classList.add('out');theme();boot();setTimeout(()=>sp.remove(),700)},RM()?100:450)}
+ setTimeout(()=>{sp.classList.add('out');theme();boot();setTimeout(()=>sp.remove(),700)},RM()?100:QR?1650:450)}
 else boot();}
 </script>
 </body>

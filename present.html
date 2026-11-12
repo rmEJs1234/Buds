@@ -727,7 +727,7 @@ addEventListener('touchend',e=>{if(tx==null)return;const dx=tpos(e.changedTouche
 let ht;addEventListener('mousemove',()=>{$('#hud').classList.add('on');clearTimeout(ht);ht=setTimeout(()=>$('#hud').classList.remove('on'),1800)});
 
 /* 마지막 장의 QR */
-try{const q=qrcode(0,'M');q.addData('https://rmejs1234.github.io/Buds/galmuri.html?l=1');q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:8,margin:0,scalable:true})}catch(_){$('#qr').innerHTML='<b style="font-size:28px;text-align:center">rmejs1234.github.io/Buds</b>'}
+try{const q=qrcode(0,'M');q.addData('https://rmejs1234.github.io/Buds/galmuri.html?qr=1');q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:8,margin:0,scalable:true})}catch(_){$('#qr').innerHTML='<b style="font-size:28px;text-align:center">rmejs1234.github.io/Buds</b>'}
 
 /* 시작은 검은 화면: 한 번 넘기면 첫 장이 뜨고, 첫 장에서 뒤로 가면 다시 검게 */
 let BLK=0;function blk(on){BLK=on;$('#blk').classList.toggle('on',!!on);if(!on&&cur<0)show(0,1)}
