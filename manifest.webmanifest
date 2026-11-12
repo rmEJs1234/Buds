@@ -1,0 +1,17 @@
+{
+  "name": "갈무리",
+  "short_name": "갈무리",
+  "description": "산 물건을 대신 챙겨 주는 갈무리",
+  "lang": "ko",
+  "start_url": "galmuri.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#E9F4EE",
+  "theme_color": "#22D873",
+  "icons": [
+    {"src": "galmuri-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any"},
+    {"src": "galmuri-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
