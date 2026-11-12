@@ -57,7 +57,7 @@ h1{margin:0 4px 6px;font-size:30px;line-height:1.15;font-weight:700;letter-spaci
 .dsk{display:none;font-size:13px;color:var(--mut);margin-top:10px}
 .desk .dsk{display:block}
 @media (hover:hover){.desk .app:hover{transform:translateY(-4px)}}
-@media (prefers-reduced-motion:reduce){.boot b span{animation:none}.buds img,.in{animation:none}.wrap{transition:opacity .2s}.wrap.go{transform:none;filter:none}}
+
 </style></head><body>
 
 <style>
@@ -151,7 +151,7 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
   const wrap=document.getElementById('wrap');
   let last=null;try{last=localStorage.getItem('apps.last')}catch(_){}
   if(last){const b=document.getElementById(last),t=b&&b.querySelector('.tag');if(t)t.classList.add('on')}
-  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const reduce=false; /* 폰·컴퓨터의 움직임 줄이기 설정과 상관없이 애니메이션은 그대로 */
   /* 갈무리: 판이 화면만큼 커지면서 초록 화면에 로고가 올라온다. 앱이 같은 화면에서 이어 받는다 */
   /* 위쪽 상태 표시줄은 페이지 바탕색을 따라간다: 초록 화면이 열릴 때 바탕도 같이 초록으로 */
   const paint=c=>{const o=document.querySelector('meta[name=theme-color]'),m=document.createElement('meta');m.name='theme-color';m.content=c;if(o)o.replaceWith(m);document.documentElement.style.background=c;document.body.style.background=c};

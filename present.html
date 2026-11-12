@@ -396,7 +396,7 @@ h2{font-size:80px;line-height:1.14;font-weight:800;letter-spacing:-.035em;text-w
 .hud span{min-width:70px;text-align:center;color:#fff;font:600 15px var(--font);background:rgba(30,32,34,.8);height:44px;border-radius:22px;display:grid;place-items:center;padding:0 14px}
 .bar{position:fixed;left:0;bottom:0;height:4px;background:var(--g);transition:width .9s cubic-bezier(.65,0,.25,1);z-index:6}
 :focus-visible{outline:3px solid var(--g);outline-offset:3px}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}}
+
 </style>
 </head>
 <body>
@@ -607,7 +607,7 @@ h2{font-size:80px;line-height:1.14;font-weight:800;letter-spacing:-.035em;text-w
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
-const stage=$('#stage'),S=$$('.s'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const stage=$('#stage'),S=$$('.s'),RM=false; /* 움직임 줄이기 설정과 상관없이 그대로 */
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 let cur=-1,tok=0,tr=null;
 
