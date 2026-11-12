@@ -88,7 +88,7 @@ header::after{content:'';position:absolute;left:0;right:0;top:100%;height:14px;b
 header.sc::after{opacity:1}
 .logo{display:flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:27px;line-height:1;letter-spacing:-.05em;padding:6px 4px 6px 0}
 .logo span{display:inline-block}
-.sp{display:flex;align-items:center;gap:2px;font-weight:700;font-size:14px;height:32px;padding:0 8px 0 12px;border-radius:16px;background:var(--btn);box-shadow:var(--up1);margin-right:auto;transition:transform .3s var(--spring)}
+.sp{display:flex;align-items:center;gap:2px;white-space:nowrap;flex-shrink:0;font-weight:700;font-size:14px;height:32px;padding:0 8px 0 12px;border-radius:16px;background:var(--btn);box-shadow:var(--up1);margin-right:auto;transition:transform .3s var(--spring)}
 .sp:active{transform:scale(.95)}
 .sp svg{transition:transform .4s var(--spring)}
 .sp[aria-expanded=true] svg{transform:rotate(180deg)}
