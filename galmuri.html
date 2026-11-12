@@ -1234,13 +1234,13 @@ function scanRun(url){const b=$('#scan'),st=$('#scst');if(!b)return;buzz();scanS
   if(DEMO){b.classList.add('ok');buzz();st.innerHTML=`<div class="scr ok"><i class="scok">${TICK}</i><div><b>유기농 올리브유 500ml</b><small>바코드 8801234567890 · 냉장고에 넣어 둘게요</small></div></div><div class="btns"><button class="btn s" data-a="scanagain">다시 찍기</button><button class="btn p" data-a="scanuse">이대로 넣기</button></div>`;return}
   b.classList.add('fail');buzz();
   st.innerHTML=`<div class="scr"><b>바코드를 찾을 수 없어요</b><small>바코드가 흐리거나 잘렸을 수 있어요. 밝은 곳에서 다시 찍거나 직접 적어 넣어 주세요</small></div><div class="btns"><button class="btn s" data-a="scanagain">다시 찍기</button><button class="btn p" data-a="addform">직접 적어 넣기</button></div>`},RM()?600:2300)}
-const formSheet=()=>`<h3>직접 적어 넣기</h3>
- <label class="lb" for="fname">이름</label><input class="inp" id="fname" autocomplete="off" placeholder="예: 올리브유 500ml">
+const formSheet=(nm='')=>`<h3>직접 적어 넣기</h3>
+ <label class="lb" for="fname">이름</label><input class="inp" id="fname" autocomplete="off" placeholder="예: 올리브유 500ml" value="${esc(nm)}">
  <span class="lb" id="fcl">종류</span><div class="fcs" role="group" aria-labelledby="fcl">${CATS.map(([k,t])=>`<button class="fc${F.cat===k?' on':''}" data-a="fcat" data-v="${k}" aria-pressed="${F.cat===k}">${t}</button>`).join('')}</div>
  <label class="lb" for="fprice">가격</label><input class="inp" id="fprice" inputmode="numeric" autocomplete="off" placeholder="0원">
  <div class="fold${F.cat==='digital'||F.cat==='fashion'||F.cat==='daily'?' off':''}" id="ffold"><div><span class="lb">며칠 동안 쓸 수 있나요</span><div class="stp"><button data-a="fday" data-v="-1" aria-label="줄이기">−</button><button class="stpv" data-a="fcal" aria-expanded="false" aria-controls="fcalw"><b>${odoT('fdn',F.days)}일</b><small id="funtil">${dayStr(F.days)}까지</small></button><button data-a="fday" data-v="1" aria-label="늘리기">+</button></div>
  <div class="fold off" id="fcalw"><div><div class="cal" id="fcal"></div></div></div></div></div>
- <button class="cta" data-a="fadd" disabled><span>보관함에 넣기</span></button>`;
+ <button class="cta" data-a="fadd"${nm?'':' disabled'}><span>보관함에 넣기</span></button>`;
 let drag=null;
 sh.addEventListener('pointerdown',e=>{if(!e.target.closest('.grab,h3')||$('.busy',sh))return;drag={y:e.clientY,t:performance.now(),d:0};sh.style.transition='none';sh.setPointerCapture(e.pointerId)});
 sh.addEventListener('pointermove',e=>{if(!drag)return;const d=e.clientY-drag.y;drag.d=d;sh.style.transform=`translateY(${d>0?d:d/5}px)`});
@@ -1411,7 +1411,7 @@ order:(v,b)=>{S.orders[v]=1;buzz();b.className='btn s';b.disabled=true;b.textCon
 add:()=>{buzz();openSheet(addMenu())},
 addscan:()=>{buzz();swapSheet(scanSheet());setTimeout(scanCam,RM()?0:200)},
 scanshot:()=>scanShot(),
-scanuse:()=>{F.cat='fridge';F.days=7;F.cy=2026;F.cm=10;NUM.fdn=7;swapSheet(formSheet());setTimeout(()=>{const n=$('#fname');if(n)n.value='유기농 올리브유 500ml'},0)},
+scanuse:()=>{F.cat='fridge';F.days=7;F.cy=2026;F.cm=10;NUM.fdn=7;swapSheet(formSheet('유기농 올리브유 500ml'))},
 scanagain:()=>{$('#scst').innerHTML='<p class="scm">바코드를 맞추고 동그란 버튼을 눌러 주세요</p>';$('#scimg').removeAttribute('src');scanCam()},
 addform:()=>{F.cat='fridge';F.days=7;F.cy=2026;F.cm=10;NUM.fdn=7;swapSheet(formSheet())},
 addshops:()=>closeSheet(()=>A.shops()),
