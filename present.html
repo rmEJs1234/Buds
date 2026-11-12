@@ -231,6 +231,9 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .cw{position:relative;display:block;height:30px;line-height:30px;overflow:hidden}
 .cw span{display:block;white-space:nowrap}
 .again{position:absolute;right:30px;bottom:-4px;z-index:6;width:40px;height:40px;padding:0;justify-content:center;border-radius:20px;background:#fff;box-shadow:var(--up);font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;opacity:.85;transition:transform .3s var(--spring),opacity .2s}
+.hud>*{pointer-events:auto}
+/* 보이는 크기는 그대로, 누르는 자리는 사방으로 14px 넓게 */
+.again::after{content:'';position:absolute;inset:-14px;border-radius:50%}
 .again:hover{opacity:1}
 .again:active{transform:scale(.94)}
 
@@ -293,7 +296,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 /* 아래 진행 막대와 버튼 */
 #blk{position:fixed;inset:0;background:#000;z-index:60;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.4,0,.2,1);cursor:none}#blk.on{opacity:1;pointer-events:auto}
-.hud{position:fixed;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity .3s;z-index:5}
+.hud{position:fixed;left:0;right:0;bottom:0;height:64px;pointer-events:none;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity .3s;z-index:5}
 .hud.on,.hud:hover{opacity:1}
 .hud button{width:44px;height:44px;border-radius:22px;background:rgba(30,32,34,.8);color:#fff;display:grid;place-items:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .hud span{min-width:70px;text-align:center;color:#fff;font:600 15px var(--font);background:rgba(30,32,34,.8);height:44px;border-radius:22px;display:grid;place-items:center;padding:0 14px}
