@@ -191,30 +191,37 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 /* 출시하면: 위젯 */
 .wid{display:grid;grid-template-columns:1fr 520px;column-gap:90px;align-items:center;padding-right:420px}
-.ips.home{background:linear-gradient(165deg,#0d3a27 0%,#16583b 45%,#3f9a6a 80%,#8fd6a9 100%)}
-.hs{position:absolute;inset:66px 26px 0;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:min-content;gap:22px 0;align-content:start}
-.wg{border-radius:26px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 10px 26px -12px rgba(0,0,0,.45);color:var(--ink)}
-.wg.md{grid-column:1/-1;padding:16px 18px 12px}
-.wh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
-.wh b{font-family:var(--wm);font-weight:800;font-size:19px;letter-spacing:-.05em}
-.wh span{font-size:13px;font-weight:700;color:var(--sub)}
-.wg ul{list-style:none;padding:0;margin:0;display:grid;gap:4px}
-.wg li{display:flex;align-items:center;gap:12px;padding:4px 0}
-.wg li>div{flex:1;min-width:0;display:grid}
-.wg li b{font-size:15px;font-weight:700}.wg li small{font-size:12px;color:var(--sub)}
-.wg li em{font-style:normal;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
-.wg li em.u{color:#e5484d}.wg li em.w{color:#c27b00}
-.wg.sm{grid-column:span 2;aspect-ratio:1;margin-right:12px;padding:16px;display:flex;flex-direction:column;background:#0A2419;color:#fff;position:relative;overflow:hidden}
-.wg.sm span{font-size:12px;font-weight:600;opacity:.7}.wg.sm b{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-top:2px}
-.wg.sm .jarw{position:absolute;right:14px;bottom:12px}.wg.sm .jar{background:rgba(255,255,255,.14)}.wg.sm .lid{background:#fff}
-.icg{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:16px 0}
+.ips.home{background:#2a2622 url(img/ios/wall.jpg) center/cover}
+.hs{position:absolute;inset:70px 26px 0;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:min-content;gap:14px 0;align-content:start}
+.wgw{display:grid;justify-items:center;gap:6px}.wgw>small{font-size:12px;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.wg{border-radius:24px;background:#fff;color:var(--ink);box-shadow:0 10px 24px -14px rgba(0,0,0,.6)}
+.wgw.md{grid-column:1/-1}.wg.md{width:100%;height:164px;padding:14px 16px 12px;display:flex;flex-direction:column}
+.wh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.wh b{font-family:var(--wm);font-weight:800;font-size:18px;letter-spacing:-.05em}
+.wh span{font-size:12px;font-weight:700;color:var(--sub);background:var(--mint);height:22px;padding:0 9px;border-radius:11px;display:inline-flex;align-items:center;gap:3px}.wh strong{color:var(--ink)}
+.wg ul{list-style:none;padding:0;margin:0;display:grid;gap:6px;flex:1;align-content:space-between}
+.wg li{display:flex;align-items:center;gap:10px}
+.wg li>div{flex:1;min-width:0;display:grid;line-height:1.2}
+.wg li b{font-size:14px;font-weight:700}.wg li small{font-size:11px;color:var(--sub)}
+.wg li em{font-style:normal;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.wg li em.u{color:#e5484d}
+.tl{position:relative;flex:none;width:32px;height:32px;border-radius:10px;background:var(--well);overflow:hidden;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px rgba(10,36,25,.14)}
+.tl i{position:absolute;left:0;right:0;bottom:0;height:calc(var(--lv)*100%);background:linear-gradient(#5be39a,var(--g))}
+.tl b{position:relative;font-size:9px!important;font-weight:800!important;color:var(--ink)}
+.tl.u{box-shadow:inset 0 0 0 1.5px #e5484d}
+.wgw.sm{grid-column:span 2;margin-right:10px}
+.wg.sm{width:164px;height:164px;padding:14px 15px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.wg.sm span{font-size:12px;font-weight:600;color:var(--sub);line-height:1.35}.wg.sm b{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-top:4px;font-variant-numeric:tabular-nums}
+.wg.sm .jarw{position:absolute;right:14px;bottom:12px}
+.icg{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:12px 0;align-content:start}
 .icr{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr)}
-.ic{display:grid;justify-items:center;gap:5px}
-.ic i,.dock i{width:62px;height:62px;border-radius:15px;display:grid;place-items:center;box-shadow:0 4px 10px -4px rgba(0,0,0,.35)}
-.ic i svg,.dock i svg{width:36px;height:36px}
-.ic small{font-size:12px;color:#fff;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,.3)}
-.dock{position:absolute;left:-10px;right:-10px;bottom:22px;height:92px;border-radius:32px;background:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-around;padding:0 12px}
-.lite .wg,.lite .dock{-webkit-backdrop-filter:none;backdrop-filter:none}
+.ic{display:grid;justify-items:center;gap:4px}
+.ic img{width:66px;height:66px;margin:-3px}
+.ic small{font-size:12px;color:#fff;font-weight:500;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.srch{position:absolute;left:50%;bottom:132px;transform:translateX(-50%);height:30px;padding:0 13px;border-radius:15px;display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.s.on .srch.a{translate:-50% 0}
+.dock{position:absolute;left:-18px;right:-18px;bottom:2px;width:calc(100% + 36px)}
+.lite .srch{-webkit-backdrop-filter:none;backdrop-filter:none}
 /* 앞으로 넓히기 */
 .road{position:relative;display:grid;grid-template-columns:repeat(3,480px);justify-content:center;gap:36px;margin-top:70px}
 .rline{position:absolute;left:calc(50% - 760px);right:calc(50% - 760px);top:-24px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--g),rgba(34,216,115,.15))}
@@ -519,7 +526,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
   <div class="txt"><span class="pill a" style="--d:.05s">출시하면</span><h2 style="--d:.15s">앱을 열지 않아도<br>보이게</h2>
     <ul class="feats"><li class="a" style="--d:.45s">홈 화면 위젯으로 오늘 챙길 것과 남은 양</li><li class="a" style="--d:.55s">잠금 화면, 워치에서 바로 다 먹었어요</li><li class="a" style="--d:.65s">"우유 있어?" 물으면 음성으로 답해요</li></ul></div>
   <div class="phone ap" data-static style="--d:.2s"></div>
-  <template class="hsT"><div class="hs" aria-hidden="true"><div class="wg md a" style="--d:.9s"><div class="wh"><b>Galmuri.</b><span>오늘 갈무리할 것 3</span></div><ul><li><span class="jarw" style="--jw:30px;--jh:38px;--lw:22px;--lh:6px"><i class="lid"></i><span class="jar"><i class="fill" style="--lv:0.18;--fd:1s"></i></span></span><div><b>서울우유 1L</b><small>소비기한</small></div><em class="u">D-2</em></li><li><span class="jarw" style="--jw:30px;--jh:38px;--lw:22px;--lh:6px"><i class="lid"></i><span class="jar"><i class="fill" style="--lv:0.62;--fd:1s"></i></span></span><div><b>계란 30구</b><small>남은 양</small></div><em class="">12개</em></li><li><span class="jarw" style="--jw:30px;--jh:38px;--lw:22px;--lh:6px"><i class="lid"></i><span class="jar"><i class="fill" style="--lv:0.3;--fd:1s"></i></span></span><div><b>LG 코드제로</b><small>무상보증</small></div><em class="w">7일</em></li></ul></div><div class="wg sm a" style="--d:1.1s"><span>안 쓰는 걸 팔면</span><b>485,000원</b><span class="jarw" style="--jw:46px;--jh:58px;--lw:34px;--lh:8px"><i class="lid"></i><span class="jar"><i class="fill" style="--lv:0.36;--fd:1.4s"></i></span></span></div><div class="icg a" style="--d:1.2s"><div class="ic"><i style="background:linear-gradient(#5fb8ff,#2f7de6)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#fff"/></svg></i><small>날씨</small></div><div class="ic"><i style="background:linear-gradient(#ffe27a,#f6c400)"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2" fill="#fff"/><path d="M8 9h8M8 13h8M8 17h5" stroke="#d9a400" stroke-width="1.6"/></svg></i><small>메모</small></div><div class="ic"><i style="background:linear-gradient(#8e8e93,#5b5b60)"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="3" fill="#fff"/><circle cx="12" cy="13" r="3.4" fill="#555"/></svg></i><small>카메라</small></div><div class="ic"><i style="background:linear-gradient(#7cd38a,#2fae55)"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6c0 4.5 6 12 6 12s6-7.5 6-12a6 6 0 0 0-6-6z" fill="#fff"/><circle cx="12" cy="9" r="2.2" fill="#3a8ee6"/></svg></i><small>지도</small></div></div><div class="icr a" style="--d:1.3s"><div class="ic"><i style="background:#1c1c1e"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#fff"/><path d="M12 7v5l3 2" stroke="#222" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></i><small>시계</small></div><div class="ic"><i style="background:#fff"><svg viewBox="0 0 24 24"><g fill-opacity=".9"><ellipse cx="12" cy="7" rx="2.6" ry="4.4" fill="#f4b400"/><ellipse cx="17" cy="12" rx="4.4" ry="2.6" fill="#34a853"/><ellipse cx="12" cy="17" rx="2.6" ry="4.4" fill="#4285f4"/><ellipse cx="7" cy="12" rx="4.4" ry="2.6" fill="#ea4335"/></g></svg></i><small>사진</small></div><div class="ic"><i style="background:linear-gradient(#a3a3a8,#6c6c72)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="3 2.2"/><circle cx="12" cy="12" r="2.6" fill="#fff"/></svg></i><small>설정</small></div><div class="ic"><i style="background:linear-gradient(#ff6b8b,#f2385f)"><svg viewBox="0 0 24 24"><path d="M9 17V6l10-2v11" stroke="#fff" stroke-width="2" fill="none"/><circle cx="7" cy="17" r="2.5" fill="#fff"/><circle cx="17" cy="15" r="2.5" fill="#fff"/></svg></i><small>음악</small></div></div><div class="dock a" style="--d:1.4s"><i style="background:linear-gradient(#6fe07f,#2fc24a)"><svg viewBox="0 0 24 24"><path d="M7 3.5l3 3.5-1.6 2.2a12 12 0 0 0 6.4 6.4L17 14l3.5 3-1.5 3c-8.5 0-15-6.5-15-15z" fill="#fff"/></svg></i><i style="background:linear-gradient(#6fe07f,#2fc24a)"><svg viewBox="0 0 24 24"><path d="M12 4c5 0 8.5 3.1 8.5 7S17 18 12 18c-1 0-2-.1-2.9-.4L5 20l1.2-3.6C4.8 15 3.5 13.1 3.5 11 3.5 7.1 7 4 12 4z" fill="#fff"/></svg></i><i style="background:linear-gradient(#5fb8ff,#2f7de6)"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6c0 4.5 6 12 6 12s6-7.5 6-12a6 6 0 0 0-6-6z" fill="#fff"/><circle cx="12" cy="9" r="2.2" fill="#3a8ee6"/></svg></i><i style="background:linear-gradient(#ff6b8b,#f2385f)"><svg viewBox="0 0 24 24"><path d="M9 17V6l10-2v11" stroke="#fff" stroke-width="2" fill="none"/><circle cx="7" cy="17" r="2.5" fill="#fff"/><circle cx="17" cy="15" r="2.5" fill="#fff"/></svg></i></div></div></template>
+  <template class="hsT"><div class="hs" aria-hidden="true"><div class="wgw md a" style="--d:.9s"><div class="wg md"><div class="wh"><b>Galmuri.</b><span>오늘 갈무리할 것 <strong>3</strong></span></div><ul><li><span class="tl u"><i style="--lv:0.2"></i><b>D-2</b></span><div><b>서울우유 1L</b><small>쿠팡에서 11/3 구매</small></div><em class="u">2일</em></li><li><span class="tl "><i style="--lv:0.62"></i><b>60%</b></span><div><b>계란 30구</b><small>이마트에서 11/8 구매</small></div><em class="">12개</em></li><li><span class="tl w"><i style="--lv:0.22"></i><b>22%</b></span><div><b>LG 코드제로</b><small>보증이 곧 끝나요</small></div><em class="w">7일</em></li></ul></div><small>갈무리</small></div><div class="wgw sm a" style="--d:1.05s"><div class="wg sm"><span>안 쓰는 물건을<br>지금 다 팔면</span><b>485,000원</b><span class="jarw" style="--jw:52px;--jh:64px;--lw:38px;--lh:9px"><i class="lid"></i><span class="jar"><i class="fill" style="--lv:0.36;--fd:1.6s"></i></span></span></div><small>갈무리</small></div><div class="icg a" style="--d:1.15s"><div class="ic"><img src="img/ios/calendar.png" alt=""><small>캘린더</small></div><div class="ic"><img src="img/ios/photos.png" alt=""><small>사진</small></div><div class="ic"><img src="img/ios/camera.png" alt=""><small>카메라</small></div><div class="ic"><img src="img/ios/maps.png" alt=""><small>지도</small></div></div><div class="icr a" style="--d:1.25s"><div class="ic"><img src="img/ios/mail.png" alt=""><small>메일</small></div><div class="ic"><img src="img/ios/clock.png" alt=""><small>시계</small></div><div class="ic"><img src="img/ios/reminders.png" alt=""><small>미리 알림</small></div><div class="ic"><img src="img/ios/settings.png" alt=""><small>설정</small></div></div><span class="srch a" style="--d:1.3s"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>검색</span><img class="dock a" style="--d:1.35s" src="img/ios/dock.png" alt=""></div></template>
 </section>
 
 <section class="s" aria-label="앞으로의 계획">
