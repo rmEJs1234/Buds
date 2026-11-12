@@ -448,7 +448,7 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .a2hs.and.can .add{display:inline-flex;align-items:center;height:36px;margin-top:10px;padding:0 16px;border-radius:18px;background:var(--gb);color:var(--gtx);font-size:14px;font-weight:800}
 .a2hs .add:active{transform:scale(.96)}
 .a2hs .pt{position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:var(--card);transform:rotate(45deg);border-radius:0 0 4px 0}
-@media (prefers-reduced-motion:reduce){.a2hs{transition:none}}
+.rm .a2hs{transition:none}
 input{-webkit-user-select:text;user-select:text}
 .eof{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;margin:0 auto;padding:0 24px;height:0;opacity:0;overflow:visible;pointer-events:none;color:var(--faint);font-size:13px;font-weight:600;text-align:center;transition:height .55s cubic-bezier(.3,1.25,.4,1),opacity .3s}
 .eof.show{height:108px;opacity:1;pointer-events:auto;padding-top:14px}
@@ -559,7 +559,7 @@ input{-webkit-user-select:text;user-select:text}
 @keyframes dt{0%,100%{opacity:.25}50%{opacity:1}}
 .scr.ok{display:flex;gap:12px;align-items:center}.scok{flex:none;width:36px;height:36px;border-radius:18px;background:#22D873;color:#04210f;display:grid;place-items:center}.scok svg{width:20px;height:20px}
 .scr{margin-bottom:14px;animation:fdu .4s var(--out)}.scr b{display:block;font-size:17px}.scr small{display:block;color:var(--sub);font-size:13px;margin-top:4px;line-height:1.5}
-@media (prefers-reduced-motion:reduce){.scan *,.scan .cn{animation:none!important}}
+.rm .scan *,.rm .scan .cn{animation:none!important}
 .dh{display:flex;align-items:center;gap:14px}
 .dh>div{min-width:0}
 .info{margin-top:16px;display:grid;gap:14px}
@@ -728,10 +728,10 @@ html.spl body>:not(.splash){visibility:hidden}
 .splash b{display:flex;font-family:'Bricolage Grotesque',var(--font);font-weight:800;font-size:64px;letter-spacing:-.05em;color:#000;line-height:1}
 .splash b span{display:inline-block}
 .splash.mo b span{animation:lt .7s cubic-bezier(.3,1.35,.4,1) backwards;animation-delay:calc(.28s + var(--i)*45ms)}
-@media (prefers-reduced-motion:reduce){.splash.mo b span{animation:none}}
+.rm .splash.mo b span{animation:none}
 .splash.out b{transform:scale(1.15);transition:transform .55s cubic-bezier(.5,0,.3,1)}
 
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}}
+
 .rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
 </style>
 <style>
@@ -851,7 +851,8 @@ const DEMO=new URLSearchParams(location.search).get('demo');
 if(!DEMO){try{Object.assign(P,JSON.parse(localStorage.getItem('galmuri-set')||'{}'))}catch(e){}}
 else{P.ob=DEMO!=='intro';const th=new URLSearchParams(location.search).get('theme');if(th)P.mode=th}
 const save=()=>{if(DEMO)return;try{localStorage.setItem('galmuri-set',JSON.stringify(P))}catch(e){}};
-const RM=()=>P.rm||sysRM.matches;
+/* 애니메이션은 앱 설정의 '움직임 줄이기'로만 끈다. 갤럭시는 절전 모드나 저사양 기본 설정만으로도 폰이 '움직임 줄이기'로 알려서 다 꺼지던 문제 */
+const RM=()=>P.rm;
 const buzz=()=>{if(!P.hap)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
 const isDark=()=>P.mode==='dark'||(P.mode==='system'&&(root.dataset.theme?root.dataset.theme==='dark':sysDark.matches));
 const pgSync=()=>root.classList.toggle('pgon',!!$('.pgw.on'));
