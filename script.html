@@ -125,7 +125,7 @@ function draw(i,dir){const s=S[i];const c=document.createElement('article');c.cl
  $('sec').textContent=s.sec;$('cnt').textContent=(i+1)+' / '+S.length;$('bar').style.width=((i+1)/S.length*100)+'%';
  const n=S[i+1];$('next').innerHTML=n?`<em>다음</em><span>${esc(n.no)} · ${esc(n.t)}</span>`:'<em>끝</em><span>마지막 장이에요</span>';
  try{localStorage.setItem('script.at',i)}catch(e){}}
-function go(d){const n=cur+d;if(n<0||n>=S.length){nudge(d);return}if(busy)return;busy=1;setTimeout(()=>busy=0,240);cur=n;draw(cur,d);flash(d);hideHint()}
+function go(d){const n=cur+d;if(n<0||n>=S.length){nudge(d);return}cur=n;draw(cur,d);flash(d);hideHint()}
 function nudge(d){if(!el)return;el.animate([{transform:'translateX(0)'},{transform:`translateX(${d*-14}px)`},{transform:'translateX(0)'}],{duration:280,easing:'ease-out'})}
 function flash(d){const f=$(d>0?'fr':'fl');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}
 /* 탭: 왼쪽 반 이전, 오른쪽 반 다음 / 밀기도 된다 / 위아래로 움직이면 글을 넘겨 읽는 것으로 본다 */
@@ -134,8 +134,8 @@ let sx=0,sy=0,moved=0,lt=0,lid='';
  b.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;moved=0});
  b.addEventListener('pointermove',e=>{if(Math.abs(e.clientY-sy)>10){moved=1;if(el)el.scrollTop-=e.movementY||0}});
  b.addEventListener('click',e=>{const dx=e.clientX-sx;if(Math.abs(dx)>50){lt=0;return go(dx<0?1:-1)}if(moved)return;
-  /* 같은 쪽을 빠르게 두 번 눌러야 넘어간다. 한 번은 실수로 눌러도 안 넘어감 */
-  const now=Date.now();if(lid===id&&now-lt<380){lt=0;go(id==='tr'?1:-1)}else{lt=now;lid=id}})});
+  /* 같은 쪽을 빠르게 두 번 눌러야 넘어가고, 계속 빠르게 누르면 그만큼 계속 넘어간다 */
+  const now=Date.now();if(lid===id&&now-lt<380){lt=now;go(id==='tr'?1:-1)}else{lt=now;lid=id}})});
 stage.addEventListener('wheel',e=>{if(el)el.scrollTop+=e.deltaY},{passive:true});
 addEventListener('keydown',e=>{if($('sheet').classList.contains('on')){if(e.key==='Escape')sheet(0);return}
  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(1)}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(-1)}});
