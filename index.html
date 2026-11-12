@@ -165,10 +165,10 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
   document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
     if(going)return;going=1;setTimeout(()=>{going=0},2500);
     try{localStorage.setItem('apps.last',b.id)}catch(_){}
-    if(b.id==='present'||b.id==='script'){wrap.classList.add('go');setTimeout(()=>{(window.top||window).location.href=b.dataset.href},reduce?120:420);return}
+    if(b.id==='present'||b.id==='script'){wrap.classList.add('go');setTimeout(()=>{(window.top||window).location.href=b.dataset.href},reduce?120:560);return}
     if(b.id==='galmuri')return boot(b);
     wrap.classList.add('go');
-    setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:420);
+    setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:560);
   }));
   /* 뒤로 돌아왔을 때(페이지 캐시 복원) 화면이 사라진 채로 남지 않게 */
   addEventListener('pageshow',e=>{going=0;if(e.persisted||document.querySelector('.boot')){wrap.classList.remove('go');document.querySelectorAll('.boot').forEach(x=>x.remove());paint('#000')}});

@@ -84,12 +84,15 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
 .lst button{width:100%;display:flex;align-items:center;gap:14px;padding:12px 10px;border:0;border-radius:14px;background:transparent;color:var(--ink);font:600 16px Pretendard,sans-serif;text-align:left}
 .lst button em{flex:none;width:64px;font-style:normal;font-weight:800;color:var(--sub);font-size:14px}
 .lst button.cur{background:#2C2C2E}.lst button.cur em{color:var(--ink)}
+/* 앱 고르는 화면이 흐려지며 사라진 걸 이어받아 선명해지며 나타난다 */
+.app.in{animation:appIn .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes appIn{from{opacity:0;transform:scale(.94);filter:blur(12px)}}
 @media (min-width:900px){:root{--fs:34px}.card{padding:48px 40px}}
 
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app in">
   <div class="top">
     <a class="ib" href="./" aria-label="앱 고르는 화면으로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></a>
     <span class="brand">Galmuri.</span><span class="sec" id="sec">도입</span>
@@ -124,7 +127,7 @@ function line(t){const s=t.trim();
  if(/^\([^)]*\)$/.test(s)||/^\(.*\)\s*\[→\]$/.test(s)&&!/\)\s+\S/.test(s.replace(/\[→\]$/,'')))return `<p class="cue">${esc(s).replace('[→]',NX)}</p>`;
  return `<p class="say">${esc(s).replace(/\(([^()]+)\)/g,'<span class="c">($1)</span>').replace(/\[→\]/g,NX)}</p>`}
 let cur=0,el=null,busy=0;
-try{cur=Math.min(S.length-1,+localStorage.getItem('script.at')||0)}catch(e){}
+/* 들어올 때마다 맨 처음 장부터 */
 function draw(i,dir){const s=S[i];const c=document.createElement('article');c.className='card'+(s.qa?' qa':'');
  c.innerHTML=`<div class="in"><div class="no"><b>${esc(s.no)}</b><span>${esc(s.t)}</span></div><div class="ls">${s.l.map(line).join('')}</div></div>`;
  /* 카드 안 스크롤은 그대로 두고, 탭은 위에 깔린 좌우 버튼이 받는다 */
@@ -133,7 +136,7 @@ function draw(i,dir){const s=S[i];const c=document.createElement('article');c.cl
  if(dir)c.classList.add(dir>0?'enter-r':'enter-l');el=c;
  $('sec').textContent=s.sec;$('cnt').textContent=(i+1)+' / '+S.length;$('bar').style.width=((i+1)/S.length*100)+'%';
  const n=S[i+1];$('next').innerHTML=n?`<em>다음</em><span>${esc(n.no)} · ${esc(n.t)}</span>`:'<em>끝</em><span>마지막 장이에요</span>';
- try{localStorage.setItem('script.at',i)}catch(e){}}
+}
 function go(d){const n=cur+d;if(n<0||n>=S.length){nudge(d);return}cur=n;draw(cur,d);flash(d);hideHint()}
 function nudge(d){if(!el)return;el.animate([{transform:'translateX(0)'},{transform:`translateX(${d*-14}px)`},{transform:'translateX(0)'}],{duration:280,easing:'ease-out'})}
 function flash(d){const f=$(d>0?'fr':'fl');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}
@@ -161,6 +164,8 @@ let fs=0;try{fs=+localStorage.getItem('script.fs2')||0}catch(e){}
 const setFs=v=>{fs=Math.max(-3,Math.min(5,v));document.documentElement.style.setProperty('--fs',`calc(${innerWidth>=900?34:27}px + ${fs*3}px)`);try{localStorage.setItem('script.fs2',fs)}catch(e){}};setFs(fs);
 $('fm').onclick=$('fm2').onclick=()=>setFs(fs-1);$('fp').onclick=$('fp2').onclick=()=>setFs(fs+1);
 draw(cur,0);
+/* 뒤로 가기로 돌아와도(페이지 캐시) 처음 장부터 다시 */
+addEventListener('pageshow',e=>{if(e.persisted){sheet(0);stage.querySelectorAll('.card').forEach(c=>c.remove());el=null;cur=0;draw(0,0);const a=document.querySelector('.app');a.classList.remove('in');void a.offsetWidth;a.classList.add('in')}});
 </script>
 </body>
 </html>
