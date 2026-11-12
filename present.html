@@ -230,7 +230,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 @keyframes blink{50%{opacity:.25}}
 .cw{position:relative;display:block;height:30px;line-height:30px;overflow:hidden}
 .cw span{display:block;white-space:nowrap}
-.again{position:absolute;right:-6px;bottom:-4px;z-index:6;height:46px;padding:0 19px;border-radius:23px;background:#fff;box-shadow:var(--up);font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;opacity:.85;transition:transform .3s var(--spring),opacity .2s}
+.again{position:absolute;right:30px;bottom:-4px;z-index:6;width:40px;height:40px;padding:0;justify-content:center;border-radius:20px;background:#fff;box-shadow:var(--up);font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;opacity:.85;transition:transform .3s var(--spring),opacity .2s}
 .again:hover{opacity:1}
 .again:active{transform:scale(.94)}
 
@@ -497,7 +497,7 @@ fit();addEventListener('resize',fit);
 /* 휴대폰 껍데기 */
 const SB=`<div class="ipsb"><span class="iptime">9:41</span><span class="ipic"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" stroke="none"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .4 10.3 10.3 0 0 0 .7 3.4L2 4.7a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3A4.8 4.8 0 0 1 8 5.9zm0 3.6c.4 0 .8.2 1.1.5L8 11.1 6.9 10c.3-.3.7-.5 1.1-.5z"/></svg><svg viewBox="0 0 28 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="3.5" stroke-opacity=".4" fill="none"/><rect x="2" y="2" width="17" height="8" rx="2" stroke="none"/><path d="M25.5 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" stroke="none" fill-opacity=".45"/></svg></span></div>`;
 const DEV=`<div class="dev mk"><div class="frm"><div class="ips">${SB}<i class="iphome"></i></div><img src="frame-iphone.png" alt=""></div></div>`;
-$$('.phone').forEach(p=>{p.innerHTML=p.id==='dkphone'?DEV:`<div class="cam">${DEV}</div><div class="cap" aria-live="polite"><span class="cw"></span></div><button class="again" aria-label="시연 다시 보기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>다시 보기</button>`});
+$$('.phone').forEach(p=>{p.innerHTML=p.id==='dkphone'?DEV:`<div class="cam">${DEV}</div><div class="cap" aria-live="polite"><span class="cw"></span></div><button class="again" aria-label="시연 다시 보기" title="다시 보기"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>`});
 
 /* 글자가 위로 굴러 바뀐다 (자막, 쪽수) */
 function roll(inner,t,box,dir=1){const old=inner.lastElementChild;if(old&&old.textContent===t)return;
