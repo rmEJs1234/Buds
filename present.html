@@ -292,6 +292,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 .qr small{font-size:23px;font-weight:700;color:rgba(0,0,0,.6)}
 
 /* 아래 진행 막대와 버튼 */
+#blk{position:fixed;inset:0;background:#000;z-index:60;opacity:0;pointer-events:none;transition:opacity .9s cubic-bezier(.4,0,.2,1);cursor:none}#blk.on{opacity:1;pointer-events:auto}
 .hud{position:fixed;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity .3s;z-index:5}
 .hud.on,.hud:hover{opacity:1}
 .hud button{width:44px;height:44px;border-radius:22px;background:rgba(30,32,34,.8);color:#fff;display:grid;place-items:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
@@ -467,6 +468,7 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 
 </div></div>
 <div class="bar" id="bar"></div>
+<div id="blk" class="on" aria-label="발표 시작 전"></div>
 <div class="hud" id="hud"><button id="prev" aria-label="이전 장"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><span id="num">1 / 1</span><button id="next" aria-label="다음 장"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button id="fs" aria-label="전체 화면"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -655,7 +657,7 @@ const stepCount=sec=>RUN[sec.dataset.demo]?1:0;
 function nxUpd(){const nx=$('.nx',S[cur]);if(!nx)return;const done=steps-left;$('.dots',nx).innerHTML=Array.from({length:steps},(_,i)=>`<i class="${i<done?'f':''}${i===done-1?' c':''}"></i>`).join('');
  $('b',nx).innerHTML='<kbd>→</kbd>'+(done===0?'눌러서 시연 보기':'다음 장으로')}
 /* 앞으로: 시연이 남았으면 시연 한 단계, 아니면 다음 장 */
-function fwd(){if(left>0){left--;nxUpd();if(gate){const g=gate;gate=null;g()}else pend++;return}show(cur+1,1)}
+function fwd(){if(BLK){blk(0);return}if(left>0){left--;nxUpd();if(gate){const g=gate;gate=null;g()}else pend++;return}show(cur+1,1)}
 async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)return;
  if(name==='desk'){const lt=$('#ltin'),dp=$('#dkphone .ips');
   const [f]=await Promise.all([mount(lt,'galmuri.html?ui=desk&demo=1&theme=light'),mount(dp,'galmuri.html?demo=1&theme=light',$('.iphome',dp))]);
@@ -669,7 +671,7 @@ async function demo(sec){const my=++tok;const name=sec.dataset.demo;if(!name)ret
 
 /* 넘기기 */
 const kind=s=>s.classList.contains('green')?'g':s.classList.contains('demo')?'d':'m';
-function show(n,dir){n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(tr)tr.end();
+function show(n,dir){if(n<0&&cur===0&&!BLK){blk(1);return}n=Math.max(0,Math.min(S.length-1,n));if(n===cur)return;if(tr)tr.end();
  const d=dir||(n>cur?1:-1),old=S[cur],nw=S[n];
  let mode=!old||RM?'none':kind(nw)==='g'?'fill':kind(old)==='g'?'drain':kind(old)==='d'&&kind(nw)==='d'?'morph':'push';
  if(LITE&&mode!=='none'&&mode!=='morph')mode='fade';
@@ -727,7 +729,10 @@ let ht;addEventListener('mousemove',()=>{$('#hud').classList.add('on');clearTime
 /* 마지막 장의 QR */
 try{const q=qrcode(0,'M');q.addData('https://rmejs1234.github.io/Buds/galmuri.html?l=1');q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:8,margin:0,scalable:true})}catch(_){$('#qr').innerHTML='<b style="font-size:28px;text-align:center">rmejs1234.github.io/Buds</b>'}
 
-const h=+(location.hash.match(/^#s(\d+)$/)||[])[1];show(h?h-1:0,1);
+/* 시작은 검은 화면: 한 번 넘기면 첫 장이 뜨고, 첫 장에서 뒤로 가면 다시 검게 */
+let BLK=0;function blk(on){BLK=on;$('#blk').classList.toggle('on',!!on);if(!on&&cur<0)show(0,1)}
+$('#blk').onclick=fwd;
+const h=+(location.hash.match(/^#s(\d+)$/)||[])[1];if(h){$('#blk').classList.remove('on');show(h-1,1)}else BLK=1;
 </script>
 </body>
 </html>
