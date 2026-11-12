@@ -221,6 +221,8 @@ h2{font-size:72px;line-height:1.16;font-weight:800;letter-spacing:-.035em;text-w
 /* 시연 장끼리 넘길 때: 휴대폰은 제자리, 새 앱이 열리면 겹쳐서 바뀐다 */
 .s[data-from=d] .phone.ap{animation:none!important;opacity:0;transition:opacity .5s ease}
 .s[data-from=d] .phone.ap.ready{opacity:1}
+/* 시연에서 시연으로 넘길 때는 뒤에 남은 휴대폰의 그림자만 쓴다: 두 겹이 겹쳤다 빠지며 깜빡이지 않게 */
+.s.nosh .frm::before{opacity:0}
 
 .cap{position:absolute;left:50%;top:-6px;z-index:6;transform:translate(-50%,-90%) scale(.96);white-space:nowrap;height:52px;padding:0 24px 0 22px;border-radius:26px;background:var(--ink);color:#fff;font-size:21px;font-weight:700;display:flex;align-items:center;gap:12px;opacity:0;overflow:hidden;transition:opacity .35s,transform .55s var(--spring);box-shadow:0 12px 26px -10px rgba(var(--s),.7)}
 .cap.on{opacity:1;transform:translate(-50%,-112%)}
@@ -684,7 +686,7 @@ function show(n,dir){if(n<0&&cur===0&&!BLK){blk(1);return}n=Math.max(0,Math.min(
  if(LITE&&mode!=='none'&&mode!=='morph')mode='fade';
  const T={none:0,fill:1250,drain:1250,morph:0,push:1050,fade:320}[mode];
  nw.style.setProperty('--t0',{none:'0s',fill:'.55s',drain:'.5s',morph:'.2s',push:'.38s',fade:'.1s'}[mode]);
- nw.dataset.from=mode==='morph'?'d':'';
+ nw.dataset.from=mode==='morph'?'d':'';nw.classList.toggle('nosh',mode==='morph');
  $('.phone.ap',nw)?.classList.remove('ready');
  const zoomed=!!(old&&$('.cam',old)&&$('.cam',old).style.transform);
  if(old){old.classList.remove('on');old.classList.add('out');resetDemo(old)}
@@ -710,7 +712,7 @@ function show(n,dir){if(n<0&&cur===0&&!BLK){blk(1);return}n=Math.max(0,Math.min(
   A(old,[{transform:'none'},{transform:'translateY(calc(100% + 70px))'}],{duration:T,delay:200,easing:'cubic-bezier(.65,0,.3,1)'});
   A(nw,[{transform:'scale(1.05)'},{transform:'none'}],{duration:T+400,delay:150,easing:'cubic-bezier(.2,.8,.2,1)'})}
  if(mode==='morph'){nw.style.background='transparent';A($('.txt',old),LITE?[{opacity:1},{opacity:0}]:[{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:'translateY(-26px)',filter:'blur(10px)'}],{duration:460,easing:'cubic-bezier(.4,0,.2,1)'})}
- let done=0;const end=()=>{if(done)return;done=1;anims.forEach(a=>a.cancel());nw.classList.remove('edge','rev');nw.style.background='';
+ let done=0;const end=()=>{if(done)return;done=1;anims.forEach(a=>a.cancel());nw.classList.remove('edge','rev','nosh');nw.style.background='';
   if(old){old.classList.remove('out','edge');old.style.zIndex='';old.querySelectorAll('iframe').forEach(f=>f.remove());resetDemo(old,true);$('.phone.ap',old)?.classList.remove('ready')}
   if(tr&&tr.end===end)tr=null};
  tr={end,nw,morph:mode==='morph',after:performance.now()+(zoomed?1100:0)};setTimeout(end,mode==='morph'?4200:T+260);
