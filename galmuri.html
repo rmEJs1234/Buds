@@ -488,13 +488,10 @@ input{-webkit-user-select:text;user-select:text}
 @keyframes drift{from{transform:scale(1.04) translate(-1%,1%)}to{transform:scale(1.07) translate(1%,-1%)}}
 .scan .sci{position:relative;display:grid;justify-items:center;gap:12px;font-size:13px;opacity:.7;text-align:center;padding:0 24px;transition:opacity .3s}
 .scan.live .sci{opacity:0}
-.scan::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(0,0,0,.42);
- -webkit-mask:linear-gradient(#000,#000) 0 0/100% 100%,linear-gradient(#000,#000) 50% 50%/76% 68% no-repeat;-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s}
-.scan.live::before{opacity:1}
-.scan .cn{position:absolute;inset:16% 12%;z-index:2;border-radius:14px;pointer-events:none;
- background:linear-gradient(var(--cc),var(--cc)) 0 0/26px 4px,linear-gradient(var(--cc),var(--cc)) 0 0/4px 26px,linear-gradient(var(--cc),var(--cc)) 100% 0/26px 4px,linear-gradient(var(--cc),var(--cc)) 100% 0/4px 26px,linear-gradient(var(--cc),var(--cc)) 0 100%/26px 4px,linear-gradient(var(--cc),var(--cc)) 0 100%/4px 26px,linear-gradient(var(--cc),var(--cc)) 100% 100%/26px 4px,linear-gradient(var(--cc),var(--cc)) 100% 100%/4px 26px;background-repeat:no-repeat;transition:inset .5s var(--spring)}
+.scan .cn{position:absolute;inset:17% 13%;z-index:2;border-radius:18px;pointer-events:none;border:2px solid rgba(255,255,255,.92);box-shadow:0 0 0 999px rgba(0,0,0,0);transition:box-shadow .35s,border-color .3s,inset .5s var(--spring)}
+.scan.live .cn{box-shadow:0 0 0 999px rgba(0,0,0,.42)}
 .scan.live:not(.snap) .cn{animation:brz 2.4s ease-in-out infinite}
-@keyframes brz{50%{inset:15% 11%}}
+@keyframes brz{50%{inset:16% 12%}}
 .scan .ln{position:absolute;left:14%;right:14%;top:18%;height:2px;z-index:3;border-radius:1px;background:#22D873;box-shadow:0 0 16px 3px rgba(34,216,115,.75);opacity:0}
 .scan.run .ln{opacity:1;animation:scl .9s ease-in-out infinite alternate}
 @keyframes scl{to{top:82%}}
@@ -502,7 +499,9 @@ input{-webkit-user-select:text;user-select:text}
 .scan.snap .fl{animation:flash .5s ease-out}
 @keyframes flash{0%{opacity:.9}100%{opacity:0}}
 .scan.run img{filter:brightness(.85)}
-.scan.fail{--cc:#ff5a4f}.scan.fail .cn{animation:shk .42s}
+.scan.fail .cn{border-color:#ff5a4f;animation:shk .42s}
+.scan.ok .cn{border-color:#22D873;border-width:3px;animation:pop .45s var(--spring)}
+@keyframes pop{40%{inset:15% 11%}}
 @keyframes shk{20%{transform:translateX(-7px)}50%{transform:translateX(6px)}80%{transform:translateX(-3px)}}
 .shut{position:absolute;left:50%;bottom:14px;z-index:5;width:58px;height:58px;margin-left:-29px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center;transition:transform .3s var(--spring),opacity .3s}
 .shut i{width:44px;height:44px;border-radius:50%;background:#fff;transition:transform .2s}
@@ -511,6 +510,7 @@ input{-webkit-user-select:text;user-select:text}
 .scm{text-align:center;font-size:14px;font-weight:700;color:var(--sub);padding:14px 0}
 .dots3{display:inline-flex;gap:3px;margin-left:4px}.dots3 i{width:4px;height:4px;border-radius:2px;background:currentColor;animation:dt 1s infinite}.dots3 i:nth-child(2){animation-delay:.15s}.dots3 i:nth-child(3){animation-delay:.3s}
 @keyframes dt{0%,100%{opacity:.25}50%{opacity:1}}
+.scr.ok{display:flex;gap:12px;align-items:center}.scok{flex:none;width:36px;height:36px;border-radius:18px;background:#22D873;color:#04210f;display:grid;place-items:center}.scok svg{width:20px;height:20px}
 .scr{margin-bottom:14px;animation:fdu .4s var(--out)}.scr b{display:block;font-size:17px}.scr small{display:block;color:var(--sub);font-size:13px;margin-top:4px;line-height:1.5}
 @media (prefers-reduced-motion:reduce){.scan *,.scan .cn{animation:none!important}}
 .dh{display:flex;align-items:center;gap:14px}
@@ -1230,7 +1230,9 @@ function scanRun(url){const b=$('#scan'),st=$('#scst');if(!b)return;buzz();scanS
  const im=$('#scimg');im.src=url;b.classList.remove('nocam','cam','fail');b.classList.add('live','pic','snap');
  requestAnimationFrame(()=>b.classList.add('run'));
  st.innerHTML='<p class="scm on">바코드를 찾는 중이에요<span class="dots3"><i></i><i></i><i></i></span></p>';
- setTimeout(()=>{if(!$('#scan')||$('#scimg').src.indexOf(url.slice(0,40))<0)return;b.classList.remove('run');b.classList.add('fail');buzz();
+ setTimeout(()=>{if(!$('#scan')||$('#scimg').src.indexOf(url.slice(0,40))<0)return;b.classList.remove('run');
+  if(DEMO){b.classList.add('ok');buzz();st.innerHTML=`<div class="scr ok"><i class="scok">${TICK}</i><div><b>유기농 올리브유 500ml</b><small>바코드 8801234567890 · 냉장고에 넣어 둘게요</small></div></div><div class="btns"><button class="btn s" data-a="scanagain">다시 찍기</button><button class="btn p" data-a="scanuse">이대로 넣기</button></div>`;return}
+  b.classList.add('fail');buzz();
   st.innerHTML=`<div class="scr"><b>바코드를 찾을 수 없어요</b><small>바코드가 흐리거나 잘렸을 수 있어요. 밝은 곳에서 다시 찍거나 직접 적어 넣어 주세요</small></div><div class="btns"><button class="btn s" data-a="scanagain">다시 찍기</button><button class="btn p" data-a="addform">직접 적어 넣기</button></div>`},RM()?600:2300)}
 const formSheet=()=>`<h3>직접 적어 넣기</h3>
  <label class="lb" for="fname">이름</label><input class="inp" id="fname" autocomplete="off" placeholder="예: 올리브유 500ml">
@@ -1409,6 +1411,7 @@ order:(v,b)=>{S.orders[v]=1;buzz();b.className='btn s';b.disabled=true;b.textCon
 add:()=>{buzz();openSheet(addMenu())},
 addscan:()=>{buzz();swapSheet(scanSheet());setTimeout(scanCam,RM()?0:200)},
 scanshot:()=>scanShot(),
+scanuse:()=>{F.cat='fridge';F.days=7;F.cy=2026;F.cm=10;NUM.fdn=7;swapSheet(formSheet());setTimeout(()=>{const n=$('#fname');if(n)n.value='유기농 올리브유 500ml'},0)},
 scanagain:()=>{$('#scst').innerHTML='<p class="scm">바코드를 맞추고 동그란 버튼을 눌러 주세요</p>';$('#scimg').removeAttribute('src');scanCam()},
 addform:()=>{F.cat='fridge';F.days=7;F.cy=2026;F.cm=10;NUM.fdn=7;swapSheet(formSheet())},
 addshops:()=>closeSheet(()=>A.shops()),
