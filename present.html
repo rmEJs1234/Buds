@@ -273,8 +273,10 @@ h2{font-size:80px;line-height:1.14;font-weight:800;letter-spacing:-.035em;text-w
 .j4{--jw:180px!important;--jh:232px!important;--lw:130px!important;--lh:28px!important}
 .j4 .bd{height:42px;padding:0 18px;border-radius:21px;background:#fff;box-shadow:0 0 0 1px rgba(var(--s),.08),0 6px 14px -8px rgba(var(--s),.4);display:inline-flex;align-items:center;font-size:20px;font-weight:800;margin-bottom:6px;font-variant-numeric:tabular-nums}
 .j4 .bd.u{color:#e5484d}
-.j4 .jarw{filter:drop-shadow(0 26px 22px rgba(var(--s),.22))}
-.j4 .sb{display:block;width:350px;height:14px;margin-top:-25px;background:linear-gradient(#fff,#e2efe8);box-shadow:0 1px 0 rgba(var(--s),.08),0 18px 26px -14px rgba(var(--s),.45);position:relative;z-index:-1}
+.j4{isolation:isolate}
+/* 병이 선반 위에 올라앉게: 선반보다 항상 앞 (음수 z-index는 브라우저마다 달라서 안 씀) */
+.j4 .jarw{position:relative;z-index:2;filter:drop-shadow(0 26px 22px rgba(var(--s),.22))}
+.j4 .sb{display:block;width:350px;height:14px;margin-top:-25px;background:linear-gradient(#fff,#e2efe8);box-shadow:0 1px 0 rgba(var(--s),.08),0 18px 26px -14px rgba(var(--s),.45);position:relative;z-index:1}
 .j4:first-child .sb{border-radius:7px 0 0 7px;width:305px;margin-left:45px}.j4:last-child .sb{border-radius:0 7px 7px 0;width:305px;margin-right:45px}
 .j4 b{margin-top:26px}
 .note{margin-top:40px;text-align:center;font-size:23px;font-weight:600;color:var(--sub)}

@@ -443,6 +443,10 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .a2hs small{display:block;margin-top:4px;font-size:13px;line-height:1.5;color:var(--sub)}.a2hs small b{color:var(--ink)}
 .a2hs .shr{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--btn);color:#0a84ff;vertical-align:-5px}
 .a2hs .x{flex:none;width:30px;height:30px;border-radius:15px;display:grid;place-items:center;background:var(--btn);color:var(--sub)}
+.a2hs.and{bottom:calc(max(68px,calc(48px + env(safe-area-inset-bottom,0px))) + 14px)}
+.a2hs.and small.m1,.a2hs.and .add{display:none}.a2hs.and.can small.m1{display:block}.a2hs.and.can small.m2{display:none}
+.a2hs.and.can .add{display:inline-flex;align-items:center;height:36px;margin-top:10px;padding:0 16px;border-radius:18px;background:var(--gb);color:var(--gtx);font-size:14px;font-weight:800}
+.a2hs .add:active{transform:scale(.96)}
 .a2hs .pt{position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:var(--card);transform:rotate(45deg);border-radius:0 0 4px 0}
 @media (prefers-reduced-motion:reduce){.a2hs{transition:none}}
 input{-webkit-user-select:text;user-select:text}
@@ -1632,13 +1636,21 @@ const UA=navigator.userAgent,IOS=/iPhone|iPod/.test(UA)||(/Macintosh/.test(UA)&&
  SOLO=navigator.standalone===true||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches,
  LIVE=window===window.top&&!/[?&]demo=/.test(location.search);
 document.documentElement.classList.toggle('ios',IOS);document.documentElement.classList.toggle('and',AND);document.documentElement.classList.toggle('solo',SOLO);
+/* 갤럭시(크롬, 삼성 인터넷)는 브라우저가 '설치할 수 있다'고 알려주면 그걸 잡아뒀다가 배너 버튼으로 바로 띄운다 */
+let instEv=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;const b=$('.a2hs.and');b&&b.classList.add('can')});
+addEventListener('appinstalled',()=>{P.a2hs=1;save();const b=$('.a2hs');if(b){b.classList.remove('on');setTimeout(()=>b.remove(),500)}});
+if(LIVE&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 function devInit(){if(!LIVE)return;
  if(AND&&!SOLO){const fs=()=>{const d=document.documentElement;if(document.fullscreenElement||!d.requestFullscreen)return;d.requestFullscreen({navigationUI:'hide'}).catch(()=>{})};
   document.addEventListener('pointerup',fs,{passive:true});document.addEventListener('click',fs,{passive:true})}
- if(IOS&&!SOLO&&!P.a2hs)setTimeout(a2hsTry,1800)}
+ if((IOS||AND)&&!SOLO&&!P.a2hs)setTimeout(a2hsTry,1800)}
 function a2hsTry(){if(P.a2hs)return;if(!$('#ob').hidden||$('#shw.on')){setTimeout(a2hsTry,2500);return}
  const b=document.createElement('div');b.className='a2hs';b.setAttribute('role','dialog');b.setAttribute('aria-label','홈 화면에 추가');
- b.innerHTML=`<img src="galmuri-icon.png" alt=""><div class="t"><b>홈 화면에 추가해서 사용해 보세요!</b><small>사파리 아래 <b>⋯</b> 또는 <i class="shr"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5"/><path d="M7 11H5.5A1.5 1.5 0 0 0 4 12.5v7A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></i> <b>공유</b>를 누르고 <b>홈 화면에 추가</b>를 고르면 앱처럼 전체 화면으로 열려요</small></div><button class="x" aria-label="닫기"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><i class="pt" aria-hidden="true"></i>`;
+ if(AND){b.classList.add('and');if(instEv)b.classList.add('can');
+  b.innerHTML=`<img src="galmuri-icon.png" alt=""><div class="t"><b>홈 화면에 추가해서 사용해 보세요!</b><small class="m1">앱처럼 전체 화면으로 열려요</small><small class="m2">브라우저 메뉴에서 <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 누르면 앱처럼 열려요</small><button class="add">홈 화면에 추가</button></div><button class="x" aria-label="닫기"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
+  $('.add',b).onclick=async()=>{buzz();if(!instEv)return;const ev=instEv;instEv=null;b.classList.remove('can');ev.prompt();try{const r=await ev.userChoice;if(r.outcome==='accepted'){P.a2hs=1;save();b.classList.remove('on');setTimeout(()=>b.remove(),500)}}catch(e){}}}
+ else b.innerHTML=`<img src="galmuri-icon.png" alt=""><div class="t"><b>홈 화면에 추가해서 사용해 보세요!</b><small>사파리 아래 <b>⋯</b> 또는 <i class="shr"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5"/><path d="M7 11H5.5A1.5 1.5 0 0 0 4 12.5v7A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></i> <b>공유</b>를 누르고 <b>홈 화면에 추가</b>를 고르면 앱처럼 전체 화면으로 열려요</small></div><button class="x" aria-label="닫기"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><i class="pt" aria-hidden="true"></i>`;
  document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));
  $('.x',b).onclick=()=>{buzz();P.a2hs=1;save();b.classList.remove('on');setTimeout(()=>b.remove(),500)}}
 if(!window.__MOCK){chrome();render();post($('#cash'));

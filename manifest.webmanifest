@@ -6,12 +6,38 @@
   "start_url": "galmuri.html",
   "scope": "./",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
   "orientation": "portrait",
   "background_color": "#E9F4EE",
   "theme_color": "#22D873",
   "icons": [
-    {"src": "galmuri-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any"},
-    {"src": "galmuri-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
-  ]
+    {
+      "src": "galmuri-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "galmuri-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "galmuri-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "galmuri-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "id": "galmuri"
 }
