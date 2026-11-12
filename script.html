@@ -58,7 +58,7 @@ body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-seri
 .flash.on{animation:fl .5s ease-out}
 @keyframes fl{0%{opacity:1}100%{opacity:0}}
 /* 아래: 다음 장 미리 보기 */
-.foot{flex:none;display:flex;align-items:center;gap:8px;padding:10px 16px calc(env(safe-area-inset-bottom) + 10px);position:relative;z-index:3;background:#1C1C1E;box-shadow:0 -1px 0 rgba(255,255,255,.07)}
+.foot{flex:none;display:flex;align-items:center;gap:8px;padding:8px 16px max(8px,calc(env(safe-area-inset-bottom) - 12px));position:relative;z-index:3;background:#1C1C1E;box-shadow:0 -1px 0 rgba(255,255,255,.07)}
 .foot::after{content:'';position:absolute;left:0;right:0;top:100%;height:600px;background:#1C1C1E;pointer-events:none}
 .foot::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:48px;background:linear-gradient(transparent,#000);pointer-events:none}
 .foot .fb{flex:none;height:46px;min-width:50px;padding:0 12px;border-radius:23px;border:0;background:#2C2C2E;color:var(--ink);font:800 15px Pretendard,sans-serif;cursor:pointer}
