@@ -967,7 +967,7 @@ function acts(i,home){const b=(a,t,k='s')=>`<button class="btn ${k}" data-a="${a
  if(low(i))return b('rebuy',won(i.rebuy)+'원에 다시 사기','p');
  if(i.doses!=null)return info+b('dose','지금 복용했어요','p');
  if(i.review)return `<button class="btn s" data-a="rvst" data-v="${i.id}">갈무리가 가격을 검토하고 있어요${CHEV}</button>`;
- if(i.listed)return `<button class="btn s" disabled>당근, 번개장터에 올렸어요. 팔리면 알려 드릴게요</button>`;
+ if(i.listed)return `<button class="btn s" disabled>올렸어요. 팔리면 알려 드릴게요</button>`;
  if(i.cat==='durable')return (elec(i)?b('as','수리 접수하기'):'')+b('sell','팔기','p');
  if(i.cat==='consumable')return b('eaten','다 썼어요');
  return info}
