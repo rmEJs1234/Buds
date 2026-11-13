@@ -1655,6 +1655,10 @@ function a2hsTry(){if(P.a2hs)return;if(!$('#ob').hidden||$('#shw.on')){setTimeou
  else b.innerHTML=`<img src="galmuri-icon.png" alt=""><div class="t"><b>홈 화면에 추가해서 사용해 보세요!</b><small>사파리 아래 <b>⋯</b> 또는 <i class="shr"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5"/><path d="M7 11H5.5A1.5 1.5 0 0 0 4 12.5v7A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></i> <b>공유</b>를 누르고 <b>홈 화면에 추가</b>를 고르면 앱처럼 전체 화면으로 열려요</small></div><button class="x" aria-label="닫기"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><i class="pt" aria-hidden="true"></i>`;
  document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));
  $('.x',b).onclick=()=>{buzz();P.a2hs=1;save();b.classList.remove('on');setTimeout(()=>b.remove(),500)}}
+/* 알림과 창의 앞뒤: 나중에 뜬 게 위로. 알림이 떠 있는데 창이 열리면 알림은 창 뒤로, 창이 열린 채로 알림이 오면 알림이 창 위로 */
+(()=>{const ban=$('#ban');if(!ban)return;let bOn=ban.classList.contains('on');
+ new MutationObserver(()=>{const on=ban.classList.contains('on');if(on&&!bOn)ban.style.zIndex='';bOn=on}).observe(ban,{attributes:true,attributeFilter:['class']});
+ [$('#shw'),...$$('.pgw')].filter(Boolean).forEach(w=>{let was=w.classList.contains('on');new MutationObserver(()=>{const on=w.classList.contains('on');if(on&&!was&&ban.classList.contains('on'))ban.style.zIndex='34';was=on}).observe(w,{attributes:true,attributeFilter:['class']})})})();
 if(!window.__MOCK){chrome();render();post($('#cash'));
 const QR=/[?&]qr=1/.test(location.search);
 if(QR||/[?&]l=1/.test(location.search)){const sp=document.createElement('div');sp.className='splash';sp.setAttribute('aria-hidden','true');
