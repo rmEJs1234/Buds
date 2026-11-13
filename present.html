@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>갈무리 소개</title>
 <meta name="theme-color" content="#000000">
+<!-- 열자마자 사진부터 받기 시작한다 -->
+<link rel="preload" as="image" href="frame-iphone.png"><link rel="preload" as="image" href="frame-mac.png"><link rel="preload" as="image" href="img/ios/wall.jpg"><link rel="preload" as="image" href="img/m1.jpg"><link rel="preload" as="image" href="img/m2.jpg"><link rel="preload" as="image" href="img/m3.jpg"><link rel="preload" as="image" href="img/m4.jpg"><link rel="preload" as="image" href="img/m5.jpg"><link rel="preload" as="image" href="img/m6.jpg"><link rel="preload" as="image" href="img/m7.jpg"><link rel="preload" as="image" href="img/m8.jpg"><link rel="preload" as="image" href="img/shots/ap0.jpg"><link rel="preload" as="image" href="img/shots/af0.jpg"><link rel="preload" as="image" href="img/shots/ap1.jpg"><link rel="preload" as="image" href="img/shots/af1.jpg"><link rel="preload" as="image" href="img/shots/ap2.jpg"><link rel="preload" as="image" href="img/shots/af2.jpg"><link rel="preload" as="image" href="img/shots/ap3.jpg"><link rel="preload" as="image" href="img/shots/af3.jpg"><link rel="preload" as="image" href="img/shots/vc0.jpg"><link rel="preload" as="image" href="img/scan-demo.svg"><link rel="preload" as="image" href="img/ios/dock.png"><link rel="preload" as="image" href="img/ios/calendar.png"><link rel="preload" as="image" href="img/ios/photos.png"><link rel="preload" as="image" href="img/ios/camera.png"><link rel="preload" as="image" href="img/ios/maps.png"><link rel="preload" as="image" href="img/ios/mail.png"><link rel="preload" as="image" href="img/ios/clock.png"><link rel="preload" as="image" href="img/ios/reminders.png"><link rel="preload" as="image" href="img/ios/settings.png">
 <link rel="icon" href="galmuri-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
@@ -678,7 +680,7 @@ const PRE=[];(()=>{const imgs=['frame-iphone.png','frame-mac.png','galmuri-icon.
  const go=()=>{[...new Set(imgs)].forEach(u=>{const im=new Image();im.decoding='async';im.src=u;PRE.push(im);im.decode&&im.decode().catch(()=>{})});
   /* 시연 장에서 띄우는 앱 주소 그대로 받아 둔다(같은 주소라 바로 꺼내 쓴다) */
   ['galmuri.html?theme=light&demo=1','galmuri.html?theme=light&demo=intro','galmuri.html?ui=desk&demo=1&theme=light','galmuri.html?demo=1&theme=light','fonts/bricolage-latin.woff2'].forEach(u=>{fetch(u.includes('?')?u+'&b='+BLD:u).catch(()=>{})})};
- document.readyState==='complete'?go():addEventListener('load',go)})();
+ go()})();
 function mount(box,src,before){src+='&b='+BLD;box.querySelectorAll('iframe').forEach(f=>f.remove());const f=document.createElement('iframe');f.title='갈무리 앱';f.src=src;
  before?box.insertBefore(f,before):box.appendChild(f);fz(f);
  return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));r(f)},{once:true}))}
