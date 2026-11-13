@@ -672,7 +672,7 @@ setInterval(()=>{$$('.s.on .ips').forEach(sc=>{const f=$('iframe',sc);try{const 
 const BLD=Date.now().toString(36);
 /* 발표를 열자마자 사진과 시연 앱을 미리 받아 둔다: 장을 넘길 때 그림이 늦게 뜨지 않게 */
 const PRE=[];(()=>{const imgs=['frame-iphone.png','frame-mac.png','galmuri-icon.png','img/ios/wall.jpg','img/scan-demo.svg',
-  ...[1,2,3,4,5,6,7,8].map(n=>`img/m${n}.jpg`),...[0,1,2,3].flatMap(n=>[`img/shots/ap${n}.jpg`,`img/shots/af${n}.jpg`]),
+  ...[1,2,3,4,5,6,7,8].map(n=>`img/m${n}.jpg`),...[0,1,2,3].flatMap(n=>[`img/shots/ap${n}.jpg`,`img/shots/af${n}.jpg`]),'img/shots/vc0.jpg',
   ...['dock','calendar','photos','camera','maps','mail','clock','reminders','settings'].map(n=>`img/ios/${n}.png`),
   ...$$('img[src]').map(i=>i.getAttribute('src')).filter(u=>!/^data:/.test(u))];
  const go=()=>{[...new Set(imgs)].forEach(u=>{const im=new Image();im.decoding='async';im.src=u;PRE.push(im);im.decode&&im.decode().catch(()=>{})});
