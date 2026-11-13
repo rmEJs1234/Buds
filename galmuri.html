@@ -242,11 +242,9 @@ button.srow:active{background:var(--well)}
 .srow>span{color:var(--sub);font-size:14px;white-space:nowrap}
 .srow>svg{flex:none;color:var(--faint)}
 .tg{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:var(--well-bg);box-shadow:var(--in)}
-.tg i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:13px;background:#fff;box-shadow:0 0 0 .5px rgba(var(--s),.3),0 1px 1px rgba(var(--s),.45),0 4px 7px rgba(var(--s),.4);transition:transform .45s var(--spring),width .2s,left .2s}
+.tg i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:13px;background:#fff;box-shadow:0 0 0 .5px rgba(var(--s),.3),0 1px 1px rgba(var(--s),.45),0 4px 7px rgba(var(--s),.4);transition:transform .5s cubic-bezier(.3,1.35,.45,1),width .25s cubic-bezier(.3,1.3,.5,1),margin .25s cubic-bezier(.3,1.3,.5,1)}
 .tg:active i{width:32px}
-.tg[aria-pressed=true]{background:var(--gb);box-shadow:inset 0 2px 4px rgba(0,60,25,.35)}
-.tg[aria-pressed=true] i{transform:translateX(20px)}
-.tg[aria-pressed=true]:active i{left:-3px}
+.tg::before{content:'';position:absolute;inset:0;border-radius:inherit;background:var(--gb);box-shadow:inset 0 2px 4px rgba(0,60,25,.35);opacity:0;transform:scale(.55);transition:opacity .22s ease,transform .45s cubic-bezier(.3,1.3,.5,1)} .tg[aria-pressed=true]::before{opacity:1;transform:none} .tg i{z-index:1} .tg[aria-pressed=true] i{transform:translateX(20px)} .tg[aria-pressed=true]:active i{margin-left:-6px}
 .ping{position:absolute;inset:0;border-radius:16px;border:2px solid var(--g);animation:ping 1s var(--out) forwards;pointer-events:none}
 @keyframes ping{to{transform:scale(2.4,3);opacity:0}}
 
@@ -714,7 +712,7 @@ input{-webkit-user-select:text;user-select:text}
 .mr .fill{transition-delay:calc(1.3s + var(--i)*.25s)}
 @keyframes mr{from{opacity:0;transform:translateX(-26px) scale(.85)}}
 .t3{flex-direction:column;gap:18px}
-.t3 .big{color:var(--ink)}
+.t3 .big{color:var(--ink)} .obn{display:inline-block;font-variant-numeric:tabular-nums;transform-origin:50% 60%}
 .pcs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .pc{display:inline-flex;gap:6px;align-items:center;height:36px;padding:0 14px;border-radius:18px;background:var(--btn);box-shadow:var(--up1);font-size:13px;font-weight:700;animation:pcin .5s var(--spring) backwards;animation-delay:calc(.35s + var(--i)*.42s)}
 .pc b{color:var(--gt)}
@@ -1369,7 +1367,7 @@ function obHTML(){const s=OB.step,ti=['t1','t2','t3'].indexOf(s),late=s==='name'
  hi:[`<div class="st"><button class="jarbtn" data-a="jar" aria-label="병 흔들기">${jar('ob0',.74,1)}</button></div>`,`<h1>${LOGO()}</h1><p class="lead">사 놓고 잊어버린 물건,\n대신 챙겨 드릴게요</p>`,B('시작하기')],
  t1:[`<div class="st t1"><div class="pw"><div class="paper"><b>이마트</b>카드 결제 45,190원<ul><li>대파 1단</li><li>삼겹살 600g</li><li>휴지 30롤</li></ul></div></div><div class="mini card"><b>보관함</b>${[['대파 1단',.7],['삼겹살 600g',.3],['휴지 30롤',1]].map(([n,l],k)=>`<div class="mr" style="--i:${k}">${vessel('obm'+k,l,'',28)}<span>${n}</span></div>`).join('')}</div></div>`,`<h1>사면 알아서 들어와요</h1><p>카드 결제와 쇼핑몰 주문에서 뭘 샀는지 읽어서 보관함에 넣어요. 따로 적을 필요가 없어요</p>`,B('다음')],
  t2:[`<div class="st">${[['ob1',.9,'넉넉해요'],['ob2',.45,'절반 남음'],['ob3',.1,'곧 떨어져요']].map(([k,l,t],i)=>`<button class="st3 jarbtn" data-a="jar" style="--i:${i}" aria-label="${t}, 병 흔들기">${jar(k,l)}<span>${t}</span></button>`).join('')}</div>`,`<h1>남은 만큼 차 있어요</h1><p>초록 물이 줄어들수록 기한이나 양이 얼마 안 남은 거예요. 병을 눌러 보세요</p>`,B('다음')],
- t3:[`<div class="st t3"><span class="big">${odoT('obv',0)}원</span><div class="pcs">${[['에어팟 프로',215000],['에어포스 1',75000],['코드제로 청소기',195000]].map(([n,p],k)=>`<span class="pc" style="--i:${k}">${n}<b>+${won(p)}</b></span>`).join('')}</div></div>`,`<h1>안 쓰는 건 값으로 바꿔요</h1><p>지금 팔면 얼마인지 늘 계산해 둬요. 팔 때는 판매 글까지 대신 써 드려요</p>`,B('다음')],
+ t3:[`<div class="st t3"><span class="big"><span class="obn" id="obn">0</span>원</span><div class="pcs">${[['에어팟 프로',215000],['에어포스 1',75000],['코드제로 청소기',195000]].map(([n,p],k)=>`<span class="pc" style="--i:${k}">${n}<b>+${won(p)}</b></span>`).join('')}</div></div>`,`<h1>안 쓰는 건 값으로 바꿔요</h1><p>지금 팔면 얼마인지 늘 계산해 둬요. 팔 때는 판매 글까지 대신 써 드려요</p>`,B('다음')],
  acct:['',`<div class="obsm">${LOGO('sm')}</div><h1>계정을 만들까요?</h1><p>기기를 바꿔도 보관함이 그대로 따라와요</p>`,[['kakao','K','카카오로 시작하기'],['google','G','Google로 시작하기'],['email','@','이메일로 시작하기']].map(([k,c,t])=>`<button class="btn s big soc" data-a="oauth" data-v="${k}"><i>${c}</i><span>${t}</span></button>`).join('')+`<button class="txt" data-a="obdone">로그인 없이 둘러보기</button><small>미리보기라서 어떤 걸 눌러도 실제로 로그인되지는 않아요</small>`],
  name:['',`<div class="av"><i id="obav">${esc((P.name||'나')[0])}</i></div><h1>어떻게 불러 드릴까요?</h1><p>가족에게도 이 이름으로 보여요</p><input class="inp" id="obname" style="margin-top:18px" autocomplete="off" aria-label="이름이나 별명" placeholder="이름이나 별명" maxlength="12" value="${esc(P.name)}">`,B('다음','obname')],
  shops:['',`<h1>어디서 자주 사세요?</h1><p>고른 곳의 주문을 알아서 가져와요. 나중에 더 넣을 수 있어요</p><div class="picks">${PICKS.map(k=>`<button class="fc${OB.pick.has(k)?' on':''}" data-a="obpick" data-v="${k}" aria-pressed="${OB.pick.has(k)}"><i class="tick">${TICK}</i>${shopName(k)}</button>`).join('')}</div>`,`<button class="btn p big" data-a="obdone" id="obgo">${OB.pick.size?OB.pick.size+'곳 연결하고 시작하기':'연결 없이 시작하기'}</button><small>미리보기라서 실제 계정에는 접속하지 않아요</small>`]}[s];
@@ -1377,7 +1375,10 @@ function obHTML(){const s=OB.step,ti=['t1','t2','t3'].indexOf(s),late=s==='name'
 function obShow(step,dir=1){OB.step=step;(OB.tm||[]).forEach(clearTimeout);OB.tm=[];const o=$('#obi');
  Object.keys(LV).filter(k=>/^ob/.test(k)).forEach(k=>delete LV[k]);NUM.obv=0;
  o.innerHTML=obHTML();o.dataset.step=step;post(o);
- if(step==='t3')[215000,290000,485000].forEach((v,k)=>OB.tm.push(setTimeout(()=>{const t=$('.t3',o);if(!t)return;$('.odo',t).dataset.num=v;post(t);buzz()},RM()?0:450+k*420)));
+ if(step==='t3'){/* 물건 칩이 하나씩 붙을 때마다 그 값만큼 부드럽게 더해진다. 이어서 오르니 중간에 튀지 않는다 */
+  let shown=0,raf=0;const el=$('#obn',o),ease=t=>1-Math.pow(1-t,3);
+  const to=(v,ms)=>{cancelAnimationFrame(raf);const a=shown,t0=performance.now();const f=now=>{const t=Math.min(1,(now-t0)/ms);shown=Math.round(a+(v-a)*ease(t));if(el.isConnected)el.textContent=won(shown);if(t<1)raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)};
+  [215000,290000,485000].forEach((v,k)=>OB.tm.push(setTimeout(()=>{if(!el.isConnected)return;if(RM()){shown=v;el.textContent=won(v);return}to(v,700);el.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.3,1.4,.5,1)'});buzz()},RM()?0:420+k*420)))}
  if(RM())return;
  if(step==='hi'&&!OB.slid){OB.slid=1;return}
  $$(DK()?'.obm>*,.obf':'.obm,.obf',o).forEach((e,k)=>e.animate([{opacity:0,transform:`translateX(${dir*40}px)`},{opacity:1,transform:'none'}],{duration:460,delay:k*70,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'}))}
@@ -1457,7 +1458,7 @@ symp:(v,b)=>{const on=!b.classList.contains('on');b.classList.toggle('on',on);b.
 doas:(v,b)=>busy(b,()=>doneView('접수가 완료되었습니다','기사님이 곧 연락드릴 거예요!')),
 closesheet:()=>{if($('.busy',sh))return;const f=S.after;S.after=S.sell=S.as=S.ord=S.ad=null;closeSheet(f)},
 radar:(v,b)=>{S.radar=!S.radar;buzz();$$('[data-a=radar]').forEach(x=>x.setAttribute('aria-pressed',S.radar));
- if(S.radar){if(!RM())[0,180].forEach(d=>setTimeout(()=>{const p=document.createElement('span');p.className='ping';b.appendChild(p);setTimeout(()=>p.remove(),1000)},d));setTimeout(()=>{if(S.radar)$('#ban').classList.add('on')},700);setTimeout(()=>$('#ban').classList.remove('on'),6500)}
+ if(S.radar){setTimeout(()=>{if(S.radar)$('#ban').classList.add('on')},700);setTimeout(()=>$('#ban').classList.remove('on'),6500)}
  else{$('#ban').classList.remove('on');say('마트 알림을 껐어요')}},
 banx:()=>$('#ban').classList.remove('on'),
 order:(v,b)=>{S.orders[v]=1;buzz();b.className='btn s';b.disabled=true;b.textContent='발주했어요';say(v+' 발주했어요')},
