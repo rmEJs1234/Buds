@@ -756,7 +756,11 @@ function waStart(p){waStop();waGains();if(au)au.pause();if(au2)au2.pause();
 const b64blob=str=>{const bin=atob(str),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:"audio/mpeg"})};
 function setVocal(blob){waDecode(blob,"b2");drmOn=false;if(au)au.muted=true;$("drmBtn").setAttribute("aria-pressed","false");au2=new Audio();au2.preload="auto";au2.src=URL.createObjectURL(blob);au2.muted=!vocOn;au2.volume=.85;au2.playbackRate=rate;$("vocBtn").hidden=false;$("drmBtn").hidden=false}
 const loadDefault=()=>{try{if(au||typeof SONG==="undefined")return;setSong(b64blob(SONG),false);if(typeof VOC!=="undefined")setVocal(b64blob(VOC))}catch(e){}};
-idb("readonly",s=>s.get("song2")).then(b=>{if(b&&!au){setSong(b,false);idb("readonly",s=>s.get("voc2")).then(v=>{if(v&&au&&!au2)setVocal(v)}).catch(()=>{})}else loadDefault()}).catch(loadDefault);
+// 같은 폴더에 drum.mp3 / song.mp3 가 있으면 그걸 씀 → 없으면 이 기기에 골라둔 파일
+const tryFetch=u=>fetch(u,{cache:"no-cache"}).then(r=>r.ok&&!/text\/html/i.test(r.headers.get("content-type")||"")?r.blob():null).then(b=>b&&b.size>20000?b:null).catch(()=>null);
+const loadIdb=()=>idb("readonly",s=>s.get("song2")).then(b=>{if(b&&!au){setSong(b,false);idb("readonly",s=>s.get("voc2")).then(v=>{if(v&&au&&!au2)setVocal(v)}).catch(()=>{})}}).catch(()=>{});
+if(typeof SONG!=="undefined")loadDefault();
+else Promise.all([tryFetch("drum.mp3"),tryFetch("song.mp3")]).then(([d,v])=>{if(au)return;if(d&&v){setSong(d,false);setVocal(v)}else if(d||v)setSong(d||v,false);else loadIdb()});
 const NS=[1,1.2,1.5,1.7,2,2.5,3,4];
 const showNs=()=>{const v=Math.round(nspd/2*100)/100;$("nsVal").textContent=(v%1?v:v.toFixed(1))+"x"};showNs();
 document.querySelectorAll("[data-ns]").forEach(b=>b.onclick=()=>{let i=NS.indexOf(nspd);if(i<0)i=4;i=Math.max(0,Math.min(NS.length-1,i+ +b.dataset.ns));nspd=NS[i];showNs();try{localStorage.setItem("drumNspd3",nspd)}catch(e){}});
@@ -1169,7 +1173,7 @@ $("ctlTog").after($("play"));
   const parse=txt=>{const out=[];String(txt||"").split(/\r?\n/).forEach(line=>{const ts=[...line.matchAll(/\[(\d+):(\d+(?:\.\d+)?)\]/g)];if(!ts.length)return;
     const text=line.replace(/\[[^\]]*\]/g,"").trim();if(!text)return;ts.forEach(m=>out.push({t:+m[1]*60+ +m[2],s:text}))});return out.sort((a,b)=>a.t-b.t)};
   const setL=txt=>{L=parse(txt);box.hidden=!L.length;list.innerHTML=L.map(l=>`<p>${esc(l.s)}</p>`).join("");key=""};
-  let txt=typeof LRC!=="undefined"?LRC:"";try{txt=localStorage.getItem("drumLrc")||txt}catch(_){}setL(txt);window.__setLrc=t=>{if(!parse(t).length)return;try{localStorage.setItem("drumLrc",t)}catch(_){}setL(t)};
+  let txt=typeof LRC!=="undefined"?LRC:"";try{txt=localStorage.getItem("drumLrc")||txt}catch(_){}setL(txt);if(typeof LRC==="undefined")fetch("lyrics.lrc",{cache:"no-cache"}).then(r=>r.ok?r.text():"").then(t=>{if(parse(t).length)setL(t)}).catch(()=>{});window.__setLrc=t=>{if(!parse(t).length)return;try{localStorage.setItem("drumLrc",t)}catch(_){}setL(t)};
   $("lrcBtn").onclick=()=>$("lrcFile").click();
   $("lrcFile").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{if(!parse(t).length){alert("가사 시간이 들어 있는 .lrc 파일이 아니야");return}try{localStorage.setItem("drumLrc",t)}catch(_){}setL(t)})};
   function place(i,gap){const ps=list.children;if(!ps.length)return;
