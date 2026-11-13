@@ -1171,7 +1171,7 @@ function sellSheet(){const i=S.sell;return `<h3>${esc(i.name)} 팔기</h3><p cla
  <button class="cta" data-a="dosell">${ctaHTML()}</button>`}
 const photoFlow=()=>!!S.sell;
 const ctaHTML=()=>S.method==='partner'?'<span>사진 찍고 검토 받기</span>':'<span>사진 찍고 올리기</span>';
-const SHOTS={e:['앞','뒤','옆','시리얼 라벨'],f:['앞','옆','밑창','택']};
+const SHOTS={e:['앞','뒤','옆','아래'],f:['앞','옆','밑창','뒤']};
 function photoSheet(){const i=S.sell,mk=S.method==='market';S.photos=0;S.shotU={};return `<h3>${mk?'사진 찍어 올리기':'사진 찍어 보내기'}</h3><p class="sub">${mk?'써 둔 글과 함께 두 곳에 올려요':'사진을 보고 값을 매겨 드려요'}</p>
  <div class="shots">${SHOTS[elec(i)?'e':'f'].map((t,k)=>`<label class="shot" data-k="${k}"><input type="file" accept="image/*" capture="environment" hidden><i aria-hidden="true"></i><span>${t}</span></label>`).join('')}</div>
  ${mk?`<p class="desc">올릴 가격 ${won(i.resale)}원</p><p class="fine">팔리면 갈무리 머니로 받아요</p>`:`<p class="desc">예상 가격 ${won(Math.max(0,i.resale-20000))}원</p><p class="fine">가격이 정해지면 그때 팔지 정하면 돼요</p>`}
@@ -1181,7 +1181,7 @@ function shotFill(l,url){l.style.backgroundImage=`url("${url}")`;(S.shotU=S.shot
  if(S.as){const t=$('#ascount',sh);if(t)t.textContent=S.photos+'장';return}
  const c=$('.cta',sh);c.disabled=false;$('span',c).textContent=`사진 ${S.photos}장으로 ${S.method==='market'?'올리기':'검토 요청하기'}`}
 /* 미리보기 시연용 사진: 실제 카메라 대신 그린 그림 */
-const sampleShot=k=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dfe7e3"/><stop offset="1" stop-color="#b9c8c0"/></linearGradient></defs><rect width="160" height="120" fill="url(#g)"/><rect x="${44+k*4}" y="22" width="${72-k*8}" height="76" rx="14" fill="#fbfdfc" stroke="#9fb3a9" stroke-width="2"/><circle cx="80" cy="${48+k*6}" r="${10-k}" fill="#cfdcd5"/><rect x="62" y="74" width="36" height="6" rx="3" fill="#cfdcd5"/></svg>`);
+const sampleShot=k=>{/* 시연용 실제 제품 사진: 에어팟 프로, 에어포스 1 */const n=(S.sell&&S.sell.name)||'',set=/에어팟/.test(n)?'ap':/에어포스/.test(n)?'af':'';if(set&&k<4)return `img/shots/${set}${k}.jpg`;return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dfe7e3"/><stop offset="1" stop-color="#b9c8c0"/></linearGradient></defs><rect width="160" height="120" fill="url(#g)"/><rect x="${44+k*4}" y="22" width="${72-k*8}" height="76" rx="14" fill="#fbfdfc" stroke="#9fb3a9" stroke-width="2"/><circle cx="80" cy="${48+k*6}" r="${10-k}" fill="#cfdcd5"/><rect x="62" y="74" width="36" height="6" rx="3" fill="#cfdcd5"/></svg>`)};
 function asSheet(){const i=S.as;S.photos=0;S.shotU={};return `<h3>수리 접수하기</h3><p class="sub">${esc(i.name)}, 어디가 불편한지만 골라 주세요</p>
  <div style="margin-top:12px">${SYMP.map((s,k)=>`<button class="sym" data-a="symp" data-v="${k}" aria-pressed="false"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 7.5L10 16.5l-4-4"/></svg>${s}</button>`).join('')}</div>
  <p class="lab2"><span>사진 (선택)</span><span id="ascount"></span></p>
