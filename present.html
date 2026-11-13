@@ -769,7 +769,7 @@ async sell(k){const{step,cap,tap,w,focus,wide}=k;
  await step('당근, 번개장터도 사진만 찍으면',1);await tap('[data-a=dosell]',1000);await focus('.shots',1.3);
  for(let n=0;n<3;n++)await tap(`.shot[data-k="${n}"]`,300,false);
  cap('두 곳에 한 번에 올려요',1);await tap('[data-a=upload]',300);await wide(2000);
- await tap('.done [data-a=closesheet]',600);cap('팔리면 갈무리 머니로',1);await w(3000);
+ await tap('.done [data-a=closesheet]',600);cap('팔리면 갈무리 머니로',1);await w(9500);
  await step('갈무리에 팔면 예상 가격부터',2);await tap('[data-a=sell]',1300);await tap('[data-a=method][data-v=partner]',800);await focus('#pfine',1.38);await w(1500);
  cap('사진을 보고 값을 매겨요',2);await tap('[data-a=dosell]',1000,false);await focus('.shots',1.3);
  for(let n=0;n<4;n++)await tap(`.shot[data-k="${n}"]`,260,false);

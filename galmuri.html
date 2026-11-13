@@ -1111,7 +1111,10 @@ function subSync(){$$('.sub[data-k=inv] button').forEach(b=>b.classList.toggle('
 function leave(k,cb){const e=$(`#view [data-r="${k}"]`);if(!e||RM()){cb();return}
  const f=$('.fill',e);if(f){f.style.transition=f.firstElementChild.style.transition='transform .28s cubic-bezier(.5,0,.8,.4)';setLv(f,0)}
  setTimeout(()=>{e.style.overflow='hidden';e.animate([{height:e.offsetHeight+'px',paddingBottom:getComputedStyle(e).paddingBottom,opacity:1},{height:'0px',paddingBottom:'0px',opacity:0}],{duration:340,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}).onfinish=cb},f?260:0)}
-let tt;function say(m,ms=2600){const t=$('#toast');$('span',t).textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms)}
+let tt,sayWait=null;function say(m,ms=2600){
+ /* 창이 열려 있으면 아래 알림이 창 내용을 가린다: 창이 닫힌 뒤에 띄운다 */
+ const w=$('#shw');if(w&&w.classList.contains('on')){if(sayWait)sayWait.disconnect();sayWait=new MutationObserver(()=>{if(!w.classList.contains('on')){sayWait.disconnect();sayWait=null;setTimeout(()=>say(m,ms),250)}});sayWait.observe(w,{attributes:true,attributeFilter:['class']});return}
+ const t=$('#toast');$('span',t).textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms)}
 /* 마켓에서는 우리 집 고르기를 접는다: 폭과 투명도가 함께 줄었다 늘어난다 */
 function spShow(on){const sp=$('#sp');if(sp.classList.contains('gone')!==on)return;sp.getAnimations().forEach(a=>a.cancel());
  if(RM()){sp.classList.toggle('gone',!on);return}
