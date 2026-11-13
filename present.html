@@ -670,6 +670,15 @@ setInterval(()=>{$$('.s.on .ips').forEach(sc=>{const f=$('iframe',sc);try{const 
 /* 앱 띄우기 */
 /* 발표를 열 때마다 앱을 새로 받는다(한 번 받은 뒤엔 그 발표 내내 같은 걸 쓴다): 옛 앱이 남아 시연이 어긋나지 않게 */
 const BLD=Date.now().toString(36);
+/* 발표를 열자마자 사진과 시연 앱을 미리 받아 둔다: 장을 넘길 때 그림이 늦게 뜨지 않게 */
+const PRE=[];(()=>{const imgs=['frame-iphone.png','frame-mac.png','galmuri-icon.png','img/ios/wall.jpg','img/scan-demo.svg',
+  ...[1,2,3,4,5,6,7,8].map(n=>`img/m${n}.jpg`),...[0,1,2,3].flatMap(n=>[`img/shots/ap${n}.jpg`,`img/shots/af${n}.jpg`]),
+  ...['dock','calendar','photos','camera','maps','mail','clock','reminders','settings'].map(n=>`img/ios/${n}.png`),
+  ...$$('img[src]').map(i=>i.getAttribute('src')).filter(u=>!/^data:/.test(u))];
+ const go=()=>{[...new Set(imgs)].forEach(u=>{const im=new Image();im.decoding='async';im.src=u;PRE.push(im);im.decode&&im.decode().catch(()=>{})});
+  /* 시연 장에서 띄우는 앱 주소 그대로 받아 둔다(같은 주소라 바로 꺼내 쓴다) */
+  ['galmuri.html?theme=light&demo=1','galmuri.html?theme=light&demo=intro','galmuri.html?ui=desk&demo=1&theme=light','galmuri.html?demo=1&theme=light','fonts/bricolage-latin.woff2'].forEach(u=>{fetch(u.includes('?')?u+'&b='+BLD:u).catch(()=>{})})};
+ document.readyState==='complete'?go():addEventListener('load',go)})();
 function mount(box,src,before){src+='&b='+BLD;box.querySelectorAll('iframe').forEach(f=>f.remove());const f=document.createElement('iframe');f.title='갈무리 앱';f.src=src;
  before?box.insertBefore(f,before):box.appendChild(f);fz(f);
  return new Promise(r=>f.addEventListener('load',()=>{try{f.contentWindow.addEventListener('keydown',e=>{if(NAV.includes(e.key)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();key(e)}})}catch(_){}requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));r(f)},{once:true}))}
