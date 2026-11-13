@@ -869,9 +869,7 @@ function frame(){
     while(vi<EVENTS.length&&EVENTS[vi].t<=p){EVENTS[vi].ins.forEach(flash);chHit(EVENTS[vi]);vi++}
   }
   VY=VY0;KK=KK0;DH=DH0;ZS=ZS0;
-  if(H>W*1.15){const s0=W/VW*.86,tt=VH+16-(H*.78)/s0,nat=VY0+1/(1/DH0+ZMAX*ZS0);
-    if(tt<nat){const r=.34;VY=Math.min(VY0,(tt-r*HY)/(1-r));DH=HY-VY;KK=KK0*DH0/DH;ZS=(1/(Math.max(tt,VY+DH*.15)-VY)-1/DH)/ZMAX}}
-  const dpr=window.devicePixelRatio||1,tY0=VY+1/(1/DH+ZMAX*ZS),hv=VH-tY0+16,s=Math.min(W/VW,H/hv)*(W>H?.8:.86),ox=(W-VW*s)/2,oy=H-(VH+16)*s-H*.015;__TT=oy+tY0*s;
+  const dpr=window.devicePixelRatio||1,tY0=VY+1/(1/DH+ZMAX*ZS),hv=VH-tY0+16,port=H>W*1.15,s=port?Math.min(W/VW*1.08,H*.62/hv):Math.min(W/VW,H/hv)*.8,ox=(W-VW*s)/2,oy=H-(VH+16)*s-H*(port?.07:.015);__TT=oy+tY0*s;
   g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
   const hasV=au&&au.videoWidth;
   g.fillStyle="#000";g.fillRect(0,0,W,H);
