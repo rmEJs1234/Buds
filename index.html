@@ -135,15 +135,16 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
     <span class="tag">마지막으로 봄</span>
     <span class="wm" aria-hidden="true">Galmuri.</span>
   </button>
-  <button class="app deck in" style="--k:2" data-href="present.html" id="present"><span><b>갈무리 소개</b><small>실제 앱으로 시연하는 발표 자료</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-  <button class="app deck in" style="--k:3" data-href="script.html" id="script"><span><b>발표 대본</b><small>무대에서 읽을 말과 넘기는 타이밍, 예상 질문</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-  <button class="app buds in" style="--k:4" data-href="v4.html" id="buds">
+  <button class="app deck in" style="--k:2" data-href="galmuri-early.html" id="early"><span><b>갈무리 초기 버전</b><small>처음 만들었던 갈무리 화면</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  <button class="app deck in" style="--k:3" data-href="present.html" id="present"><span><b>갈무리 소개</b><small>실제 앱으로 시연하는 발표 자료</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  <button class="app deck in" style="--k:4" data-href="script.html" id="script"><span><b>발표 대본</b><small>무대에서 읽을 말과 넘기는 타이밍, 예상 질문</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  <button class="app buds in" style="--k:5" data-href="v4.html" id="buds">
     <span class="tag">마지막으로 봄</span>
     <span><span class="nm" style="display:block">Galaxy Buds4 Pro</span><span class="ds" style="display:block">for iOS 27</span><span class="dsk">휴대폰 화면으로 열려요</span></span>
     <img src="buds.png" alt="">
   </button>
-  <button class="app deck in" style="--k:5" data-href="drum.html" id="drum"><span><b>드럼 연습</b><small>퇴사 할게여 · 소연</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-  <p class="foot in" style="--k:6">앱 안에서 나가기를 누르면 이 화면으로 돌아와요</p>
+  <button class="app deck in" style="--k:6" data-href="drum.html" id="drum"><span><b>드럼 연습</b><small>퇴사 할게여 · 소연</small></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  <p class="foot in" style="--k:7">앱 안에서 나가기를 누르면 이 화면으로 돌아와요</p>
 </main>
 
 <script>
@@ -166,7 +167,7 @@ window.__MOCKSRC=q=>q.get('open')==='buds'?'v4.html?l=1':'index.html';
   document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{
     if(going)return;going=1;setTimeout(()=>{going=0},2500);
     try{localStorage.setItem('apps.last',b.id)}catch(_){}
-    if(b.id==='present'||b.id==='script'||b.id==='drum'){wrap.classList.add('go');setTimeout(()=>{(window.top||window).location.href=b.dataset.href},reduce?120:560);return}
+    if(b.id==='present'||b.id==='script'||b.id==='drum'||b.id==='early'){wrap.classList.add('go');setTimeout(()=>{(window.top||window).location.href=b.dataset.href},reduce?120:560);return}
     if(b.id==='galmuri')return boot(b);
     wrap.classList.add('go');
     setTimeout(()=>{location.href=window.__UI==='desk'?'./?ui=phone&open=buds':b.dataset.href+'?l=1'},reduce?120:560);
