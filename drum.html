@@ -1223,9 +1223,9 @@ function frame(){
       const li=laneOf(c),lw=q.hw/2,x=lx(li,q.hw),col=COL[LCOL[li]],sh=SH[li];
       if(c==="C"||c==="H"||c==="O"||c==="R"){ // 심벌: cym 텍스처(링+원뿔)를 납작한 원반에 입힘
         const rx=lw*.98*GS/2,ry=rx*er,bx=rx*.93,by=ry*.9,yb=q.y-ry*.05,ga=g.globalAlpha;
-        g.fillStyle="rgba(0,0,0,.6)";g.beginPath();g.ellipse(x,q.y+ry*.55,rx,ry,0,0,7);g.fill();
-        g.fillStyle="#8e92a8";g.beginPath();g.ellipse(x,q.y+ry*.24,rx,ry,0,0,7);g.fill();
-        g.fillStyle="#ffffff";g.beginPath();g.ellipse(x,q.y+ry*.08,rx,ry,0,0,7);g.fill();
+        g.fillStyle="rgba(0,0,0,.6)";g.beginPath();g.ellipse(x,q.y+ry*.32,rx,ry,0,0,7);g.fill();
+        g.fillStyle="#8e92a8";g.beginPath();g.ellipse(x,q.y+ry*.14,rx,ry,0,0,7);g.fill();
+        g.fillStyle="#ffffff";g.beginPath();g.ellipse(x,q.y+ry*.05,rx,ry,0,0,7);g.fill();
         g.lineWidth=1.5;g.strokeStyle="rgba(0,0,0,.55)";g.stroke();
         g.save();g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.clip();
         const bg=g.createLinearGradient(0,yb-by,0,yb+by);
@@ -1236,7 +1236,7 @@ function frame(){
         g.restore();
         if(c==="O"){g.lineWidth=Math.max(1.5,ry*.34);g.strokeStyle=col;g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.stroke()}
         // 심벌 몸통: 원반 거의 전체를 덮는 낮고 넓은 언덕(꼭대기는 둥글게)
-        const bw=bx*.94,bh=by*.94,cy=yb+by*.02,py=cy-bw*(.2+.26*CFG.dome);
+        const bw=bx*.94,bh=by*.94,cy=yb+by*.02,py=cy-bw*(.16+.22*CFG.dome);
         const mound=()=>{g.beginPath();g.moveTo(x-bw,cy);g.quadraticCurveTo(x-bw*.3,py,x,py);g.quadraticCurveTo(x+bw*.3,py,x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.closePath()};
         g.save();mound();
         if(c==="O"){g.fillStyle="#0e0c14";g.fill();g.lineWidth=Math.max(1.5,ry*.3);g.strokeStyle=col;g.stroke()}
@@ -1246,10 +1246,10 @@ function frame(){
         g.restore();
         if(c!=="O"){g.lineWidth=1;g.strokeStyle="rgba(0,0,0,.4)";mound();g.stroke()}
       }else{ // 패드: prism 텍스처 3분할(양끝 금속 마개)
-        const gw=lw*.94*GS,gh=gw*(.26+.12*TN),cr=gh*.35,y0=q.y-gh*.62;
-        g.fillStyle="rgba(0,0,0,.5)";rr(x-gw/2,y0+gh*.4,gw,gh,cr);g.fill();
-        g.fillStyle="#8e92a8";rr(x-gw/2,y0+gh*.22,gw,gh,cr);g.fill(); // 심벌처럼 아래쪽 두께(옆면)만 살짝
-        g.fillStyle="#f4f6fc";rr(x-gw/2,y0+gh*.1,gw,gh,cr);g.fill();
+        const gw=lw*.94*GS,gh=gw*(.2+.09*TN),cr=gh*.35,y0=q.y-gh*.58;
+        g.fillStyle="rgba(0,0,0,.5)";rr(x-gw/2,y0+gh*.26,gw,gh,cr);g.fill();
+        g.fillStyle="#8e92a8";rr(x-gw/2,y0+gh*.14,gw,gh,cr);g.fill(); // 심벌처럼 아래쪽 두께(옆면)만 살짝
+        g.fillStyle="#f4f6fc";rr(x-gw/2,y0+gh*.06,gw,gh,cr);g.fill();
         const ix=x-gw/2,iy=y0,iw=gw,ih=gh;
         g.save();rr(ix,iy,iw,ih,cr*.8);g.clip();slice3(GT.pad[li],0,0,ix,iy,iw,ih,ih*.6);
         g.globalCompositeOperation="lighter";const lg=g.createLinearGradient(0,iy,0,iy+ih);lg.addColorStop(0,rgba(col,.6));lg.addColorStop(.45,rgba(col,.3));lg.addColorStop(.5,"rgba(255,255,255,.35)");lg.addColorStop(.56,rgba(col,.2));lg.addColorStop(1,"rgba(0,0,0,0)");
