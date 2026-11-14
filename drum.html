@@ -421,6 +421,92 @@ body.side-open .side{transform:none}
 .rfoot .cedtxt input.bad{box-shadow:inset 0 0 0 1.5px #ff4d4d}
 .rhelp{margin:0;font-size:11px;color:#5d5a66;line-height:1.5;flex:none}
 @media (max-width:700px){.rhelp{display:none}.rtitle{display:none}#chartEd{padding:8px 8px 6px}#chartEd button,#chartEd select,#chartEd input{min-height:34px;padding:6px 9px}}
+
+/* ── v23: 트랙은 화면 전체, 나머지는 그 위에 떠 있는 유리 판 */
+:root{--glass:rgba(16,16,20,.72);--glassb:rgba(255,255,255,.08);--ease:cubic-bezier(.2,.8,.2,1)}
+html,body{height:100%;overflow:hidden}
+body{display:block!important;max-width:none!important;padding:0!important;height:100dvh!important;margin:0!important}
+.stage,.left{display:contents!important}
+.lanes{position:fixed!important;inset:0!important;width:auto!important;height:auto!important;max-height:none!important;min-height:0!important;aspect-ratio:auto!important;flex:none!important;z-index:0;border-radius:0!important}
+header{position:fixed!important;top:0;left:0;right:0;z-index:6;display:flex!important;align-items:center!important;gap:12px;padding:14px 20px 26px!important;
+  background:linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,0));pointer-events:none}
+header>*{pointer-events:auto}
+header h1{font:700 17px var(--body)!important;letter-spacing:-.3px}
+#gear{width:42px;height:42px;border-radius:14px;background:var(--glass)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px var(--glassb);transition:transform .35s var(--ease),background .2s,color .2s}
+#gear:hover{transform:rotate(45deg)}
+#gear[aria-pressed=true]{background:#fff!important;color:#000;transform:rotate(90deg)}
+.chips{position:fixed!important;z-index:6;top:14px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 340px);display:flex!important;gap:2px!important;padding:4px!important;
+  background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:999px;box-shadow:inset 0 0 0 1px var(--glassb);overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{position:relative;z-index:1;border-radius:999px!important;padding:7px 12px!important;font:600 12.5px var(--body)!important;color:#8d8a97!important;transition:color .25s}
+.chips button:hover{color:#fff!important}
+.chips button.on{color:#000!important}
+.chipInd{position:absolute;left:0;top:4px;bottom:4px;border-radius:999px;background:#fff;z-index:0;transition:transform .45s var(--ease),width .45s var(--ease),opacity .2s;opacity:0;pointer-events:none}
+.lyr{top:100px!important}
+.lyr.lside{top:18%!important;bottom:20%;left:auto!important;right:max(24px,3vw)!important;width:min(23vw,380px);height:auto!important;padding:0!important}
+.lyr.lside .lyl p{text-align:left!important;transform-origin:left center!important;max-width:100%!important;font-size:22px!important}
+.hud{left:24px!important}
+.hbar b{transition:transform .2s}
+.hbar b.bump{animation:bump .32s var(--ease)}
+@keyframes bump{0%{transform:translateY(6px) scale(.92);opacity:.4}100%{transform:none;opacity:1}}
+.seek{position:fixed!important;left:0;right:0;bottom:0;z-index:8;gap:14px!important;padding:26px 24px calc(18px + env(safe-area-inset-bottom))!important;
+  background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.82) 45%);transition:padding-right .4s var(--ease)}
+.seek>span{font:600 12px var(--body)!important;color:#b9b6c2!important;min-width:34px;text-align:center}
+.sbar{height:28px!important}
+.sfill{top:11px!important;height:6px!important;border-radius:4px!important;background:rgba(255,255,255,.16)!important}
+.sbar:hover .sfill,.sbar.drag .sfill{top:10px!important;height:8px!important}
+#sMarks i{top:9px!important;height:10px!important;width:3px!important}
+#sKnob{width:16px!important;height:16px!important;margin:-8px 0 0 -8px!important;transition:transform .2s var(--ease)!important;transform:scale(.85)}
+.sbar:hover #sKnob{transform:scale(1)}.sbar.drag #sKnob{transform:scale(1.3)}
+.seek #play{width:84px!important;height:40px!important;border-radius:999px!important;background-size:16px!important;transition:transform .15s var(--ease),box-shadow .2s!important;box-shadow:0 6px 22px rgba(255,255,255,.12)!important}
+.seek #play:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,255,255,.22)!important}
+.seek #play:active{transform:scale(.95)}
+#ctlTog{width:40px!important;height:40px!important;border-radius:999px!important;background:var(--glass)!important;box-shadow:inset 0 0 0 1px var(--glassb)!important;color:#fff!important;transition:transform .35s var(--ease),background .2s!important}
+body:not(.noctl) #ctlTog{transform:rotate(180deg);background:#fff!important;color:#000!important}
+body.noctl #ctlTog{transform:none!important}
+.drawer{position:fixed!important;z-index:7;left:50%;bottom:86px;width:min(760px,calc(100vw - 560px));min-width:min(420px,calc(100vw - 20px));max-height:56dvh;overflow:auto;
+  display:flex!important;flex-direction:column;gap:12px;padding:16px!important;border:0!important;border-radius:24px;background:var(--glass);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);
+  box-shadow:inset 0 0 0 1px var(--glassb),0 24px 60px rgba(0,0,0,.55);transform:translate(-50%,0);opacity:1;transition:opacity .25s,transform .35s var(--ease)}
+body.noctl .drawer{opacity:0;transform:translate(-50%,18px) scale(.97);pointer-events:none}
+.drawer .ctrl{background:none!important;border:0!important;padding:0!important}
+.ctrl button,.seg{transition:background .2s,color .2s,transform .12s!important}
+.ctrl button:hover{background:#222228!important}
+.ctrl button:active{transform:scale(.96)}
+.ctrl button.tg[aria-pressed="true"],.seg button[aria-pressed="true"]{background:#fff!important;color:#000!important}
+.side{background:rgba(12,12,15,.86)!important;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:-30px 0 60px rgba(0,0,0,.5);border-left:1px solid var(--glassb)!important;width:min(380px,88vw)!important}
+@media (orientation:landscape) and (min-width:820px){body.side-open{padding-right:0!important}body.side-open .seek{padding-right:calc(min(380px,88vw) + 24px)!important}}
+@media (orientation:portrait),(max-width:819px){
+  header{padding:12px 14px 22px!important}
+  .chips{top:62px;left:10px;right:10px;transform:none;max-width:none}
+  .drawer{left:10px;right:10px;width:auto;min-width:0;transform:none;bottom:80px;max-height:44dvh}
+  body.noctl .drawer{transform:translateY(18px) scale(.97)}
+  .seek{padding:22px 14px calc(14px + env(safe-area-inset-bottom))!important;gap:10px!important}
+  .seek #play{width:72px!important}
+}
+/* 처음 열 때 차례로 올라오기 */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+header{animation:fadeIn .6s var(--ease) both}
+.lanes{animation:fadeIn .9s var(--ease) both}
+.seek{animation:fadeUp .6s .25s var(--ease) both}
+.hud{animation:fadeIn .6s .35s var(--ease) both}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.lyr{top:154px!important}
+.hud.port{flex-direction:row!important;align-items:center!important;gap:14px!important;left:18px!important}
+.hud.port .hbar b{font-size:26px!important}
+.hud.port .hbeats{margin:0!important}
+.chips{justify-content:flex-start!important}
+.hud.port .metro,.hud.port .kit{position:fixed;top:104px;margin:0!important}
+.hud.port .kit{right:12px;width:27vw!important}
+.hud.port .metro{width:26px!important;right:calc(27vw + 20px)}
+.drawer .ctrl{display:flex!important;flex-wrap:wrap!important;gap:12px 14px!important;overflow:visible!important}
+.drawer .grp{flex:1 1 auto!important;min-width:0;padding:0!important}
+.drawer .grp.main{flex:1 1 100%!important}
+.drawer .grp .row{flex-wrap:wrap}
+.drawer .cap{display:block!important;margin-bottom:2px}
+@media (orientation:landscape) and (min-width:820px){body.side-open .drawer{left:calc(50% - 190px)}}
+.drawer{transition:opacity .25s,transform .35s var(--ease),left .4s var(--ease)!important}
 </style>
 </head>
 <body>
@@ -714,7 +800,7 @@ const KEEP=(()=>{try{const n=4000,b=new Uint8Array(44+n),v=new DataView(b.buffer
 function play(){
   if(KEEP){const pr=KEEP.play();if(pr&&pr.catch)pr.catch(()=>{})}
   initAudio();if(ctx&&ctx.state==="suspended")ctx.resume();
-  if(pos>=TOTAL||pos<0)pos=0;
+  if(pos>=TOTAL-2||pos<0)pos=0;
   // 누른 순간에 재생 권한만 미리 열어두고(무음)
   if(au){au.muted=true;const pr=au.play();if(pr&&pr.then)pr.then(()=>{if(counting)au.pause()}).catch(()=>{})}
   if(au2){au2.muted=true;const p2=au2.play();if(p2&&p2.then)p2.then(()=>{if(counting)au2.pause()}).catch(()=>{})}
@@ -760,7 +846,7 @@ function setSong(blob,fresh){
   if(au){try{URL.revokeObjectURL(au.src)}catch(e){}}
   if(au&&au.remove)au.remove();
   au=document.createElement("video");au.className="bgv";au.playsInline=true;au.setAttribute("playsinline","");au.setAttribute("webkit-playsinline","");au.preload="auto";au.disablePictureInPicture=true;au.muted=!drmOn;
-  $("lanes").insertBefore(au,cv);au.src=URL.createObjectURL(blob);au.onended=()=>{if(playing)pause()};
+  $("lanes").insertBefore(au,cv);au.src=URL.createObjectURL(blob);au.onended=()=>{if(playing){pause();if(pos>TOTAL-8){pos=0;vi=ai=0}}};
   au.onerror=()=>{au=null;$("song").textContent="파일 못 읽음, 다시 고르기";$("syncBox").hidden=true};
   $("song").textContent="음원 ✓ 바꾸기";document.querySelector(".hint").hidden=true;$("syncBox").hidden=false;showSync();
   sndOn=false;$("snd").setAttribute("aria-pressed","false");
@@ -786,7 +872,7 @@ function waGains(){if(!ctx)return;if(!WA.g1){WA.g1=ctx.createGain();WA.g1.connec
 function waStop(){[WA.s1,WA.s2].forEach(x=>{if(x){try{x.stop()}catch(e){}try{x.disconnect()}catch(e){}}});WA.s1=WA.s2=null;WA.on=false}
 function waStart(p){waStop();waGains();if(au)au.pause();if(au2)au2.pause();
   const T=ctx.currentTime+.08,t=p/2+off();
-  const mk=(buf,g)=>{if(!buf)return null;const x=ctx.createBufferSource();x.buffer=buf;x.connect(g);if(t>=0)x.start(T,t);else x.start(T-t,0);return x};
+  const mk=(buf,g)=>{if(!buf)return null;const x=ctx.createBufferSource();x.buffer=buf;x.connect(g);x.onended=()=>{if(WA.on&&playing&&WA.s1===x&&cur()>TOTAL-8){pause();pos=0;vi=ai=0}};if(t>=0)x.start(T,t);else x.start(T-t,0);return x};
   WA.s1=mk(WA.b1,WA.g1);WA.s2=mk(WA.b2,WA.g2);WA.on=true;hold=false;pos=p;anchorPos=p;anchorTime=T;nextClick=Math.ceil(p-1e-6)}
 const b64blob=str=>{const bin=atob(str),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:"audio/mpeg"})};
 function setVocal(blob){waDecode(blob,"b2");drmOn=false;if(au)au.muted=true;$("drmBtn").setAttribute("aria-pressed","false");au2=new Audio();au2.preload="auto";au2.src=URL.createObjectURL(blob);au2.muted=!vocOn;au2.volume=.85;au2.playbackRate=rate;$("vocBtn").hidden=false;$("drmBtn").hidden=false}
@@ -915,7 +1001,7 @@ function frame(){
     while(vi<EVENTS.length&&EVENTS[vi].t<=p){EVENTS[vi].ins.forEach(flash);chHit(EVENTS[vi]);vi++}
   }
   VY=VY0;KK=KK0;DH=DH0;ZS=ZS0;
-  const dpr=window.devicePixelRatio||1,tY0=VY+1/(1/DH+ZMAX*ZS),hv=VH-tY0+16,port=H>W*1.15,s=port?Math.min(W/VW*1.08,H*.62/hv):Math.min(W/VW,H/hv)*.8,ox=(W-VW*s)/2,oy=H-(VH+16)*s-H*(port?.07:.015);__TT=oy+tY0*s;
+  const dpr=window.devicePixelRatio||1,tY0=VY+1/(1/DH+ZMAX*ZS),hv=VH-tY0+16,port=H>W*1.15,BM=port?92:96,s=port?Math.min(W/VW*1.08,H*.6/hv):Math.min(W*.56/VW,(H-BM-70)/hv),ox=(W-VW*s)/2,oy=H-BM-(VH+16)*s+18*s;__TT=oy+tY0*s;
   g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
   const hasV=au&&au.videoWidth;
   g.fillStyle="#000";g.fillRect(0,0,W,H);
@@ -1081,7 +1167,7 @@ function frame(){
   if(bi!==lastBar){lastBar=bi;$("barNo").textContent=ORDER[bi]}
   jumped=false;
   const si=secIndex(Math.min(playing&&p<countEnd?countEnd:p,TOTAL-.01));
-  if(si!==lastSec){lastSec=si;chipEls.forEach((c,i)=>c.classList.toggle("on",i===si));const ch=$("chips"),c=chipEls[si];ch.scrollTo({left:c.offsetLeft-ch.offsetLeft-ch.clientWidth/2+c.offsetWidth/2,top:c.offsetTop-ch.offsetTop-ch.clientHeight/2+c.offsetHeight/2,behavior:"smooth"})}
+  if(si!==lastSec){lastSec=si;chipEls.forEach((c,i)=>c.classList.toggle("on",i===si));const ch=$("chips"),c=chipEls[si];ch.scrollTo({left:c.offsetLeft-ch.clientWidth/2+c.offsetWidth/2,top:c.offsetTop-ch.offsetTop-ch.clientHeight/2+c.offsetHeight/2,behavior:"smooth"})}
   const bt=playing?((Math.floor(p)%4)+4)%4:-1;
   if(bt!==lastBeat){lastBeat=bt;beatEls.forEach((d,i)=>d.classList.toggle("on",i===bt))}
   const cnt="";
@@ -1098,7 +1184,7 @@ const RL=[["S"],["H","O","T"],["R","M"],["C","F"]],INM={S:"스네어",H:"하이�
 let laneSel=[0,0,0,0];try{const v=JSON.parse(localStorage.getItem("drumLaneSel")||"null");if(Array.isArray(v)&&v.length===4)laneSel=v.map((x,i)=>Math.max(0,Math.min(RL[i].length-1,x|0)))}catch(e){}
 const GRIDS=[["1/4",1],["1/8",.5],["1/16",.25],["1/32",.125],["셋잇단 8",1/3],["셋잇단 16",1/6]];
 let cb=1,clip=null,gridI=1,PPB=90,view=0,phKey="",chFollowOn=true,lastCtl="",lastLbl="",rollW=0,rollH=0,hover=null,drag=null,toastT=0;
-try{const g0=localStorage.getItem("drumGrid"),gi=+g0;if(g0!==null&&gi>=0&&gi<GRIDS.length)gridI=gi;const z=+localStorage.getItem("drumPPB");if(z>=30&&z<=400)PPB=z}catch(e){}if(!localStorage.getItem("drumPPB"))PPB=110;
+try{const g0=localStorage.getItem("drumGrid"),gi=+g0;if(g0!==null&&gi>=0&&gi<GRIDS.length)gridI=gi;const z=+localStorage.getItem("drumPPB2");if(z>=30&&z<=400)PPB=z}catch(e){}if(!localStorage.getItem("drumPPB2"))PPB=56;
 const NC={},hitAt=new Map(),padAt={},undoS=[],redoS=[];
 const eCol=c=>c==="K"?COL.K:COL[LCOL[laneOf(c)]];
 const parseNotes=str=>{const out=[];str.split(" ").forEach((slot,si)=>{const u=slot.split("/");u.forEach((tok,j)=>{if(tok==="-")return;const p=si*.5+j*.5/u.length;[...tok].forEach(c=>out.push({p,c}))})});return out};
@@ -1132,7 +1218,7 @@ function toast(t){const e=$("rtoast");e.textContent=t;e.classList.add("on");clea
 const rc=$("roll"),rg=rc.getContext("2d");let chipR=[];
 function rollFit(){const r=$("rwrap").getBoundingClientRect(),d=window.devicePixelRatio||1;rollW=r.width;rollH=r.height;rc.width=Math.max(1,rollW*d);rc.height=Math.max(1,rollH*d);rg.setTransform(d,0,0,d,0,0)}
 if(window.ResizeObserver)new ResizeObserver(()=>{if(!$("chartEd").hidden)rollFit()}).observe($("rwrap"));
-const geo=()=>{const RW=Math.min(60,Math.max(42,rollW*.07)),HH=96,lw0=(rollW-RW-16)/4.5,lw=Math.min(150,lw0),KW=Math.max(30,Math.min(64,lw*.5)),tot=RW+KW+lw*4,ox=Math.max(6,(rollW-tot)/2);
+const geo=()=>{const RW=Math.min(60,Math.max(42,rollW*.07)),HH=116,lw0=(rollW-RW-16)/4.5,lw=Math.min(76,lw0),KW=Math.max(26,Math.min(40,lw*.5)),tot=RW+KW+lw*4,ox=Math.max(6,(rollW-tot)/2);
   return{RW,HH,lw,KW,ox,kx:ox+RW,lx:ox+RW+KW,rx:ox+RW+KW+lw*4,base:rollH-HH}};
 const yOf=(ab,G)=>G.base-(ab-view)*PPB;
 function rr2(g,x,y,w,h,r){r=Math.min(r,h/2,w/2);g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
@@ -1159,8 +1245,8 @@ function gemKick(g,x0,x1,y,h){const w=x1-x0;g.fillStyle="rgba(0,0,0,.45)";rr2(g,
   g.save();rr2(g,x0,y-h/2,w,h,h*.3);g.fillStyle=COL.K;g.fill();g.clip();if(IMG.prism)sl3(g,IMG.prism,128,0,x0,y-h/2,w,h,h*1.4);
   g.globalCompositeOperation="lighter";const kl=g.createLinearGradient(0,y-h/2,0,y+h/2);kl.addColorStop(0,"rgba(255,235,170,.95)");kl.addColorStop(.3,"rgba(255,150,30,.75)");kl.addColorStop(.7,"rgba(255,110,0,.55)");kl.addColorStop(1,"rgba(140,50,0,.2)");
   g.fillStyle=kl;g.fillRect(x0+h*1.25,y-h/2,w-h*2.5,h);g.restore();rr2(g,x0,y-h/2,w,h,h*.3);g.lineWidth=1.2;g.strokeStyle="rgba(50,15,0,.9)";g.stroke()}
-function gemAt(g,c,G,y,a){const h=Math.max(10,Math.min(G.lw*.24,PPB*.21,30));g.globalAlpha=a;
-  if(c==="K")gemKick(g,G.kx+3,G.rx-3,y,Math.max(7,h*.62));
+function gemAt(g,c,G,y,a){const h=Math.max(8,Math.min(G.lw*.26,PPB*.24,20));g.globalAlpha=a;
+  if(c==="K")gemKick(g,G.kx+3,G.rx-3,y,Math.max(5,h*.55));
   else{const li=laneOf(c),x=G.lx+li*G.lw+G.lw/2;if("HCRO".includes(c))gemCym(g,c,x,y,G.lw*.8,h*1.05);else gemDrum(g,c,x,y,G.lw*.9,h)}
   g.globalAlpha=1}
 function drawRoll(){
@@ -1203,15 +1289,15 @@ function drawRoll(){
   {const y=yOf(p,G);if(y>-4&&y<G.base+4){g.save();g.shadowColor="#ffcf5a";g.shadowBlur=14;const gl=g.createLinearGradient(0,y-3,0,y+3);gl.addColorStop(0,"#fff4c4");gl.addColorStop(.5,"#ffd65c");gl.addColorStop(1,"#c98a10");g.fillStyle=gl;g.fillRect(G.ox,y-2.5,G.rx-G.ox,5);g.restore()}}
   // 아래: 패드(게임 텍스처) + 칸마다 넣을 악기
   g.fillStyle="#000";g.fillRect(0,G.base,W,H-G.base);
-  const pt=G.base+6,ph=Math.min(40,G.lw*.3);chipR=[];
+  const pt=G.base+6,ph=Math.min(30,G.lw*.34);chipR=[];
   {const fl=Math.max(0,1-(now-(padAt.K||0))/220);g.fillStyle=fl?rgba(COL.K,.3+.6*fl):"#1a1206";rr2(g,G.kx+3,pt,G.KW-6,ph,8);g.fill();g.lineWidth=2;g.strokeStyle=COL.K;g.stroke();
     g.fillStyle=fl>.4?"#000":"#ffd9a8";g.font="700 11px sans-serif";g.textAlign="center";g.fillText("킥",G.kx+G.KW/2,pt+ph/2);chipR.push({x:G.kx,y:pt,w:G.KW,h:ph,k:"K"})}
   RL.forEach((ins,i)=>{const x=G.lx+i*G.lw,pw=G.lw*.88,px=x+(G.lw-pw)/2,col=COL[LCOL[i]],fl=Math.max(0,...ins.map(c=>1-(now-(padAt[c]||0))/220));
     if(IMG.smash){g.save();g.translate(px,pt+ph);g.scale(1,-1);g.drawImage(IMG.smash,10,SMY[i],176,56,0,0,pw,ph);g.restore()}else{g.fillStyle=col;rr2(g,px,pt,pw,ph,6);g.fill()}
     if(fl>0){g.save();g.globalCompositeOperation="lighter";g.globalAlpha=fl;const gi=IMG[GLOWK[i]];if(gi)g.drawImage(gi,px-pw*.15,pt-ph*.5,pw*1.3,ph*2);g.restore()}
-    const cw=(G.lw-6-(ins.length-1)*3)/ins.length,cy=pt+ph+7,chh=Math.min(30,H-cy-6);
-    ins.forEach((c,k)=>{const cx=x+3+k*(cw+3),on=laneSel[i]===k;g.fillStyle=on?"#fff":"#16161a";rr2(g,cx,cy,cw,chh,8);g.fill();if(on){g.lineWidth=2;g.strokeStyle=col;g.stroke()}
-      g.fillStyle=on?"#000":"#b9b6c2";g.font="700 "+(cw<44?10:12)+"px sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(INM[c],cx+cw/2,cy+chh/2);chipR.push({x:cx,y:cy,w:cw,h:chh,i,k})})});
+    const cw=G.lw-6,chh=Math.min(22,(H-pt-ph-10)/3-3);
+    ins.forEach((c,k)=>{const cx=x+3,cy=pt+ph+6+k*(chh+3),on=laneSel[i]===k;g.fillStyle=on?"#fff":"#16161a";rr2(g,cx,cy,cw,chh,8);g.fill();if(on){g.lineWidth=2;g.strokeStyle=col;g.stroke()}
+      g.fillStyle=on?"#000":"#b9b6c2";g.font="700 "+(cw<52?10:11)+"px sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(INM[c],cx+cw/2,cy+chh/2);chipR.push({x:cx,y:cy,w:cw,h:chh,i,k})})});
 }
 // ── 조작
 const cellAt=(ev)=>{const r=rc.getBoundingClientRect(),x=ev.clientX-r.left,y=ev.clientY-r.top,G=geo(),i=Math.floor((x-G.lx)/G.lw),raw=view+(G.base-y)/PPB;
@@ -1247,7 +1333,7 @@ const up=e=>{if(!drag)return;const d=drag;drag=null;
 rc.addEventListener("pointerup",up);rc.addEventListener("pointercancel",up);
 rc.addEventListener("wheel",e=>{e.preventDefault();if(e.ctrlKey||e.metaKey){const cl=cellAt(e),z=Math.max(30,Math.min(400,PPB*Math.exp(-e.deltaY*.0025)));view=cl.raw-(cl.G.base-cl.y)/z;setZoom(z)}
   else{view-=e.deltaY/PPB;setFollow(false)}},{passive:false});
-function setZoom(z){PPB=Math.round(z);try{localStorage.setItem("drumPPB",PPB)}catch(e){}}
+function setZoom(z){PPB=Math.round(z);try{localStorage.setItem("drumPPB2",PPB)}catch(e){}}
 $("zIn").onclick=()=>{const c=view+rollH*.4/PPB;setZoom(Math.min(400,PPB*1.25));view=c-rollH*.4/PPB};
 $("zOut").onclick=()=>{const c=view+rollH*.4/PPB;setZoom(Math.max(30,PPB/1.25));view=c-rollH*.4/PPB};
 $("gridSeg").innerHTML=GRIDS.map((x,i)=>`<button data-g="${i}" aria-pressed="${i===gridI}">${x[0]}</button>`).join("");
@@ -1352,7 +1438,7 @@ $("ctlTog").after($("play"));
     const c=i<0?ps[0].offsetTop-ps[0].offsetHeight*.6:gap?(a.offsetTop+a.offsetHeight+b.offsetTop)/2:a.offsetTop+a.offsetHeight/2;
     list.style.transform="translateY("+(box.clientHeight/2-c).toFixed(1)+"px)"}
   function lp(){
-    const h=Math.max(70,Math.round(__TT-18));if(Math.abs(h-lastH)>1){lastH=h;box.style.height=h+"px";key=""}
+    const port=H>W*1.15;box.classList.toggle("lside",!port);const h=port?Math.max(70,Math.round(__TT-166)):0;if(Math.abs(h-lastH)>1){lastH=h;box.style.height=port?h+"px":"";key=""}
     if(L.length){const t=cur()/2+off()+.12;let i=-1;for(let k=0;k<L.length;k++){if(L[k].t<=t)i=k;else break}
       const gap=i>=0&&t-L[i].t>9&&(i+1>=L.length||L[i+1].t-t>2),k2=i+"|"+gap;
       if(k2!==key){key=k2;place(i,gap)}}
@@ -1381,9 +1467,19 @@ $("ctlTog").after($("play"));
     const bt=playing?((Math.floor(p)%4)+4)%4:-1;if(bt!==lbt){lbt=bt;beats.forEach((d,i)=>d.classList.toggle("on",i===bt))}
     if(metOn!==lm){lm=metOn;$("metro").hidden=!metOn}
     if(metOn){const a=playing?28*Math.cos(Math.PI*p):0;arm.setAttribute("transform","rotate("+a.toFixed(1)+" 40 86)")}
-    const port=H>W*1.15;hud.classList.toggle("port",port);hud.style.top=port?Math.round(__TT+10)+"px":"";
+    const port=H>W*1.15;hud.classList.toggle("port",port);hud.style.top=port?"116px":"84px";const kt="";$("kit").style.top=kt;$("metro").style.top=kt;
     requestAnimationFrame(loop)}
   requestAnimationFrame(loop)})();
+</script>
+<script>
+// ── 스페이스바 = 재생/멈춤 (채보 편집 밖에서)
+document.addEventListener("keydown",e=>{if(e.code!=="Space"||!$("chartEd").hidden)return;const t=document.activeElement;if(t&&/INPUT|SELECT|TEXTAREA/.test(t.tagName))return;e.preventDefault();if(t&&t.blur)t.blur();$("play").click()});
+// ── 구간: 지금 구간 뒤로 미끄러지는 표시
+(()=>{const ch=$("chips"),ind=document.createElement("i");ind.className="chipInd";ch.prepend(ind);let last=null;
+  const upd=()=>{const on=ch.querySelector("button.on");if(on!==last){last=on;if(on){ind.style.opacity=1;ind.style.width=on.offsetWidth+"px";ind.style.transform="translateX("+on.offsetLeft+"px)"}else ind.style.opacity=0}requestAnimationFrame(upd)};requestAnimationFrame(upd)})();
+// ── HUD 마디 숫자 바뀔 때 톡
+(()=>{const b=$("hudBar");if(!b)return;new MutationObserver(()=>{b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}).observe(b,{childList:true,characterData:true,subtree:true})})();
+document.body.classList.add("ready");
 </script>
 </body>
 </html>
