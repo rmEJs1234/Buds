@@ -542,6 +542,21 @@ header{animation:fadeIn .6s var(--ease) both}
 @keyframes wob{0%{transform:rotate(-4deg)}50%{transform:rotate(2deg)}100%{transform:none}}
 .kit .cym .plate{transform-box:fill-box;transform-origin:center}
 .hud .kit{filter:drop-shadow(0 10px 20px rgba(0,0,0,.6))}
+
+.eseek{flex:none;display:flex;align-items:center;gap:12px;padding:2px 4px}
+.eseek>span{font:600 12px var(--body);color:#b9b6c2;min-width:34px;text-align:center;font-variant-numeric:tabular-nums}
+.esbar{position:relative;flex:1;height:34px;cursor:pointer;touch-action:none}
+.esfill{position:absolute;left:0;right:0;top:13px;height:8px;border-radius:5px;background:rgba(255,255,255,.14);overflow:hidden;transition:top .15s,height .15s}
+.esbar:hover .esfill,.esbar.drag .esfill{top:12px;height:10px}
+#eprog{display:block;height:100%;width:0;background:#fff}
+#eMarks i{position:absolute;top:11px;width:3px;height:12px;margin-left:-1.5px;background:#050507;pointer-events:none}
+#eMarks em{position:absolute;top:-11px;left:4px;font:700 9px var(--body);font-style:normal;color:#6f6c79;white-space:nowrap}
+#eKnob{position:absolute;top:50%;left:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.12);pointer-events:none;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.esbar.drag #eKnob{transform:scale(1.3)}
+#chartEd #eplay{flex:none;width:64px;height:36px;min-height:0;padding:0;border-radius:999px;background:#fff center/15px no-repeat;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4.5v15l13-7.5z' fill='%23000'/%3E%3C/svg%3E");background-position:55% 50%}
+#chartEd #eplay[data-st=pause]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='4.5' width='4.2' height='15' rx='1' fill='%23000'/%3E%3Crect x='13.8' y='4.5' width='4.2' height='15' rx='1' fill='%23000'/%3E%3C/svg%3E");background-position:50% 50%}
+@media (max-width:700px){#eMarks em{display:none}}
 </style>
 </head>
 <body>
@@ -648,6 +663,7 @@ header{animation:fadeIn .6s var(--ease) both}
   <div class="rgrp"><button id="zOut" aria-label="축소">−</button><button id="zIn" aria-label="확대">+</button></div>
  </div>
  <div class="rwrap" id="rwrap"><canvas id="roll"></canvas><div class="rtoast" id="rtoast"></div></div>
+ <div class="eseek"><button id="eplay" aria-label="재생"></button><span id="eCur">0:00</span><div class="esbar" id="esbar" role="slider" aria-label="편집 재생 위치"><div class="esfill"><b id="eprog"></b></div><div id="eMarks"></div><i id="eKnob"></i></div><span id="eTot">0:00</span></div>
  <div class="rtb rfoot">
   <label class="cedtxt">고른 마디 <input id="chTxt" type="text" spellcheck="false" autocapitalize="characters" autocomplete="off"></label>
   <div class="rgrp"><button id="chCopy">복사</button><button id="chPaste">붙여넣기</button><button id="chClear">비우기</button><button id="chRevert">원래대로</button></div>
@@ -1405,6 +1421,8 @@ function chFollow(p){
   if(ck!==lastCtl){lastCtl=ck;document.querySelectorAll("[data-er]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.er===rate));
     $("chVocT").hidden=$("vocBtn").hidden;$("chDrmT").hidden=$("drmBtn").hidden;$("chVocT").setAttribute("aria-pressed",vocOn);$("chDrmT").setAttribute("aria-pressed",drmOn)}
   if(playing&&chFollowOn){const b=Math.max(0,Math.min(nBars()-1,Math.floor(Math.max(p,countEnd,0)/4)))+1;if(b!==cb){cb=b;chUi()}}
+  {const pp=Math.min(Math.max(playing||counting?cur():pos,0),TOTAL),pc=pp/TOTAL*100;$("eprog").style.width=pc+"%";$("eKnob").style.left=pc+"%";
+   const sc=Math.floor(pp*.5),t=mmss(sc);if($("eCur").textContent!==t)$("eCur").textContent=t;const st=act?"pause":"play";if($("eplay").dataset.st!==st)$("eplay").dataset.st=st}
   drawRoll()}
 let lastSecT=-1,__TT=0,__TL=0;const mmss=x=>Math.floor(x/60)+":"+String(x%60).padStart(2,"0");
 function firstVisible(p){let lo=0,hi=EVENTS.length;const t=p-.3;while(lo<hi){const m=(lo+hi)>>1;EVENTS[m].t<t?lo=m+1:hi=m}return lo}
@@ -1501,6 +1519,21 @@ document.addEventListener("keydown",e=>{if(e.code!=="Space"||!$("chartEd").hidde
 // ── HUD 마디 숫자 바뀔 때 톡
 (()=>{const b=$("hudBar");if(!b)return;new MutationObserver(()=>{b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}).observe(b,{childList:true,characterData:true,subtree:true})})();
 document.body.classList.add("ready");
+</script>
+<script>
+// 편집 화면 재생 바: 누르거나 끌면 그 자리로, 롤도 같이 이동
+(()=>{const sb=$("esbar");let drag=false,was=false;
+  $("eTot").textContent=mmss(Math.round(TOTAL*.5));
+  const marks=()=>{$("eMarks").innerHTML=SECTIONS.map(x=>`<i style="left:${x[1]*4/TOTAL*100}%"><em>${x[0]}</em></i>`).join("")};marks();
+  document.querySelectorAll("[data-chart]").forEach(b=>b.addEventListener("click",()=>setTimeout(marks,0)));
+  const at=e=>{const r=sb.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*TOTAL};
+  const setP=b=>{pos=Math.min(TOTAL-.01,Math.max(0,b));vi=ai=firstFrom(pos);cb=Math.floor(pos/4)+1;view=pos-1;setFollow(true);chUi()};
+  sb.addEventListener("pointerdown",e=>{drag=true;was=playing||counting;if(was)pause();try{sb.setPointerCapture(e.pointerId)}catch(_){}sb.classList.add("drag");setP(at(e));e.preventDefault()});
+  sb.addEventListener("pointermove",e=>{if(drag)setP(at(e))});
+  const up=e=>{if(!drag)return;drag=false;sb.classList.remove("drag");setP(at(e));if(was)play()};
+  sb.addEventListener("pointerup",up);sb.addEventListener("pointercancel",up);
+  $("eplay").onclick=()=>{if(playing||counting){pause();return}setFollow(true);play()};
+})();
 </script>
 </body>
 </html>
