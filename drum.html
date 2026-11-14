@@ -677,7 +677,14 @@ function tick(){
 function secIndex(p){const b=Math.floor(Math.max(p,0)/4);let k=0;SECTIONS.forEach((s,i)=>{if(b>=s[1])k=i});return k}
 function secRange(k){return[SECTIONS[k][1]*4,(k+1<SECTIONS.length?SECTIONS[k+1][1]*4:TOTAL)]}
 let counting=false,cdEnd=0,cdT=null,rwFrom=0,rwTo=0,rwT0=0;const LEAD=4,RW_MS=600;
+// 아이폰 무음 모드(진동)에서도 소리 나게: 오디오 세션을 '재생'으로 + 무음 소리 하나 같이 틀어둠
+try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+const KEEP=(()=>{try{const n=4000,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>[...t].forEach((c,i)=>b[o+i]=c.charCodeAt(0));
+  w(0,"RIFF");v.setUint32(4,36+n,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);
+  v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,"data");v.setUint32(40,n,true);b.fill(128,44);
+  const a=new Audio(URL.createObjectURL(new Blob([b],{type:"audio/wav"})));a.loop=true;a.setAttribute("playsinline","");return a}catch(e){return null}})();
 function play(){
+  if(KEEP){const pr=KEEP.play();if(pr&&pr.catch)pr.catch(()=>{})}
   initAudio();if(ctx&&ctx.state==="suspended")ctx.resume();
   if(pos>=TOTAL||pos<0)pos=0;
   // 누른 순간에 재생 권한만 미리 열어두고(무음)
