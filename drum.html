@@ -1021,7 +1021,7 @@ function flash(c){
   if(c!=="K"&&!noMotion){const li=laneOf(c),cym=c==="C"||c==="H"||c==="O"||c==="R",n=cym?5:4,t=performance.now();
     const hat=c==="H"||c==="O";
     shards.push(...mkShards(c,li,cym,t));if(cym)rings.push({li,t,big:c==="C",hat});
-    for(let i=0;i<n;i++)parts.push({li,t,cym,w:i%3===0,sz:(4+Math.random()*5)*(hat?.55:1),vx:(Math.random()-.5)*(cym?300:200),vy:-(140+Math.random()*(cym?300:220))})}
+    for(let i=0;i<n;i++)parts.push({li,t,cym,w:i%3===0,sz:(4+Math.random()*5)*(hat?.4:1),vx:(Math.random()-.5)*(cym?300:200),vy:-(140+Math.random()*(cym?300:220))})}
   if(c==="O"||c==="H")$("hatTxt").textContent=c==="O"?"오픈":"하이햇";
   el.classList.remove("hit");void el.getBoundingClientRect();el.classList.add("hit");
 }
@@ -1029,7 +1029,7 @@ const shards=[],rings=[];
 function mkShards(c,li,cym,t){const out=[],N=cym?(c==="C"?14:10):9,o=c==="O";
   for(let k=0;k<N;k++){const a=(k+.5)/N*Math.PI*2+(Math.random()-.5)*.5,sp=cym?(220+Math.random()*260):(160+Math.random()*220);
     out.push({li,t,cym,o,a,u:Math.cos(a)*(cym?.9:1),v:Math.sin(a)*(cym?.28:.22),vx:Math.cos(a)*sp*(cym?1.15:1),vy:-(cym?160:200)-Math.random()*240+Math.sin(a)*60,
-      rot:a,vr:(Math.random()-.5)*14,s:(cym?(22+Math.random()*16):(18+Math.random()*16))*((c==="H"||c==="O")?.5:1),kind:cym?0:(k%3)})}
+      rot:a,vr:(Math.random()-.5)*14,s:(cym?(22+Math.random()*16):(18+Math.random()*16))*((c==="H"||c==="O")?.32:1),kind:cym?0:(k%3)})}
   return out}
 function drawShards(tnow,pcy,phw,lx,sd){
   if(!shards.length&&!rings.length)return;
