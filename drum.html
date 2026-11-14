@@ -557,6 +557,77 @@ header{animation:fadeIn .6s var(--ease) both}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4.5v15l13-7.5z' fill='%23000'/%3E%3C/svg%3E");background-position:55% 50%}
 #chartEd #eplay[data-st=pause]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='4.5' width='4.2' height='15' rx='1' fill='%23000'/%3E%3Crect x='13.8' y='4.5' width='4.2' height='15' rx='1' fill='%23000'/%3E%3C/svg%3E");background-position:50% 50%}
 @media (max-width:700px){#eMarks em{display:none}}
+
+/* ── v26: 갈무리 다크 테마 그대로 (진짜 검정 + 회색 판, 초록은 버튼에만, 떠오른 버튼·움푹한 칸) */
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/bricolage-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2191,U+2193,U+2212}
+:root{--g:#2BD877;--gb:#2BD877;--gb-in:#25C66C;--gtx:#000;--card:#1C1C1E;--btn:#2C2C2E;--sub:#98989F;--faint:#5C5C61;--well:#0E0E0F;
+  --up1:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(255,255,255,.04),0 2px 6px rgba(0,0,0,.6);
+  --upc:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(255,255,255,.04),0 10px 24px -8px rgba(0,0,0,.9);
+  --in:inset 0 2px 5px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.04);
+  --gup:inset 0 1px 0 rgba(255,255,255,.42),inset 0 0 0 1px rgba(255,255,255,.14),0 0 0 .5px rgba(0,110,50,.45),0 1px 2px rgba(0,90,40,.35),0 8px 18px -6px rgba(43,216,119,.55);
+  --spring:cubic-bezier(.3,1.35,.4,1);
+  --body:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,sans-serif;
+  --num:'Bricolage Grotesque','Pretendard Variable',-apple-system,'Apple SD Gothic Neo',system-ui,sans-serif}
+body,button,input,select{font-family:var(--body)!important;-webkit-font-smoothing:antialiased}
+header h1{font:800 20px var(--body)!important;letter-spacing:-.03em!important;color:#fff}
+header h1 small{font-weight:600!important;color:var(--sub)!important;letter-spacing:0}
+#gear,#ctlTog{background:var(--btn)!important;box-shadow:var(--up1)!important;backdrop-filter:none!important;color:#fff!important;border-radius:14px!important}
+#gear[aria-pressed=true],body:not(.noctl) #ctlTog{background:var(--gb)!important;color:#000!important;box-shadow:var(--gup)!important}
+/* 구간: 갈무리 칩 */
+.chips{background:var(--well)!important;box-shadow:var(--in)!important;backdrop-filter:none!important;padding:4px!important;border-radius:22px!important}
+.chips button{height:34px;font:700 13px var(--num)!important;letter-spacing:-.01em;color:var(--sub)!important;border-radius:17px!important;padding:0 13px!important;transition:color .25s}
+.chips button.on{color:#000!important}
+.chipInd{top:4px!important;bottom:4px!important;background:#fff!important;border-radius:17px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 1px 2px rgba(0,0,0,.5),0 7px 12px -4px rgba(0,0,0,.55);transition:transform .45s var(--spring),width .45s var(--spring),opacity .2s!important}
+/* 가사 */
+.lyl p{font-family:var(--body)!important;font-weight:800!important;letter-spacing:-.03em}
+.lyl p.prev,.lyl p.next{color:var(--sub)}
+.lyl p.far{color:var(--faint)}
+/* 마디·템포 */
+.hbar .hl{font:700 12px var(--body)!important;color:var(--sub)!important}
+.hbar b{font:800 44px/1 var(--num)!important;letter-spacing:-.04em!important}
+.hud.port .hbar b{font-size:30px!important}
+.htempo{font:700 13px var(--num)!important;color:var(--sub)!important}
+.htempo i{background:var(--gb)!important;color:#000!important;font-weight:800}
+.hbeats i{width:8px!important;height:8px!important;background:#2C2C2E!important}
+.hbeats i.on{background:#fff!important}
+.hbeats i.on:first-child{background:var(--gb)!important;box-shadow:0 0 10px rgba(43,216,119,.7)!important}
+/* 재생 바 */
+.seek{background:linear-gradient(rgba(0,0,0,0),#000 45%)!important}
+.seek>span,.eseek>span{font:700 12px var(--num)!important;color:var(--sub)!important}
+.sfill,.esfill{background:var(--well)!important;box-shadow:var(--in)}
+#prog,#eprog{background:var(--g-bg,linear-gradient(180deg,#3BE587,#17C163))!important;box-shadow:0 0 10px rgba(43,216,119,.45)!important}
+#sMarks i,#eMarks i{background:#000!important}
+#sKnob,#eKnob{background:#fff!important;box-shadow:0 1px 2px rgba(0,0,0,.6),0 4px 10px rgba(0,0,0,.5)!important}
+.seek #play,#chartEd #eplay{background-color:var(--gb)!important;box-shadow:var(--gup)!important;border-radius:16px!important;transition:transform .35s var(--spring)!important}
+.seek #play:active,#chartEd #eplay:active{transform:scale(.94)!important;background-color:var(--gb-in)!important}
+/* 버튼 판·설정: 갈무리 카드 */
+.drawer{background:var(--card)!important;box-shadow:var(--upc)!important;backdrop-filter:none!important;border-radius:28px!important}
+.side{background:var(--card)!important;backdrop-filter:none!important;border-left:0!important;box-shadow:-20px 0 50px rgba(0,0,0,.8)!important}
+.sideh b{font:800 21px var(--body)!important;letter-spacing:-.02em}
+#sideX{background:var(--btn)!important;box-shadow:var(--up1);border-radius:12px!important}
+.cap,.side .cfg label b,.side .cfg .note{color:var(--sub)!important;font-weight:700!important}
+.ctrl button,#chartEd button,.side .cfg button,.side .cfg select{background:var(--btn)!important;color:#fff!important;border-radius:15px!important;box-shadow:var(--up1)!important;font-weight:700!important;
+  transition:transform .35s var(--spring),box-shadow .2s,background .2s!important}
+.ctrl button:hover,#chartEd button:hover{background:#343437!important}
+.ctrl button:active,#chartEd button:active{transform:scale(.96)!important;transition-duration:.08s!important}
+.ctrl button.tg[aria-pressed="true"],#chartEd button[aria-pressed="true"]{background:var(--gb)!important;color:#000!important;box-shadow:var(--gup)!important}
+.seg,#chartEd .rseg{background:var(--well)!important;box-shadow:var(--in)!important;border-radius:16px!important;padding:4px!important;gap:2px}
+.seg button,#chartEd .rseg button{background:transparent!important;box-shadow:none!important;color:var(--sub)!important;border-radius:12px!important}
+.seg button[aria-pressed="true"],#chartEd .rseg button[aria-pressed="true"]{background:var(--btn)!important;color:#fff!important;box-shadow:var(--up1)!important}
+.seg button[data-ns],.seg button[data-nudge]{background:var(--btn)!important;color:#fff!important;box-shadow:var(--up1)!important}
+#nsVal,#syncVal{font-family:var(--num)!important;color:#fff!important}
+.side .cfg input[type=range]{accent-color:var(--gb)!important}
+.side .cfg select{border:0!important}
+/* 채보 편집 */
+#chartEd{background:#000!important}
+.rtitle{font:800 20px var(--body)!important;letter-spacing:-.02em}
+#chartEd .rplay{background:var(--gb)!important;color:#000!important;box-shadow:var(--gup)!important}
+#chartEd select,#chartEd input{background:var(--well)!important;box-shadow:var(--in)!important;border-radius:14px!important;color:#fff!important}
+.rwrap{border-radius:24px!important;box-shadow:var(--upc)!important;background:#000!important}
+#chSec{color:var(--gb)!important}
+.rtoast{background:var(--gb)!important;color:#000!important;box-shadow:var(--gup)}
+#chartEd #eplay{background:var(--gb) center/15px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4.5v15l13-7.5z' fill='%23000'/%3E%3C/svg%3E")!important;background-position:55% 50%!important}
+#chartEd #eplay[data-st=pause]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='4.5' width='4.2' height='15' rx='1' fill='%23000'/%3E%3Crect x='13.8' y='4.5' width='4.2' height='15' rx='1' fill='%23000'/%3E%3C/svg%3E")!important;background-position:50% 50%!important}
 </style>
 </head>
 <body>
@@ -1313,7 +1384,7 @@ function drawRoll(){
   g.textAlign="right";g.textBaseline="middle";
   for(let b=Math.max(1,Math.floor(view/4)+1);b<=Math.min(nBars(),Math.floor(top/4)+1);b++){const y=yOf((b-1)*4,G),si=secIndex((b-1)*4),first=SECTIONS[si][1]===b-1;
     g.fillStyle=b===cb?"#fff":"#8d8a97";g.font="700 13px sans-serif";g.fillText(b,G.kx-10,y-9);
-    if(first){g.fillStyle="#ffcc4d";g.font="700 10px sans-serif";g.fillText(SECTIONS[si][0],G.kx-10,y-23)}
+    if(first){g.fillStyle="#2BD877";g.font="700 10px sans-serif";g.fillText(SECTIONS[si][0],G.kx-10,y-23)}
     if(PPB>=45){g.fillStyle="#4d4a56";g.font="600 10px sans-serif";for(let k=1;k<4;k++)g.fillText(k+1,G.kx-10,yOf((b-1)*4+k,G))}}
   // 노트 (킥 먼저, 그 위에 젬)
   const list=[];for(let b=Math.max(1,Math.floor((view-.5)/4)+1);b<=Math.min(nBars(),Math.floor((top+.5)/4)+1);b++)notesOf(b).forEach(n=>list.push({ab:(b-1)*4+n.p,c:n.c}));
