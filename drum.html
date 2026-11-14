@@ -1104,8 +1104,9 @@ function frame(){
     // 칠 때 패드가 위로 떨림 (위로 튀었다가 잔떨림 하며 가라앉음)
     const ju=(tnow-(glow[i]||0))/240,jy=!noMotion&&ju>=0&&ju<1?-8*Math.pow(1-ju,2)*(.55+.45*Math.cos(ju*Math.PI*7)):0;
     g.save();g.translate(0,jy);
-    if(gl){const bh=300,bg=g.createLinearGradient(0,hitY,0,hitY-bh);bg.addColorStop(0,col);bg.addColorStop(1,"rgba(0,0,0,0)");
-      g.globalAlpha=gl*.6;g.fillStyle=bg;g.fillRect(x-HW*.21,hitY-bh,HW*.42,bh);g.globalAlpha=1}
+    if(gl){const y0=(pj(ZY(930)).y+pj(ZY(998)).y)/2,y1=y0-300,lx2=y=>{const hw=(y-VY)*KK,lw=hw/2;return[CX-hw+i*lw+lw*.08,CX-hw+(i+1)*lw-lw*.08]},a=lx2(y0),b=lx2(y1);
+      const bg=g.createLinearGradient(0,y0,0,y1);bg.addColorStop(0,col);bg.addColorStop(1,"rgba(0,0,0,0)");
+      g.globalAlpha=gl*.6;g.fillStyle=bg;g.beginPath();g.moveTo(a[0],y0);g.lineTo(a[1],y0);g.lineTo(b[1],y1);g.lineTo(b[0],y1);g.closePath();g.fill();g.globalAlpha=1}
     const pw=HW/2*.88,ph=th*1.15,px=x-pw/2,py=hitY-ph/2,ya=pj(ZY(930)).y,yb=pj(ZY(998)).y;
     // 트랙 기울기 따라 한 줄씩 (텍스처는 위아래 뒤집혀 있어서 거꾸로 읽음)
     const padRows=()=>{const st=1/(s*dpr);for(let y=ya;y<yb;y+=st){const hw=(y+st/2-VY)*KK,lw=hw/2,t=(y-ya)/(yb-ya);
@@ -1113,8 +1114,9 @@ function frame(){
     if(GT)padRows();
     if(gl){g.globalCompositeOperation="lighter";
       if(GT){g.globalAlpha=gl*.5;padRows()}
-      const gi=GT&&GT.glow[i];if(gi){g.globalAlpha=gl;g.drawImage(gi,px-pw*.2,py-ph*.7,pw*1.4,ph*2.4)}
-      if(IMG.wave){const e=1-gl,ww=pw*(.8+e*1.1);g.globalAlpha=gl;g.drawImage(IMG.wave,x-ww/2,hitY-ww*.18,ww,ww*.36)}
+      const cy=(ya+yb)/2,hwc=(cy-VY)*KK,xc=CX-hwc+(i+.5)*hwc/2,wc=hwc/2*.88,hc=yb-ya;
+      const gi=GT&&GT.glow[i];if(gi){g.globalAlpha=gl;g.drawImage(gi,xc-wc*.7,cy-hc*1.2,wc*1.4,hc*2.4)}
+      if(IMG.wave){const e=1-gl,ww=wc*(.8+e*1.1);g.globalAlpha=gl;g.drawImage(IMG.wave,xc-ww/2,cy-ww*.18,ww,ww*.36)}
       g.globalCompositeOperation="source-over";g.globalAlpha=1}
     g.restore();
   }
@@ -1193,7 +1195,7 @@ function frame(){
   g.globalCompositeOperation="lighter";
   for(const pt of parts){
     const a=(tnow-pt.t)/1000,al=1-a/.48;if(al<=0)continue;
-    const x=lx(pt.li,HW)+pt.vx*a*2.2,y=hitY+pt.vy*a*2.2+1400*a*a,sz=pt.sz*2.2*(.5+al*.5);
+    const pcy=(pj(ZY(930)).y+pj(ZY(998)).y)/2,x=lx(pt.li,(pcy-VY)*KK)+pt.vx*a*2.2,y=pcy+pt.vy*a*2.2+1400*a*a,sz=pt.sz*2.2*(.5+al*.5);
     g.globalAlpha=al;g.fillStyle=pt.w?"#fff":pt.k?"#ffd21a":COL[LCOL[pt.li]];
     if(pt.cym){g.beginPath();g.moveTo(x,y-sz);g.lineTo(x+sz*.6,y);g.lineTo(x,y+sz);g.lineTo(x-sz*.6,y);g.closePath();g.fill()}
     else if(IMG.spark)g.drawImage(IMG.spark,x-sz*1.6,y-sz*1.6,sz*3.2,sz*3.2);else g.fillRect(x-sz/2,y-sz/2,sz,sz);
