@@ -445,7 +445,7 @@ header h1{font:700 17px var(--body)!important;letter-spacing:-.3px}
 .lyr{top:100px!important}
 .lyr.lside{top:18%!important;bottom:20%;left:auto!important;right:max(24px,3vw)!important;width:min(23vw,380px);height:auto!important;padding:0!important}
 .lyr.lside .lyl p{text-align:left!important;transform-origin:left center!important;max-width:100%!important;font-size:22px!important}
-.hud{left:24px!important}
+.hud{left:24px}
 .hbar b{transition:transform .2s}
 .hbar b.bump{animation:bump .32s var(--ease)}
 @keyframes bump{0%{transform:translateY(6px) scale(.92);opacity:.4}100%{transform:none;opacity:1}}
@@ -493,13 +493,16 @@ header{animation:fadeIn .6s var(--ease) both}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 .lyr{top:154px!important}
+@media (orientation:landscape) and (min-width:820px){.lyr{top:84px!important;left:22%!important;right:22%!important}}
 .hud.port{flex-direction:row!important;align-items:center!important;gap:14px!important;left:18px!important}
 .hud.port .hbar b{font-size:26px!important}
 .hud.port .hbeats{margin:0!important}
 .chips{justify-content:flex-start!important}
-.hud.port .metro,.hud.port .kit{position:fixed;top:104px;margin:0!important}
-.hud.port .kit{right:12px;width:27vw!important}
-.hud.port .metro{width:26px!important;right:calc(27vw + 20px)}
+.hud.port .metro{width:22px!important;margin:0!important}
+.hud.port .kit{position:fixed;right:12px;width:25vw!important;margin:0!important}
+.hud{transition:left .3s var(--ease),top .3s var(--ease)}
+.hud:not(.port){align-items:flex-end;text-align:right}
+.hud:not(.port) .hbar{justify-content:flex-end}
 .drawer .ctrl{display:flex!important;flex-wrap:wrap!important;gap:12px 14px!important;overflow:visible!important}
 .drawer .grp{flex:1 1 auto!important;min-width:0;padding:0!important}
 .drawer .grp.main{flex:1 1 100%!important}
@@ -507,6 +510,15 @@ header{animation:fadeIn .6s var(--ease) both}
 .drawer .cap{display:block!important;margin-bottom:2px}
 @media (orientation:landscape) and (min-width:820px){body.side-open .drawer{left:calc(50% - 190px)}}
 .drawer{transition:opacity .25s,transform .35s var(--ease),left .4s var(--ease)!important}
+
+.seek{padding:14px 20px calc(8px + env(safe-area-inset-bottom))!important;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.9) 40%)!important}
+.sbar{height:32px!important}
+.sfill{top:11px!important;height:10px!important;border-radius:6px!important}
+.sbar:hover .sfill,.sbar.drag .sfill{top:10px!important;height:12px!important}
+#sMarks i{top:10px!important;height:12px!important}
+#sKnob{width:20px!important;height:20px!important;margin:-10px 0 0 -10px!important}
+.drawer{bottom:66px!important}
+@media (orientation:portrait),(max-width:819px){.seek{padding:12px 12px calc(8px + env(safe-area-inset-bottom))!important}.drawer{bottom:62px!important}}
 </style>
 </head>
 <body>
@@ -880,7 +892,7 @@ const loadDefault=()=>{try{if(au||typeof SONG==="undefined")return;setSong(b64bl
 // 같은 폴더에 drum.mp3 / song.mp3 가 있으면 그걸 씀 → 없으면 이 기기에 골라둔 파일
 const tryFetch=u=>fetch(u,{cache:"no-cache"}).then(r=>r.ok&&!/text\/html/i.test(r.headers.get("content-type")||"")?r.blob():null).then(b=>b&&b.size>20000?b:null).catch(()=>null);
 const loadIdb=()=>idb("readonly",s=>s.get("song2")).then(b=>{if(b&&!au){setSong(b,false);idb("readonly",s=>s.get("voc2")).then(v=>{if(v&&au&&!au2)setVocal(v)}).catch(()=>{})}}).catch(()=>{});
-if(typeof SONG!=="undefined")loadDefault();
+if(typeof SONG!=="undefined")setTimeout(loadDefault,0);
 else Promise.all([tryFetch("drum.mp3"),tryFetch("song.mp3")]).then(([d,v])=>{if(au)return;if(d&&v){setSong(d,false);setVocal(v)}else if(d||v)setSong(d||v,false);else loadIdb()});
 const NS=[1,1.2,1.5,1.7,2,2.5,3,4];
 const showNs=()=>{const v=Math.round(nspd/2*100)/100;$("nsVal").textContent=(v%1?v:v.toFixed(1))+"x"};showNs();
@@ -1001,7 +1013,7 @@ function frame(){
     while(vi<EVENTS.length&&EVENTS[vi].t<=p){EVENTS[vi].ins.forEach(flash);chHit(EVENTS[vi]);vi++}
   }
   VY=VY0;KK=KK0;DH=DH0;ZS=ZS0;
-  const dpr=window.devicePixelRatio||1,tY0=VY+1/(1/DH+ZMAX*ZS),hv=VH-tY0+16,port=H>W*1.15,BM=port?92:96,s=port?Math.min(W/VW*1.08,H*.6/hv):Math.min(W*.56/VW,(H-BM-70)/hv),ox=(W-VW*s)/2,oy=H-BM-(VH+16)*s+18*s;__TT=oy+tY0*s;
+  const dpr=window.devicePixelRatio||1,tY0=VY+1/(1/DH+ZMAX*ZS),hv=VH-tY0+16,port=H>W*1.15,BM=port?58:56,s=port?Math.min(W/VW*1.08,H*.62/hv):Math.min(W*.56/VW,(H-BM-210)/(hv-150)),ox=(W-VW*s)/2,oy=H-BM-(VH+16)*s+150*s;__TT=oy+tY0*s;__TL=ox+(CX-(HY-VY)*KK*1.12)*s;
   g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
   const hasV=au&&au.videoWidth;
   g.fillStyle="#000";g.fillRect(0,0,W,H);
@@ -1051,7 +1063,7 @@ function frame(){
   const tnow=performance.now(),kg=Math.max(0,1-(tnow-(glow.K||0))/260);
   if(kg>0){ // 킥: 다른 패드와 같은 방식의 위로 올라가는 빛 (트랙 전체 폭)
     const bh=170,bg=g.createLinearGradient(0,hitY,0,hitY-bh);bg.addColorStop(0,COL.K);bg.addColorStop(1,"rgba(0,0,0,0)");
-    g.globalAlpha=kg*.6;g.fillStyle=bg;g.fillRect(CX-HW*.96,hitY-bh,HW*1.92,bh);g.globalAlpha=1}
+    g.globalAlpha=0;g.globalAlpha=1}
   { // 킥 반동: 짧게 툭 눌렸다가 부드럽게 돌아옴 (효과 없이 움직임만)
     const ku=(tnow-(glow.K||0))/260;
     if(ku>=0&&ku<1&&!noMotion){const e=ku<.16?Math.sin(ku/.16*Math.PI/2):Math.pow(1-(ku-.16)/.84,2.2);cv.style.transform="translateY("+(e*4).toFixed(2)+"px) scale("+(1+e*.008).toFixed(4)+")"}
@@ -1094,7 +1106,7 @@ function frame(){
   if(kg>0){ // 킥 줄: 패드 위로 밝은 가로줄 + 트랙 따라 올라가는 줄
     g.save();g.globalCompositeOperation="lighter";
     const lw=HW*1.05,lt=3+5*kg;g.globalAlpha=kg;g.shadowColor=COL.K;g.shadowBlur=22*s*dpr*kg;g.fillStyle="#fff6d2";g.fillRect(CX-lw,hitY-lt/2,lw*2,lt);
-    g.shadowBlur=0;for(const k of[0,1]){const q=pj((1-kg)*(1.1+k*1.1)),t2=(3+6*kg)*q.sc;g.globalAlpha=kg*(k?.4:.75);g.fillStyle=COL.K;g.fillRect(CX-q.hw,q.y-t2/2,q.hw*2,t2)}
+    g.shadowBlur=0;
     g.restore()}
   // 노트 (먼 것부터)
   const i0=firstVisible(p);let i1=i0;while(i1<EVENTS.length&&(EVENTS[i1].t-p)*nspd<=ZMAX)i1++;
@@ -1385,7 +1397,7 @@ function chFollow(p){
     $("chVocT").hidden=$("vocBtn").hidden;$("chDrmT").hidden=$("drmBtn").hidden;$("chVocT").setAttribute("aria-pressed",vocOn);$("chDrmT").setAttribute("aria-pressed",drmOn)}
   if(playing&&chFollowOn){const b=Math.max(0,Math.min(nBars()-1,Math.floor(Math.max(p,countEnd,0)/4)))+1;if(b!==cb){cb=b;chUi()}}
   drawRoll()}
-let lastSecT=-1,__TT=0;const mmss=x=>Math.floor(x/60)+":"+String(x%60).padStart(2,"0");
+let lastSecT=-1,__TT=0,__TL=0;const mmss=x=>Math.floor(x/60)+":"+String(x%60).padStart(2,"0");
 function firstVisible(p){let lo=0,hi=EVENTS.length;const t=p-.3;while(lo<hi){const m=(lo+hi)>>1;EVENTS[m].t<t?lo=m+1:hi=m}return lo}
 requestAnimationFrame(frame);
 </script>
@@ -1438,7 +1450,7 @@ $("ctlTog").after($("play"));
     const c=i<0?ps[0].offsetTop-ps[0].offsetHeight*.6:gap?(a.offsetTop+a.offsetHeight+b.offsetTop)/2:a.offsetTop+a.offsetHeight/2;
     list.style.transform="translateY("+(box.clientHeight/2-c).toFixed(1)+"px)"}
   function lp(){
-    const port=H>W*1.15;box.classList.toggle("lside",!port);const h=port?Math.max(70,Math.round(__TT-166)):0;if(Math.abs(h-lastH)>1){lastH=h;box.style.height=port?h+"px":"";key=""}
+    const port=H>W*1.15;const h=Math.max(70,Math.round(__TT-(port?214:96)));if(Math.abs(h-lastH)>1){lastH=h;box.style.height=h+"px";key=""}
     if(L.length){const t=cur()/2+off()+.12;let i=-1;for(let k=0;k<L.length;k++){if(L[k].t<=t)i=k;else break}
       const gap=i>=0&&t-L[i].t>9&&(i+1>=L.length||L[i+1].t-t>2),k2=i+"|"+gap;
       if(k2!==key){key=k2;place(i,gap)}}
@@ -1467,7 +1479,7 @@ $("ctlTog").after($("play"));
     const bt=playing?((Math.floor(p)%4)+4)%4:-1;if(bt!==lbt){lbt=bt;beats.forEach((d,i)=>d.classList.toggle("on",i===bt))}
     if(metOn!==lm){lm=metOn;$("metro").hidden=!metOn}
     if(metOn){const a=playing?28*Math.cos(Math.PI*p):0;arm.setAttribute("transform","rotate("+a.toFixed(1)+" 40 86)")}
-    const port=H>W*1.15;hud.classList.toggle("port",port);hud.style.top=port?"116px":"84px";const kt="";$("kit").style.top=kt;$("metro").style.top=kt;
+    const port=H>W*1.15;hud.classList.toggle("port",port);const kit=$("kit");if(port){hud.style.left="18px";hud.style.top=Math.round(__TT-48)+"px";kit.style.top=Math.round(__TT-kit.offsetHeight-8)+"px"}else{hud.style.left=Math.max(16,Math.round(__TL-28-hud.offsetWidth))+"px";hud.style.top=Math.round(__TT+8)+"px";kit.style.top=""}
     requestAnimationFrame(loop)}
   requestAnimationFrame(loop)})();
 </script>
