@@ -1235,9 +1235,9 @@ function frame(){
         if(CFG.dome>0){g.globalCompositeOperation="lighter";const gl2=g.createLinearGradient(0,yb-by,0,yb+by*.2);gl2.addColorStop(0,"rgba(255,255,255,"+(.3*CFG.dome)+")");gl2.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gl2;g.fillRect(x-bx,yb-by,bx*2,by*1.2);g.globalCompositeOperation="source-over"}
         g.restore();
         if(c==="O"){g.lineWidth=Math.max(1.5,ry*.34);g.strokeStyle=col;g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.stroke()}
-        // 심벌 몸통: 원반 거의 전체를 덮는 낮고 넓은 언덕(꼭대기는 둥글게)
-        const bw=bx*.94,bh=by*.94,cy=yb+by*.02,py=cy-bw*(.2+.26*CFG.dome);
-        const mound=()=>{g.beginPath();g.moveTo(x-bw,cy);g.lineTo(x-bw*.1,py+(cy-py)*.08);g.quadraticCurveTo(x,py-(cy-py)*.02,x+bw*.1,py+(cy-py)*.08);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.closePath()};
+        // 심벌: 흰 테 → 색 원반 → 안쪽 동그라미가 넓은 원뿔로 솟음
+        const bw=bx*.62,bh=by*.62,cy=yb+by*.02,py=cy-bw*(.3+.4*CFG.dome);
+        const mound=()=>{g.beginPath();g.moveTo(x-bw,cy);g.lineTo(x,py);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.closePath()};
         g.save();mound();
         if(c==="O"){g.fillStyle="#0e0c14";g.fill();g.lineWidth=Math.max(1.5,ry*.3);g.strokeStyle=col;g.stroke()}
         else{const mg=g.createLinearGradient(x-bw,0,x+bw,0);mg.addColorStop(0,sh.l);mg.addColorStop(.42,"#fff");mg.addColorStop(.55,col);mg.addColorStop(1,sh.d1);g.fillStyle=mg;g.fill();
