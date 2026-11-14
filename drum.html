@@ -1235,13 +1235,16 @@ function frame(){
         if(CFG.dome>0){g.globalCompositeOperation="lighter";const gl2=g.createLinearGradient(0,yb-by,0,yb+by*.2);gl2.addColorStop(0,"rgba(255,255,255,"+(.3*CFG.dome)+")");gl2.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gl2;g.fillRect(x-bx,yb-by,bx*2,by*1.2);g.globalCompositeOperation="source-over"}
         g.restore();
         if(c==="O"){g.lineWidth=Math.max(1.5,ry*.34);g.strokeStyle=col;g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.stroke()}
-        const bw=rx*.4,bh=bw*er,cy=yb+ry*.04,py=cy-ry*(.3+.6*CFG.dome);
-        g.fillStyle="rgba(0,0,0,.35)";g.beginPath();g.ellipse(x+bw*.08,cy+bh*.25,bw*1.04,bh*1.04,0,0,7);g.fill();
-        const lg2=g.createLinearGradient(x-bw,0,x,0);lg2.addColorStop(0,c==="O"?col:sh.l);lg2.addColorStop(1,"#fff");
-        g.fillStyle=lg2;g.beginPath();g.moveTo(x,py);g.lineTo(x-bw,cy);g.ellipse(x,cy,bw,bh,0,Math.PI,Math.PI/2,true);g.closePath();g.fill();
-        const rg2=g.createLinearGradient(x,0,x+bw,0);rg2.addColorStop(0,col);rg2.addColorStop(1,sh.d1);
-        g.fillStyle=rg2;g.beginPath();g.moveTo(x,py);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI/2);g.closePath();g.fill();
-        g.lineWidth=1;g.strokeStyle="rgba(0,0,0,.35)";g.beginPath();g.moveTo(x-bw,cy);g.lineTo(x,py);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.stroke();
+        // 심벌 몸통: 원반 거의 전체를 덮는 낮고 넓은 언덕(꼭대기는 둥글게)
+        const bw=bx*.94,bh=by*.94,cy=yb+by*.02,py=cy-bw*(.2+.26*CFG.dome);
+        const mound=()=>{g.beginPath();g.moveTo(x-bw,cy);g.quadraticCurveTo(x-bw*.3,py,x,py);g.quadraticCurveTo(x+bw*.3,py,x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.closePath()};
+        g.save();mound();
+        if(c==="O"){g.fillStyle="#0e0c14";g.fill();g.lineWidth=Math.max(1.5,ry*.3);g.strokeStyle=col;g.stroke()}
+        else{const mg=g.createLinearGradient(x-bw,0,x+bw,0);mg.addColorStop(0,sh.l);mg.addColorStop(.42,"#fff");mg.addColorStop(.55,col);mg.addColorStop(1,sh.d1);g.fillStyle=mg;g.fill();
+          g.clip();g.globalAlpha=ga*.55;g.globalCompositeOperation="multiply";g.drawImage(GT.cym[li],36,18,56,56,x-bw,py-bh*.2,bw*2,cy-py+bh*1.2);g.globalCompositeOperation="source-over";g.globalAlpha=ga;
+          const vg=g.createLinearGradient(0,py,0,cy+bh);vg.addColorStop(0,"rgba(255,255,255,.5)");vg.addColorStop(.6,"rgba(255,255,255,0)");vg.addColorStop(1,"rgba(0,0,0,.25)");g.fillStyle=vg;g.fillRect(x-bw,py,bw*2,cy-py+bh)}
+        g.restore();
+        if(c!=="O"){g.lineWidth=1;g.strokeStyle="rgba(0,0,0,.4)";mound();g.stroke()}
       }else{ // 패드: prism 텍스처 3분할(양끝 금속 마개)
         const gw=lw*.94*GS,gh=gw*(.26+.12*TN),cr=gh*.35,y0=q.y-gh*.62;
         g.fillStyle="rgba(0,0,0,.5)";rr(x-gw/2,y0+gh*.4,gw,gh,cr);g.fill();
