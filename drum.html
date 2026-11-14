@@ -770,31 +770,9 @@ const BARS_NEW={
 // 연주 순서: 1~104 그대로
 const ORDER=[];for(let b=1;b<=104;b++)ORDER.push(b);
 // 처음 악보 (새 악보 올리기 전 버전): 1~50 → D.S.(17~37) → Coda(51~83) 순서를 104마디로 펼쳐 둠
-const BARS_OLD=(()=>{const G="HK H HS H HK H HS H",GO="HK H HS H HK H HS O",A1="CK - HS H HK H HS H",
-  OG="OK O OS O OK O OS O",OA="CK - OS O OK O OS O",X16="HK H HS H/H HK H HS O";
- const B={
- 1:A1,2:GO,3:"HK H HS H HK H HS T",4:"S T M F S - - -",
- 5:A1,6:GO,7:G,8:GO, 9:G,10:GO,11:"HK H HS H HK H HS T",12:"S - - - - - - -",
- 13:A1,14:GO,15:G,16:GO,
- 17:G,18:"HK H HS H HK H HS K",19:"CK - HS H HK H HS HK",20:"S K S K - - S S",
- 21:OA,22:"OK O OS O OK OK OS O",23:OG,24:"OK O OS O OK OK OS OK",
- 25:OA,26:OG,27:"CK - OS O CK T S CK",28:"- CS CS K CS T M/M F",
- 29:OA,30:"OK O OS O OK OK OS O",31:"CK - HS S S CK S CK",32:"- CS CS - - - - -",33:"CK - HS H HK HK HS HK",34:"HS OK S - - - - -",
- 35:A1,36:X16,37:"HK H HS H HK H HS HK",38:"HS HK HS OK S - - -",
- 39:A1,40:GO,41:G,42:X16, 43:G,44:G,45:"OS - - - - - - -",46:"T/S S/S S K S/T M S/T F",
- 47:A1,48:GO,49:G,50:X16,
- 51:"HS HK HS HK OS T M/M F/F",
- 52:"CK - HS HK HK H HS H",53:"HK H HS H HK HK HS HK",54:G,55:"HK H HS H HK HK HS HS",
- 56:A1,57:"HK H HS H HK HK HS HK",58:A1,59:"H HK HS H HK HS HS HK",
- 60:A1,61:"HK H HS H HK HK HS HK",62:"CK T S CK - M S CK",63:"F K S OK H - - -",64:"CK - - H - - H -",65:"K SF SF SF CS S/S S/S S/S",
- 66:"CK - OS OK OK O OS O",67:"OK O OS O OK OK OS OK",68:OG,69:"OK O OS O OK OK OS OS",
- 70:"CK - OS OK OK O OS O",71:"OK O OS O OK OK OS OK",72:"CK - OS O OK O OS OK",73:"CS K CS K T/S S/S S/T M/F",
- 74:OA,75:"OK O OS O OK OK OS O",76:"CK - HS S S CK S CK",77:"- CS CS - - - - -",78:"CK - HS H HK HK HS HK",79:"HS OK S - - - - -",
- 80:A1,81:X16,82:"HK H HS H HK HK HS HK",83:"S K S K CS - - -"};
- const O=[];for(let b=1;b<=50;b++)O.push(b);for(let b=17;b<=37;b++)O.push(b);for(let b=51;b<=83;b++)O.push(b);
- const r={};O.forEach((b,i)=>r[i+1]=B[b]);return r})();
+const BARS_OLD={"1": "CK H HS H HK H HS H", "2": "HK H HS H HK H HS H", "3": "HK H HS H HK H HS T", "4": "S T M S S - - -", "5": "CK H HS H HK H HS H", "6": "HK H HS H HK H HS H", "7": "HK H HS H HK H HS H", "8": "HK H HS H HK H HS O", "9": "HK H HS H HK H HS H", "10": "HK H HS H HK H HS H", "11": "HK H HS H HK H HS H", "12": "K - - - - - - -", "13": "CK H HS H HK H HS H", "14": "HK H HS H HK H HS H", "15": "HK H HS H HK H HS H", "16": "HK H HS H HK H HS O", "17": "HK H HS H HK H HS H", "18": "HK H HS H HK H HS O", "19": "HK H HS H HK H HS HK", "20": "S/S/- K S/S/- K - T/M/- S S/F/-", "21": "CK R RS RK RK R RS R", "22": "RK R RS R RK RK RS R", "23": "RK R RS R RK R RS R", "24": "RK R RS R RK RK RS RS", "25": "CK R RS R RK R RS R", "26": "RK R RS R RK RK RS R", "27": "RK R RS R RK C S C", "28": "R RK RSK R RK S M/M F", "29": "CK H HS H HK H HS H", "30": "HK H HS H HK HK HS H", "31": "CK H HS S S CK S CK", "32": "- CS CS - - - - -", "33": "CK - HS H HK HK HS HK", "34": "HS OK S - - - - -", "35": "CK - HS H HK H HS H", "36": "HK H HS H HK H HS O", "37": "HK H HS H HK H HS HK", "38": "HS HK HS OK S - - -", "39": "CK - HS H HK H HS H", "40": "HK H HS H HK H HS O", "41": "HK H HS H HK H HS H", "42": "HK H HS H/H HK H HS O", "43": "HK H HS H HK H HS H", "44": "HK H HS H HK H HS H", "45": "OS - - - - - - -", "46": "T/S S/S S K S/T M S/T F", "47": "CK - HS H HK H HS H", "48": "HK H HS H HK H HS O", "49": "HK H HS H HK H HS H", "50": "HK H HS H/H HK H HS O", "51": "HK H HS H HK H HS H", "52": "HK H HS H HK H HS K", "53": "CK - HS H HK H HS HK", "54": "S K S K - - S S", "55": "CK - OS O OK O OS O", "56": "OK O OS O OK OK OS O", "57": "OK O OS O OK O OS O", "58": "OK O OS O OK OK OS OK", "59": "CK - OS O OK O OS O", "60": "OK O OS O OK O OS O", "61": "CK - OS O CK T S CK", "62": "- CS CS K CS T M/M F", "63": "CK - OS O OK O OS O", "64": "OK O OS O OK OK OS O", "65": "CK - HS S S CK S CK", "66": "- CS CS - - - - -", "67": "CK - HS H HK HK HS HK", "68": "HS OK S - - - - -", "69": "CK - HS H HK H HS H", "70": "HK H HS H/H HK H HS O", "71": "HK H HS H HK H HS HK", "72": "HS HK HS HK OS T M/M F/F", "73": "CK - HS HK HK H HS H", "74": "HK H HS H HK HK HS HK", "75": "HK H HS H HK H HS H", "76": "HK H HS H HK HK HS HS", "77": "CK - HS H HK H HS H", "78": "HK H HS H HK HK HS HK", "79": "CK - HS H HK H HS H", "80": "H HK HS H HK HS HS HK", "81": "CK - HS H HK H HS H", "82": "HK H HS H HK HK HS HK", "83": "CK T S CK - M S CK", "84": "F K S OK H - - -", "85": "CK - - H - - H -", "86": "K SF SF SF CS S/S S/S S/S", "87": "CK - OS OK OK O OS O", "88": "OK O OS O OK OK OS OK", "89": "OK O OS O OK O OS O", "90": "OK O OS O OK OK OS OS", "91": "CK - OS OK OK O OS O", "92": "OK O OS O OK OK OS OK", "93": "CK - OS O OK O OS OK", "94": "CS K CS K T/S S/S S/T M/F", "95": "CK - OS O OK O OS O", "96": "OK O OS O OK OK OS O", "97": "CK - HS S S CK S CK", "98": "- CS CS - - - - -", "99": "CK - HS H HK HK HS HK", "100": "HS OK S - - - - -", "101": "CK - HS H HK H HS H", "102": "HK H HS H/H HK H HS O", "103": "HK H HS H HK HK HS HK", "104": "S K S K CS - - -"};
 let CHART="new";try{if(localStorage.getItem("drumChartSel")==="old")CHART="old"}catch(e){}
-let CHKEY=CHART==="old"?"drumChartOld":"drumChart";
+let CHKEY=CHART==="old"?"drumChartOld2":"drumChart";
 const BARS=JSON.parse(JSON.stringify(CHART==="old"?BARS_OLD:BARS_NEW));
 const SEC_OLD=[["I",0],["A",4],["B",20],["I2",34],["A2",38],["D.S.",50],["B",54],["I2",68],["Br",71],["I3",86],["O",94]],
   SEC_NEW=[["Intro",0],["V1",4],["Ch",20],["Inter",34],["V2",38],["Ch",54],["Inter",68],["Br",72],["Inter",84],["Ch",94],["Outro",100]];
@@ -1521,7 +1499,7 @@ requestAnimationFrame(frame);
 // 채보 고르기 (바꾸면 새로 불러옴)
 document.querySelectorAll("[data-chart]").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.chart===CHART);
   b.onclick=()=>switchChart(b.dataset.chart)});
-function switchChart(k){if(k===CHART)return;CHART=k;CHKEY=k==="old"?"drumChartOld":"drumChart";try{localStorage.setItem("drumChartSel",k)}catch(_){}
+function switchChart(k){if(k===CHART)return;CHART=k;CHKEY=k==="old"?"drumChartOld2":"drumChart";try{localStorage.setItem("drumChartSel",k)}catch(_){}
   const base=JSON.parse(JSON.stringify(k==="old"?BARS_OLD:BARS_NEW));
   for(const x in BARS0)delete BARS0[x];Object.assign(BARS0,base);
   for(const x in BARS)delete BARS[x];Object.assign(BARS,JSON.parse(JSON.stringify(base)));
