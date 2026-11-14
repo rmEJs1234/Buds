@@ -665,6 +665,7 @@ header h1 small{font-weight:600!important;color:var(--sub)!important;letter-spac
     <div class="seg" role="group" aria-label="채보 고르기">
       <button data-chart="new" aria-pressed="false">새 악보</button>
       <button data-chart="old" aria-pressed="false">처음 악보</button>
+      <button data-chart="auto" aria-pressed="false">자동 인식</button>
     </div>
   </div>
   <div class="grp"><span class="cap">노트 속도</span>
@@ -680,6 +681,7 @@ header h1 small{font-weight:600!important;color:var(--sub)!important;letter-spac
       <button id="met" class="tg" aria-pressed="false">메트로놈</button>
       <button id="vocBtn" class="tg" aria-pressed="true" hidden>노래</button>
       <button id="drmBtn" class="tg" aria-pressed="true" hidden>드럼음원</button>
+      <button id="ndBtn" class="tg" aria-pressed="false" hidden>드럼 없는 노래</button>
     </div>
   </div>
   <div class="grp" id="syncBox" hidden><span class="cap">싱크</span>
@@ -770,10 +772,11 @@ const BARS_NEW={
 // 연주 순서: 1~104 그대로
 const ORDER=[];for(let b=1;b<=104;b++)ORDER.push(b);
 // 처음 악보 (새 악보 올리기 전 버전): 1~50 → D.S.(17~37) → Coda(51~83) 순서를 104마디로 펼쳐 둠
-const BARS_OLD={"1": "CK H HS H HK H HS H", "2": "HK H HS H HK H HS H", "3": "HK H HS H HK H HS T", "4": "S T M S S - - -", "5": "CK H HS H HK H HS H", "6": "HK H HS H HK H HS H", "7": "HK H HS H HK H HS H", "8": "HK H HS H HK H HS O", "9": "HK H HS H HK H HS H", "10": "HK H HS H HK H HS H", "11": "HK H HS H HK H HS H", "12": "K - - - - - - -", "13": "CK H HS H HK H HS H", "14": "HK H HS H HK H HS H", "15": "HK H HS H HK H HS H", "16": "HK H HS H HK H HS O", "17": "HK H HS H HK H HS H", "18": "HK H HS H HK H HS O", "19": "HK H HS H HK H HS HK", "20": "S/S/- K S/S/- K - T/M/- S S/F/-", "21": "CK R RS RK RK R RS R", "22": "RK R RS R RK RK RS R", "23": "RK R RS R RK R RS R", "24": "RK R RS R RK RK RS RS", "25": "CK R RS R RK R RS R", "26": "RK R RS R RK RK RS R", "27": "RK R RS R RK C S C", "28": "R RK RSK R RK S M/M F", "29": "CK H HS H HK H HS H", "30": "HK H HS H HK HK HS H", "31": "CK H HS S S CK S CK", "32": "- CS CS - - - - -", "33": "CK - HS H HK HK HS HK", "34": "HS OK S - - - - -", "35": "CK - HS H HK H HS H", "36": "HK H HS H HK H HS O", "37": "HK H HS H HK H HS HK", "38": "HS HK HS OK S - - -", "39": "CK - HS H HK H HS H", "40": "HK H HS H HK H HS O", "41": "HK H HS H HK H HS H", "42": "HK H HS H/H HK H HS O", "43": "HK H HS H HK H HS H", "44": "HK H HS H HK H HS H", "45": "OS - - - - - - -", "46": "T/S S/S S K S/T M S/T F", "47": "CK - HS H HK H HS H", "48": "HK H HS H HK H HS O", "49": "HK H HS H HK H HS H", "50": "HK H HS H/H HK H HS O", "51": "HK H HS H HK H HS H", "52": "HK H HS H HK H HS K", "53": "CK - HS H HK H HS HK", "54": "S K S K - - S S", "55": "CK - OS O OK O OS O", "56": "OK O OS O OK OK OS O", "57": "OK O OS O OK O OS O", "58": "OK O OS O OK OK OS OK", "59": "CK - OS O OK O OS O", "60": "OK O OS O OK O OS O", "61": "CK - OS O CK T S CK", "62": "- CS CS K CS T M/M F", "63": "CK - OS O OK O OS O", "64": "OK O OS O OK OK OS O", "65": "CK - HS S S CK S CK", "66": "- CS CS - - - - -", "67": "CK - HS H HK HK HS HK", "68": "HS OK S - - - - -", "69": "CK - HS H HK H HS H", "70": "HK H HS H/H HK H HS O", "71": "HK H HS H HK H HS HK", "72": "HS HK HS HK OS T M/M F/F", "73": "CK - HS HK HK H HS H", "74": "HK H HS H HK HK HS HK", "75": "HK H HS H HK H HS H", "76": "HK H HS H HK HK HS HS", "77": "CK - HS H HK H HS H", "78": "HK H HS H HK HK HS HK", "79": "CK - HS H HK H HS H", "80": "H HK HS H HK HS HS HK", "81": "CK - HS H HK H HS H", "82": "HK H HS H HK HK HS HK", "83": "CK T S CK - M S CK", "84": "F K S OK H - - -", "85": "CK - - H - - H -", "86": "K SF SF SF CS S/S S/S S/S", "87": "CK - OS OK OK O OS O", "88": "OK O OS O OK OK OS OK", "89": "OK O OS O OK O OS O", "90": "OK O OS O OK OK OS OS", "91": "CK - OS OK OK O OS O", "92": "OK O OS O OK OK OS OK", "93": "CK - OS O OK O OS OK", "94": "CS K CS K T/S S/S S/T M/F", "95": "CK - OS O OK O OS O", "96": "OK O OS O OK OK OS O", "97": "CK - HS S S CK S CK", "98": "- CS CS - - - - -", "99": "CK - HS H HK HK HS HK", "100": "HS OK S - - - - -", "101": "CK - HS H HK H HS H", "102": "HK H HS H/H HK H HS O", "103": "HK H HS H HK HK HS HK", "104": "S K S K CS - - -"};
-let CHART="new";try{if(localStorage.getItem("drumChartSel")==="old")CHART="old"}catch(e){}
-let CHKEY=CHART==="old"?"drumChartOld2":"drumChart";
-const BARS=JSON.parse(JSON.stringify(CHART==="old"?BARS_OLD:BARS_NEW));
+const BARS_OLD={"1": "CK H HS H HK H HS H", "2": "HK H HS H HK H HS H", "3": "HK H HS H HK H HS T", "4": "S T M S S - - -", "5": "CK H HS H HK H HS H", "6": "HK H HS H HK H HS H", "7": "HK H HS H HK H HS H", "8": "HK H HS H HK H HS O", "9": "HK H HS H HK H HS H", "10": "HK H HS H HK H HS H", "11": "HK H HS H HK H HS H", "12": "K - - - - - - -", "13": "CK H HS H HK H HS H", "14": "HK H HS H HK H HS H", "15": "HK H HS H HK H HS H", "16": "HK H HS H HK H HS O", "17": "HK H HS H HK H HS H", "18": "HK H HS H HK H HS O", "19": "HK H HS H HK H HS HK", "20": "S/S/- K S/S/- K - T/M/- S S/F/-", "21": "CK H HS HK HK H HS H", "22": "HK H HS H HK HK HS H", "23": "HK H HS H HK H HS H", "24": "HK H HS H HK HK HS HS", "25": "CK H HS H HK H HS H", "26": "HK H HS H HK HK HS H", "27": "HK H HS H HK C S C", "28": "H HK HSK H HK S M/M F", "29": "CK H HS H HK H HS H", "30": "HK H HS H HK HK HS H", "31": "CK H HS S S CK S CK", "32": "- CS CS - - - - -", "33": "CK H HS H HK HK HS HK", "34": "HS HK HS - - - - -", "35": "CK H HS H HK H HS H", "36": "HK H HS H HK H HS O", "37": "HK H HS H HK H HS HK", "38": "HS HK HS OK S - - -", "39": "CK H HS H HK H HS H", "40": "HK H HS H HK H HS O", "41": "HK H HS H HK H HS H", "42": "HK H HS H HK H HS O", "43": "HK H HS H HK H HS H", "44": "HK H HS H OK H HS O", "45": "HS - - - - - - -", "46": "T/S S/S S K S/T M S/T F", "47": "CK - HS H HK H HS H", "48": "HK H HS H HK H HS O", "49": "HK H HS H HK H HS H", "50": "HK H HS H HK H HS O", "51": "HK H HS H HK H HS H", "52": "HK H HS H HK H OS K", "53": "CK H OS H OK H OS HK", "54": "S K S K - - S S/S/-", "55": "CK H OHS OH OHK OH OHS OH", "56": "OHK OH HS H HK HK HS H", "57": "HK H HS H HK H HS H", "58": "HK H HS H HK HK HS HK", "59": "CK H HS H HK H HS H", "60": "HK H HS H HK H HS H", "61": "HK H HS H HK C S CK", "62": "H HK HS H CS T M/M F", "63": "CK - HS H HK H HS H", "64": "HK H HS H HK HK HS H", "65": "CK H S S S CK S CK", "66": "K K S H - - - -", "67": "CK H HS H HK HK HS HK", "68": "HS OK S - - - - -", "69": "CK H HS H HK H HS H", "70": "HK H HS H HK H HS O", "71": "HK H HS H HK H HS T", "72": "HSK T MK F SK - - -", "73": "CK H HS HK HK H HS H", "74": "HK H HS H HK HK HS HK", "75": "HK H HS H HK H HS H", "76": "HK H HS H HK HK HS HS", "77": "CK H HS H HK H HS H", "78": "HK H HS H HK HK HS HK", "79": "CK H HS H HK H HS H", "80": "H HK HS H HK HS HS HK", "81": "CK H HS H HK H HS H", "82": "HK H HS H HK HK HS H", "83": "HK H S S S HK HS OK", "84": "HK K S OK - - - -", "85": "- - - - - - - -", "86": "S K S K S K/S T/M F", "87": "CK H HS HK HK H HS H", "88": "HK H HS H HK HK HS HK", "89": "HK H HS H HK H HS H", "90": "HK H HS H HK HK HS HS", "91": "CK H HS H HK H HS H", "92": "HK H HS H HK HK HS H", "93": "HK H HS H HK H HS HK", "94": "CS K CS K T/S S/S S/T M/F", "95": "CK H HS H HK H HS H", "96": "HK H HS H HK HK HS H", "97": "CK H HS S S CK S CK", "98": "K K S - - - - -", "99": "CK - S - K K S K", "100": "S - SK - - - - -", "101": "CK H HS H HK H HS H", "102": "HK H HS H HK H HS O", "103": "HK H HS H HK H HS TK", "104": "S T M F CK - - -"};
+const BARS_AUTO={"1": "CK H HS H HK H HS H", "2": "HK H HS H HK H HS H", "3": "HK H HS H HK H HS HTK", "4": "HK T T F SK - - -", "5": "K H HS H HK H HS H", "6": "HK H HS H HK H HS H", "7": "HK H HS H HK H HS H", "8": "HK H HS H HK H HS H", "9": "HK H HS H HK H HS H", "10": "HK H HS H HK H HS H", "11": "HK H HS H HK H HS H", "12": "HK - - - O/H - F/F F", "13": "C H HS H HK H HS H", "14": "HK H HS H HK H HS H", "15": "HK H HS H HK H HS H", "16": "HK H HS H HK H HS O", "17": "HK H HS H HK H HS H", "18": "HK H HS H HK H HS H", "19": "HK H HS H HK H HS H", "20": "SK - S K - S/S K S", "21": "CK H HS K HK H HS H", "22": "HK H HS H HK HK HS HK", "23": "HK H HS H HK H HS H", "24": "HK H HS H HK HK HS HS", "25": "CK H HS H HK H HS H", "26": "HK H HS H HK HK HS H", "27": "HK H HS H HK H HS -", "28": "HK HK HS H HK HS S/M F", "29": "CK H HS H HK H HS H", "30": "HK H HS H HK HK HS H", "31": "HK H HS HS S CK HS CK", "32": "HK K HS H - - - -", "33": "CK H HS H K HK HS HK", "34": "S - HS H - - - -", "35": "CK H HS H HK H HS H", "36": "HK H HS H HK H HS H", "37": "HK H HS H HK H HS HT", "38": "HK HT MS - HSK - - -", "39": "CK H HS H HK H HS H", "40": "HK H HS H HK H HS H", "41": "HK H HS H HK H HS H", "42": "HK H HS H HK H HS H", "43": "HK H HS H HK H HS H", "44": "HK H HS H CHK H HS H", "45": "HK - - - - - - -", "46": "S/S S/TS S K S/TS - TS/M -", "47": "- H HS H HK H HS H", "48": "HK H HS H HK H HS H", "49": "HK H HS H HK H HS H", "50": "HK H HS H HK H HS H", "51": "HK H HS H HK H HS H", "52": "HK H HS H HK H HS H", "53": "K H HS H HK H HS -", "54": "SK FK TS K - - -/T TS/F", "55": "COK H HS K HK H HS H", "56": "HK H HS H HK HK HS HK", "57": "CHK H HS H HK H HS H", "58": "HK H HS H HK HK HS HS", "59": "CK H HS H HK H HS H", "60": "HK H HS H HK HK HS H", "61": "HK H HS H HK H HS H", "62": "HK HK HS H HK HS S/M F/F", "63": "COF H HS H HK H HS H", "64": "HK H HS H HK HK HS H", "65": "CHK H HS HS S CK S CK", "66": "HK CHK HS H - - - -", "67": "COK H HS H HK HK HS HK", "68": "HS - HSK - - - - -", "69": "COK H HS H HK H HS H", "70": "HK H HS H HK H HS H", "71": "HK H HS H HK H HS H", "72": "HSK T HMS OF HSK - S -", "73": "CK H HS HK HK H HS H", "74": "HK H HS H HK HK HS HK", "75": "HK H HS H HK H HS H", "76": "HK H HS H HK HK HS HS", "77": "CK H HS H HK H HS H", "78": "HK H HS - HK HK HS H", "79": "HK H HS H HK H HS H", "80": "HK HK HS - HK HS HS K", "81": "CK H HS H HK H HS H", "82": "HK H HS H HK HK HS H", "83": "HK H HS HTS HS HK CS K", "84": "HK HK HS -/H H - - -", "85": "- - - - - - - -", "86": "O K S K S/S -/S TS F", "87": "CK H HS HK HK H HS H", "88": "HK H HS H HK HK HS HK", "89": "CHK H HS H HK H HS H", "90": "HK H HS H HK HK HS H", "91": "COK H HS H HK H HS H", "92": "HK H HS H HK HK HS H", "93": "CHK H HS H HK H HS H", "94": "HS - HS FK S/S TS/MS MS/T F/F", "95": "CK H HS H HK H HS H", "96": "HK H HS H HK HK HS H", "97": "HK H HS HS HS CK HS K", "98": "HK HK HS H - - - -", "99": "CK H HS H HK HK CHTS HK", "100": "S/H - HSK/H H - - - -", "101": "CK H HS H HK H HS H", "102": "HK H HS H HK H HS O", "103": "HK H HS H HK H S T", "104": "K T MS - HS - - -"};
+let CHART="new";try{const v=localStorage.getItem("drumChartSel");if(v==="old"||v==="auto")CHART=v}catch(e){}
+let CHKEY=(k=>(k==="old"?"drumChartOld3":k==="auto"?"drumChartAuto":"drumChart"))(CHART);
+const BARS=JSON.parse(JSON.stringify((k=>(k==="old"?BARS_OLD:k==="auto"?BARS_AUTO:BARS_NEW))(CHART)));
 const SEC_OLD=[["I",0],["A",4],["B",20],["I2",34],["A2",38],["D.S.",50],["B",54],["I2",68],["Br",71],["I3",86],["O",94]],
   SEC_NEW=[["Intro",0],["V1",4],["Ch",20],["Inter",34],["V2",38],["Ch",54],["Inter",68],["Br",72],["Inter",84],["Ch",94],["Outro",100]];
 const SECTIONS=JSON.parse(JSON.stringify(CHART==="old"?SEC_OLD:SEC_NEW));
@@ -952,26 +955,34 @@ document.querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>{
   if(WA.on)waStart(cur());else if(au&&playing&&!hold){anchorPos=audioBeat();anchorTime=now()}
 });
 function waDecode(blob,slot){try{initAudio();if(!ctx)return;blob.arrayBuffer().then(ab=>new Promise((res,rej)=>ctx.decodeAudioData(ab,res,rej))).then(buf=>{WA[slot]=buf}).catch(()=>{})}catch(e){}}
-function useWA(){return !!ctx&&rate===1&&!!WA.b1&&(!au2||!!WA.b2)}
+function useWA(){return !!ctx&&rate===1&&!!WA.b1&&(!au2||!!WA.b2)&&(!ndOn||!!WA.b3)}
 function waGains(){if(!ctx)return;if(!WA.g1){WA.g1=ctx.createGain();WA.g1.connect(ctx.destination);WA.g2=ctx.createGain();WA.g2.connect(ctx.destination)}
   WA.g1.gain.value=drmOn?1:0;WA.g2.gain.value=vocOn?.85:0}
 function waStop(){[WA.s1,WA.s2].forEach(x=>{if(x){try{x.stop()}catch(e){}try{x.disconnect()}catch(e){}}});WA.s1=WA.s2=null;WA.on=false}
 function waStart(p){waStop();waGains();if(au)au.pause();if(au2)au2.pause();
   const T=ctx.currentTime+.08,t=p/2+off();
   const mk=(buf,g)=>{if(!buf)return null;const x=ctx.createBufferSource();x.buffer=buf;x.connect(g);x.onended=()=>{if(WA.on&&playing&&WA.s1===x&&cur()>TOTAL-8){pause();pos=0;vi=ai=0}};if(t>=0)x.start(T,t);else x.start(T-t,0);return x};
-  WA.s1=mk(WA.b1,WA.g1);WA.s2=mk(WA.b2,WA.g2);WA.on=true;hold=false;pos=p;anchorPos=p;anchorTime=T;nextClick=Math.ceil(p-1e-6)}
+  WA.s1=mk(WA.b1,WA.g1);WA.s2=mk(ndOn&&WA.b3?WA.b3:WA.b2,WA.g2);WA.on=true;hold=false;pos=p;anchorPos=p;anchorTime=T;nextClick=Math.ceil(p-1e-6)}
 const b64blob=str=>{const bin=atob(str),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:"audio/mpeg"})};
-function setVocal(blob){waDecode(blob,"b2");drmOn=false;if(au)au.muted=true;$("drmBtn").setAttribute("aria-pressed","false");au2=new Audio();au2.preload="auto";au2.src=URL.createObjectURL(blob);au2.muted=!vocOn;au2.volume=.85;au2.playbackRate=rate;$("vocBtn").hidden=false;$("drmBtn").hidden=false}
-const loadDefault=()=>{try{if(au||typeof SONG==="undefined")return;setSong(b64blob(SONG),false);if(typeof VOC!=="undefined")setVocal(b64blob(VOC))}catch(e){}};
+let ndOn=false,vocBlob=null,ndBlob=null;
+function setNoDrum(blob){ndBlob=blob;waDecode(blob,"b3");$("ndBtn").hidden=false}
+function useND(v){ndOn=v;$("ndBtn").setAttribute("aria-pressed",v);const b=v?ndBlob:vocBlob;if(!b)return;
+  if(v&&!vocOn){vocOn=true;$("vocBtn").setAttribute("aria-pressed","true")}
+  const wasP=playing&&!WA.on,t=au2?au2.currentTime:0;
+  if(au2){try{URL.revokeObjectURL(au2.src)}catch(e){}au2.src=URL.createObjectURL(b);au2.playbackRate=rate;au2.muted=!vocOn;try{au2.currentTime=t}catch(e){};if(wasP){const pr=au2.play();if(pr&&pr.catch)pr.catch(()=>{})}}
+  if(playing&&WA.on)waStart(cur())}
+function setVocal(blob){vocBlob=blob;waDecode(blob,"b2");drmOn=false;if(au)au.muted=true;$("drmBtn").setAttribute("aria-pressed","false");au2=new Audio();au2.preload="auto";au2.src=URL.createObjectURL(blob);au2.muted=!vocOn;au2.volume=.85;au2.playbackRate=rate;$("vocBtn").hidden=false;$("drmBtn").hidden=false}
+const loadDefault=()=>{try{if(au||typeof SONG==="undefined")return;setSong(b64blob(SONG),false);if(typeof VOC!=="undefined")setVocal(b64blob(VOC));if(typeof NODRUM!=="undefined")setNoDrum(b64blob(NODRUM))}catch(e){}};
 // 같은 폴더에 drum.mp3 / song.mp3 가 있으면 그걸 씀 → 없으면 이 기기에 골라둔 파일
 const tryFetch=u=>fetch(u,{cache:"no-cache"}).then(r=>r.ok&&!/text\/html/i.test(r.headers.get("content-type")||"")?r.blob():null).then(b=>b&&b.size>20000?b:null).catch(()=>null);
 const loadIdb=()=>idb("readonly",s=>s.get("song2")).then(b=>{if(b&&!au){setSong(b,false);idb("readonly",s=>s.get("voc2")).then(v=>{if(v&&au&&!au2)setVocal(v)}).catch(()=>{})}}).catch(()=>{});
 if(typeof SONG!=="undefined")setTimeout(loadDefault,0);
-else Promise.all([tryFetch("drum.mp3"),tryFetch("song.mp3")]).then(([d,v])=>{if(au)return;if(d&&v){setSong(d,false);setVocal(v)}else if(d||v)setSong(d||v,false);else loadIdb()});
+else Promise.all([tryFetch("drum.mp3"),tryFetch("song.mp3")]).then(([d,v])=>{if(au)return;if(d&&v){setSong(d,false);setVocal(v);tryFetch("nodrum.mp3").then(n=>{if(n)setNoDrum(n)})}else if(d||v)setSong(d||v,false);else loadIdb()});
 const NS=[1,1.2,1.5,1.7,2,2.5,3,4];
 const showNs=()=>{const v=Math.round(nspd/2*100)/100;$("nsVal").textContent=(v%1?v:v.toFixed(1))+"x"};showNs();
 document.querySelectorAll("[data-ns]").forEach(b=>b.onclick=()=>{let i=NS.indexOf(nspd);if(i<0)i=4;i=Math.max(0,Math.min(NS.length-1,i+ +b.dataset.ns));nspd=NS[i];showNs();try{localStorage.setItem("drumNspd3",nspd)}catch(e){}});
 tog("kitBtn",v=>{$("kit").hidden=!v;requestAnimationFrame(fit)});
+$("ndBtn").onclick=()=>useND(!ndOn);
 tog("vocBtn",v=>{vocOn=v;if(au2&&!counting&&!WA.on)au2.muted=!v;waGains()});tog("drmBtn",v=>{drmOn=v;if(au&&!counting&&!WA.on)au.muted=!v;waGains()});
 tog("loop",v=>loopOn=v);tog("snd",v=>sndOn=v);tog("met",v=>metOn=v);
 
@@ -1179,10 +1190,13 @@ function frame(){
     const put=(im,ox,a2,b2,sgn)=>{if(!im)return;g.save();g.transform(sx,0,sgn*KK*sy-sx*a2,sy,CX+sgn*KK*(ty-VY)-sx*b2,ty);g.drawImage(im,ox,350,620,842);g.restore()};
     put(IMG.railL,0,-.336,517.2,-1);put(IMG.railR,620,.344,719.5,1)}
   g.globalAlpha=1;
-  if(kg>0){ // 킥 줄: 패드 위로 밝은 가로줄 + 트랙 따라 올라가는 줄
+  if(kg>0){ // 킥: 패드 줄 위에 굵게 빛나는 주황 띠 + 양끝 번쩍 (위로 올라가는 건 없음)
     g.save();g.globalCompositeOperation="lighter";
-    const lw=HW*1.05,lt=3+5*kg;g.globalAlpha=kg;g.shadowColor=COL.K;g.shadowBlur=22*s*dpr*kg;g.fillStyle="#fff6d2";g.fillRect(CX-lw,hitY-lt/2,lw*2,lt);
-    g.shadowBlur=0;
+    const lw=HW*1.06,lt=(7+9*kg),ky=hitY;
+    const kb=g.createLinearGradient(0,ky-lt*1.6,0,ky+lt*1.6);kb.addColorStop(0,"rgba(255,140,0,0)");kb.addColorStop(.35,"rgba(255,150,20,.75)");kb.addColorStop(.5,"rgba(255,248,210,1)");kb.addColorStop(.65,"rgba(255,150,20,.75)");kb.addColorStop(1,"rgba(255,140,0,0)");
+    g.globalAlpha=kg;g.shadowColor="#ff9a00";g.shadowBlur=30*s*dpr*kg;g.fillStyle=kb;g.beginPath();g.moveTo(CX-lw,ky);g.quadraticCurveTo(CX,ky-lt*1.2,CX+lw,ky);g.quadraticCurveTo(CX,ky+lt*1.9,CX-lw,ky);g.fill();
+    g.shadowBlur=0;for(const sg of[-1,1]){const fx=CX+sg*lw,r=60*kg+20,fg=g.createRadialGradient(fx,ky,0,fx,ky,r);fg.addColorStop(0,"rgba(255,250,220,.95)");fg.addColorStop(.3,"rgba(255,170,40,.6)");fg.addColorStop(1,"rgba(255,120,0,0)");
+      g.fillStyle=fg;g.beginPath();g.ellipse(fx,ky,r,r*.45,0,0,7);g.fill()}
     g.restore()}
   // 노트 (먼 것부터)
   const i0=firstVisible(p);let i1=i0;while(i1<EVENTS.length&&(EVENTS[i1].t-p)*nspd<=ZMAX)i1++;
@@ -1499,8 +1513,8 @@ requestAnimationFrame(frame);
 // 채보 고르기 (바꾸면 새로 불러옴)
 document.querySelectorAll("[data-chart]").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.chart===CHART);
   b.onclick=()=>switchChart(b.dataset.chart)});
-function switchChart(k){if(k===CHART)return;CHART=k;CHKEY=k==="old"?"drumChartOld2":"drumChart";try{localStorage.setItem("drumChartSel",k)}catch(_){}
-  const base=JSON.parse(JSON.stringify(k==="old"?BARS_OLD:BARS_NEW));
+function switchChart(k){if(k===CHART)return;CHART=k;CHKEY=(k==="old"?"drumChartOld3":k==="auto"?"drumChartAuto":"drumChart");try{localStorage.setItem("drumChartSel",k)}catch(_){}
+  const base=JSON.parse(JSON.stringify((k==="old"?BARS_OLD:k==="auto"?BARS_AUTO:BARS_NEW)));
   for(const x in BARS0)delete BARS0[x];Object.assign(BARS0,base);
   for(const x in BARS)delete BARS[x];Object.assign(BARS,JSON.parse(JSON.stringify(base)));
   try{const sv=JSON.parse(localStorage.getItem(CHKEY)||"null");if(sv)for(const x in sv)if(BARS[x]!==undefined&&barOk(normBar(sv[x])))BARS[x]=normBar(sv[x])}catch(_){}
