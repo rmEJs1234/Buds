@@ -1013,7 +1013,7 @@ const parts=[];const glow={},noMotion=matchMedia('(prefers-reduced-motion:reduce
 function flash(c){
   const el=pads[c==="O"?"H":c];glow[c==="K"?"K":laneOf(c)]=performance.now();
   heat=Math.min(1,heat+.07);
-  if(c==="K"&&!noMotion){const t=performance.now();for(let i=0;i<14;i++)parts.push({li:i%4,t,k:1,cym:false,w:i%4===0,sz:3+Math.random()*4,vx:(Math.random()-.5)*260,vy:-(60+Math.random()*160)})}
+  if(c==="K"&&!noMotion){const t=performance.now();for(let i=0;i<14;i++)parts.push({li:0,e:i%2?1:-1,t,k:1,cym:false,w:i%4===0,sz:3+Math.random()*4,vx:(i%2?1:-1)*(-20-Math.random()*140),vy:-(60+Math.random()*200)})}
   if(c!=="K"&&!noMotion){const li=laneOf(c),cym=c==="C"||c==="H"||c==="O"||c==="R",n=c==="C"?16:10,t=performance.now();
     for(let i=0;i<n;i++)parts.push({li,t,cym,w:i%3===0,sz:4+Math.random()*5,vx:(Math.random()-.5)*(cym?300:200),vy:-(140+Math.random()*(cym?300:220))})}
   if(c==="O"||c==="H")$("hatTxt").textContent=c==="O"?"오픈":"하이햇";
@@ -1192,7 +1192,7 @@ function frame(){
   g.globalAlpha=1;
   if(kg>0){ // 킥: 패드 줄 위에 굵게 빛나는 주황 띠 + 양끝 번쩍 (위로 올라가는 건 없음)
     g.save();g.globalCompositeOperation="lighter";
-    const lw=HW*1.06,lt=(7+9*kg),ky=hitY;
+    const ky=(pj(ZY(930)).y+pj(ZY(998)).y)/2,lw=(ky-VY)*KK*1.04,lt=(7+9*kg);
     const kb=g.createLinearGradient(0,ky-lt*1.6,0,ky+lt*1.6);kb.addColorStop(0,"rgba(255,140,0,0)");kb.addColorStop(.35,"rgba(255,150,20,.75)");kb.addColorStop(.5,"rgba(255,248,210,1)");kb.addColorStop(.65,"rgba(255,150,20,.75)");kb.addColorStop(1,"rgba(255,140,0,0)");
     g.globalAlpha=kg;g.shadowColor="#ff9a00";g.shadowBlur=30*s*dpr*kg;g.fillStyle=kb;g.beginPath();g.moveTo(CX-lw,ky);g.quadraticCurveTo(CX,ky-lt*1.2,CX+lw,ky);g.quadraticCurveTo(CX,ky+lt*1.9,CX-lw,ky);g.fill();
     g.shadowBlur=0;for(const sg of[-1,1]){const fx=CX+sg*lw,r=60*kg+20,fg=g.createRadialGradient(fx,ky,0,fx,ky,r);fg.addColorStop(0,"rgba(255,250,220,.95)");fg.addColorStop(.3,"rgba(255,170,40,.6)");fg.addColorStop(1,"rgba(255,120,0,0)");
@@ -1235,9 +1235,13 @@ function frame(){
         if(CFG.dome>0){g.globalCompositeOperation="lighter";const gl2=g.createLinearGradient(0,yb-by,0,yb+by*.2);gl2.addColorStop(0,"rgba(255,255,255,"+(.3*CFG.dome)+")");gl2.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gl2;g.fillRect(x-bx,yb-by,bx*2,by*1.2);g.globalCompositeOperation="source-over"}
         g.restore();
         if(c==="O"){g.lineWidth=Math.max(1.5,ry*.34);g.strokeStyle=col;g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.stroke()}
-        const bw=rx*.22,py=yb-ry*.55*CFG.dome-ry*.1;
-        g.fillStyle=c==="O"?col:sh.l;g.beginPath();g.moveTo(x-bw,yb);g.lineTo(x,py);g.lineTo(x,yb+ry*.2);g.closePath();g.fill();
-        g.fillStyle=sh.d1;g.beginPath();g.moveTo(x+bw,yb);g.lineTo(x,py);g.lineTo(x,yb+ry*.2);g.closePath();g.fill();
+        const bw=rx*.4,bh=bw*er,cy=yb+ry*.04,py=cy-ry*(.3+.6*CFG.dome);
+        g.fillStyle="rgba(0,0,0,.35)";g.beginPath();g.ellipse(x+bw*.08,cy+bh*.25,bw*1.04,bh*1.04,0,0,7);g.fill();
+        const lg2=g.createLinearGradient(x-bw,0,x,0);lg2.addColorStop(0,c==="O"?col:sh.l);lg2.addColorStop(1,"#fff");
+        g.fillStyle=lg2;g.beginPath();g.moveTo(x,py);g.lineTo(x-bw,cy);g.ellipse(x,cy,bw,bh,0,Math.PI,Math.PI/2,true);g.closePath();g.fill();
+        const rg2=g.createLinearGradient(x,0,x+bw,0);rg2.addColorStop(0,col);rg2.addColorStop(1,sh.d1);
+        g.fillStyle=rg2;g.beginPath();g.moveTo(x,py);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI/2);g.closePath();g.fill();
+        g.lineWidth=1;g.strokeStyle="rgba(0,0,0,.35)";g.beginPath();g.moveTo(x-bw,cy);g.lineTo(x,py);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.stroke();
       }else{ // 패드: prism 텍스처 3분할(양끝 금속 마개)
         const gw=lw*.94*GS,gh=gw*(.26+.12*TN),cr=gh*.35,y0=q.y-gh*.62;
         g.fillStyle="rgba(0,0,0,.5)";rr(x-gw/2,y0+gh*.4,gw,gh,cr);g.fill();
@@ -1258,7 +1262,7 @@ function frame(){
   g.globalCompositeOperation="lighter";
   for(const pt of parts){
     const a=(tnow-pt.t)/1000,al=1-a/.48;if(al<=0)continue;
-    const pcy=(pj(ZY(930)).y+pj(ZY(998)).y)/2,x=lx(pt.li,(pcy-VY)*KK)+pt.vx*a*2.2,y=pcy+pt.vy*a*2.2+1400*a*a,sz=pt.sz*2.2*(.5+al*.5);
+    const pcy=(pj(ZY(930)).y+pj(ZY(998)).y)/2,phw=(pcy-VY)*KK,x=(pt.k?CX+pt.e*phw*1.04:lx(pt.li,phw))+pt.vx*a*2.2,y=pcy+pt.vy*a*2.2+700*a*a,sz=pt.sz*2.2*(.5+al*.5);if(y>pcy+6)continue;
     g.globalAlpha=al;g.fillStyle=pt.w?"#fff":pt.k?"#ffd21a":COL[LCOL[pt.li]];
     if(pt.cym){g.beginPath();g.moveTo(x,y-sz);g.lineTo(x+sz*.6,y);g.lineTo(x,y+sz);g.lineTo(x-sz*.6,y);g.closePath();g.fill()}
     else if(IMG.spark)g.drawImage(IMG.spark,x-sz*1.6,y-sz*1.6,sz*3.2,sz*3.2);else g.fillRect(x-sz/2,y-sz/2,sz,sz);
