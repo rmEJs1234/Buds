@@ -1235,16 +1235,15 @@ function frame(){
         if(CFG.dome>0){g.globalCompositeOperation="lighter";const gl2=g.createLinearGradient(0,yb-by,0,yb+by*.2);gl2.addColorStop(0,"rgba(255,255,255,"+(.3*CFG.dome)+")");gl2.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gl2;g.fillRect(x-bx,yb-by,bx*2,by*1.2);g.globalCompositeOperation="source-over"}
         g.restore();
         if(c==="O"){g.lineWidth=Math.max(1.5,ry*.34);g.strokeStyle=col;g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.stroke()}
-        // 심벌: 흰 테 → 색 원반 → 안쪽 동그라미가 넓은 원뿔로 솟음
-        const bw=bx*.62,bh=by*.62,cy=yb+by*.02,py=cy-bw*(.3+.4*CFG.dome);
-        const mound=()=>{g.beginPath();g.moveTo(x-bw,cy);g.lineTo(x,py);g.lineTo(x+bw,cy);g.ellipse(x,cy,bw,bh,0,0,Math.PI);g.closePath()};
-        g.save();mound();
-        if(c==="O"){g.fillStyle="#0e0c14";g.fill();g.lineWidth=Math.max(1.5,ry*.3);g.strokeStyle=col;g.stroke()}
-        else{const mg=g.createLinearGradient(x-bw,0,x+bw,0);mg.addColorStop(0,sh.l);mg.addColorStop(.42,"#fff");mg.addColorStop(.55,col);mg.addColorStop(1,sh.d1);g.fillStyle=mg;g.fill();
-          g.clip();g.globalAlpha=ga*.55;g.globalCompositeOperation="multiply";g.drawImage(GT.cym[li],36,18,56,56,x-bw,py-bh*.2,bw*2,cy-py+bh*1.2);g.globalCompositeOperation="source-over";g.globalAlpha=ga;
-          const vg=g.createLinearGradient(0,py,0,cy+bh);vg.addColorStop(0,"rgba(255,255,255,.5)");vg.addColorStop(.6,"rgba(255,255,255,0)");vg.addColorStop(1,"rgba(0,0,0,.25)");g.fillStyle=vg;g.fillRect(x-bw,py,bw*2,cy-py+bh)}
-        g.restore();
-        if(c!=="O"){g.lineWidth=1;g.strokeStyle="rgba(0,0,0,.4)";mound();g.stroke()}
+        // 심벌: 안쪽 무늬 원판을 그대로 들어 올려 넓은 원뿔로 (바깥→안쪽으로 겹겹이 올림)
+        {const im=c==="O"?GT.cymO:GT.cym[li],R0=.8,HH=by*(.35+.4*CFG.dome),N=36;
+          g.fillStyle="rgba(0,0,0,.28)";g.beginPath();g.ellipse(x,yb+by*.06,bx*R0*1.02,by*R0*1.02,0,0,7);g.fill();
+          for(let k=0;k<=N;k++){const r=R0*(1-k/N*.96),lift=(R0-r)/R0*HH;
+            g.save();g.beginPath();g.ellipse(x,yb-lift,bx*r,by*r,0,0,7);g.clip();
+            g.globalAlpha=ga;g.drawImage(im,36,18,56,56,x-bx,yb-by-lift,bx*2,by*2);
+            const sh2=g.createLinearGradient(0,yb-lift-by*r,0,yb-lift+by*r);sh2.addColorStop(0,"rgba(255,255,255,.10)");sh2.addColorStop(1,"rgba(0,0,0,"+(.18*(1-k/N))+")");
+            g.fillStyle=sh2;g.fillRect(x-bx,yb-lift-by,bx*2,by*2);g.restore()}
+          g.globalAlpha=ga}
       }else{ // 패드: prism 텍스처 3분할(양끝 금속 마개)
         const gw=lw*.94*GS,gh=gw*(.2+.09*TN),cr=gh*.35,y0=q.y-gh*.58;
         g.fillStyle="rgba(0,0,0,.5)";rr(x-gw/2,y0+gh*.26,gw,gh,cr);g.fill();
