@@ -1086,7 +1086,7 @@ function drawShards(tnow,pcy,phw,lx,sd){
   g.globalAlpha=1}
 function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
 // ── 설정(각도/젬): 자동 저장 + 파일로 내보내기/불러오기
-const DEF={av:2,angle:0.55,width:1,gem:1,kick:1,dome:1,lane:{S:0,H:1,T:1,M:2,R:2,C:3,F:3},col:{S:"#ff2222",H:"#ffd000",M:"#1766ff",F:"#12d13a",K:"#ff8a00"}};
+const DEF={av:2,angle:1,width:1,gem:1,kick:1,dome:1,lane:{S:0,H:1,T:1,M:2,R:2,C:3,F:3},col:{S:"#ff2222",H:"#ffd000",M:"#1766ff",F:"#12d13a",K:"#ff8a00"}};
 let CFG=JSON.parse(JSON.stringify(DEF));
 const cfgIds={S:"cS",H:"cH",M:"cM",F:"cF",K:"cK"};
 const num=(v,a,b,d)=>{v=+v;return isFinite(v)?Math.min(b,Math.max(a,v)):d},hex=(v,d)=>/^#[0-9a-f]{6}$/i.test(v)?v.toLowerCase():d;
@@ -1425,63 +1425,48 @@ function frame(){
   const hit=pj(0),hitY=hit.y,HW=hit.hw,top=pj(ZMAX),bot={y:VH+4,hw:(VH+4-VY)*KK};
   const lx=(i,hw)=>CX-hw+(i+.5)*hw/2;
   const quad=(a,b,s0,s1)=>{g.beginPath();g.moveTo(CX-a.hw*s0,a.y);g.lineTo(CX+a.hw*s0,a.y);g.lineTo(CX+b.hw*s1,b.y);g.lineTo(CX-b.hw*s1,b.y);g.closePath()};
-  // 트랙 바닥 (검은 락밴드 스타일 하이웨이 + 세로 레인 구분선)
+  // 트랙 바닥 (RB3 다마스크 문양 + 순수 검정 배경)
+  const archOf=hw=>hw*.016,archY=(x,hw)=>{const u=(x-CX)/Math.max(1,hw);return -archOf(hw)*(1-u*u)},archTilt=(x,hw)=>Math.atan(2*.016*(x-CX)/Math.max(1,hw));
   g.save();quad(top,bot,1,1);g.clip();
-  g.fillStyle="#070709";g.fillRect(0,top.y,VW,bot.y-top.y);
+  g.fillStyle="#050507";g.fillRect(0,top.y,VW,bot.y-top.y);
   if(IMG.track){const st=2/(s*dpr),TL=4;
     for(let y=top.y;y<bot.y;y+=st){const d=y+st/2-VY,hw=d*KK,z=(1/d-1/DH)/ZS,v=(((p*nspd+z)/TL)%1+1)%1;
       g.drawImage(IMG.track,0,Math.min(1023,(1-v)*1024),512,1,CX-hw,y,hw*2,st+.6)}}
-  // 원통형 입체 명암 (양옆 어둡고 가운데 둥글게 살아남)
+  // RB3 트랙 가장자리 입체 비네팅
   {const cg=g.createLinearGradient(CX-bot.hw,0,CX+bot.hw,0);
-   cg.addColorStop(0,"rgba(0,0,0,.55)");cg.addColorStop(.16,"rgba(0,0,0,.15)");cg.addColorStop(.5,"rgba(255,255,255,.04)");cg.addColorStop(.84,"rgba(0,0,0,.15)");cg.addColorStop(1,"rgba(0,0,0,.55)");
+   cg.addColorStop(0,"rgba(0,0,0,.62)");cg.addColorStop(.12,"rgba(0,0,0,0)");cg.addColorStop(.88,"rgba(0,0,0,0)");cg.addColorStop(1,"rgba(0,0,0,.62)");
    g.fillStyle=cg;g.fillRect(0,top.y,VW,bot.y-top.y);}
-  // 세로 레인 구분선 (4레인 경계 3줄)
-  for(let k=1;k<4;k++){
-    const lg=g.createLinearGradient(0,top.y,0,bot.y);
-    lg.addColorStop(0,"rgba(255,255,255,0)");lg.addColorStop(.18,"rgba(195,205,225,.22)");lg.addColorStop(1,"rgba(220,230,245,.32)");
-    g.strokeStyle=lg;g.lineWidth=1.8;
-    g.beginPath();g.moveTo(CX-top.hw+k*top.hw/2,top.y);g.lineTo(CX-bot.hw+k*bot.hw/2,bot.y);g.stroke();
-  }
-  const fg=g.createLinearGradient(0,top.y,0,top.y+155);fg.addColorStop(0,"rgba(0,0,0,.96)");fg.addColorStop(1,"rgba(0,0,0,0)");
-  g.fillStyle=fg;g.fillRect(0,top.y,VW,155);
+  const fg=g.createLinearGradient(0,top.y,0,top.y+175);fg.addColorStop(0,"rgba(0,0,0,.96)");fg.addColorStop(1,"rgba(0,0,0,0)");
+  g.fillStyle=fg;g.fillRect(0,top.y,VW,175);
   g.restore();
-  // 금속 레일 (둥근 파이프 입체감 + 하이라이트)
+  // 금속 레일 (타격선 아래까지 이어짐)
   if(!window.RS){const mk=rev=>{const c=document.createElement("canvas");c.width=64;c.height=1;const x=c.getContext("2d"),gr=x.createLinearGradient(0,0,64,0);
-      [[0,"#0d0e14"],[.22,"#5e6275"],[.42,"#d2d7e8"],[.65,"#4a4e60"],[1,"#08080c"]].forEach(a=>gr.addColorStop(rev?1-a[0]:a[0],a[1]));x.fillStyle=gr;x.fillRect(0,0,64,1);return c};
+      [[0,"#14151c"],[.32,"#7c8094"],[.58,"#45485a"],[1,"#0a0a0f"]].forEach(a=>gr.addColorStop(rev?1-a[0]:a[0],a[1]));x.fillStyle=gr;x.fillRect(0,0,64,1);return c};
     window.RS=mk(false);window.RSL=mk(true)}
-  {const st=2/(s*dpr);for(let y=top.y;y<bot.y;y+=st){const hw=(y+st/2-VY)*KK,rw=hw*.052;
+  {const st=2/(s*dpr);for(let y=top.y;y<bot.y;y+=st){const hw=(y+st/2-VY)*KK,rw=hw*.046;
     g.drawImage(RS,0,0,64,1,CX+hw,y,rw,st+.6);g.drawImage(RSL,0,0,64,1,CX-hw-rw,y,rw,st+.6)}}
-  // 박자선 & 마디선 (트랙 곡률에 맞춰 살짝 둥글게 휘어짐)
-  const archOf=hw=>hw*.022,archY=(x,hw)=>{const u=(x-CX)/Math.max(1,hw);return -archOf(hw)*(1-u*u)},archTilt=(x,hw)=>Math.atan(2*.022*(x-CX)/Math.max(1,hw));
-  g.font="600 18px sans-serif";g.textBaseline="bottom";g.textAlign="left";
+  // RB3 마디선 & 박자선 (스샷처럼 살짝 아치형으로 휘어진 은은한 선)
   for(let bt=Math.max(0,Math.ceil(p));(bt-p)*nspd<=ZMAX&&bt<=TOTAL;bt+=1){const q=pj((bt-p)*nspd),isBar=bt%4===0,bow=archOf(q.hw);
-    g.strokeStyle=isBar?"rgba(220,228,245,.34)":"rgba(180,190,210,.12)";g.lineWidth=(isBar?3.2:1.4)*q.sc;
-    g.beginPath();g.moveTo(CX-q.hw,q.y);g.quadraticCurveTo(CX,q.y-bow*2,CX+q.hw,q.y);g.stroke();
-    if(isBar&&bt<TOTAL&&q.sc>.55){g.fillStyle="rgba(255,255,255,.45)";g.fillText(ORDER[bt/4],CX-q.hw+10,q.y-5)}}
+    g.strokeStyle=isBar?"rgba(215,225,248,.28)":"rgba(165,175,205,.09)";g.lineWidth=(isBar?3.0:1.2)*q.sc;
+    g.beginPath();g.moveTo(CX-q.hw,q.y);g.quadraticCurveTo(CX,q.y-bow*2,CX+q.hw,q.y);g.stroke();}
   const tnow=performance.now(),kg=Math.max(0,1-(tnow-(glow.K||0))/260);
-  if(kg>0){ // 킥: 다른 패드와 같은 방식의 위로 올라가는 빛 (트랙 전체 폭)
-    const bh=170,bg=g.createLinearGradient(0,hitY,0,hitY-bh);bg.addColorStop(0,COL.K);bg.addColorStop(1,"rgba(0,0,0,0)");
-    g.globalAlpha=0;g.globalAlpha=1}
   cv.style.transform="";
-  // 패드 틀 (가운데가 살짝 볼록하게 둥근 아치형 브릿지)
-  const h0=pj(ZY(915)),h1=pj(ZY(1008)),gb1=pj(ZY(1055)),pa=pj(ZY(925)),pb=pj(ZY(1000)),th=pb.y-pa.y;
+  // RB3 타격선 패드 하우징 틀 (가운데가 살짝 솟은 아치형)
+  const h0=pj(ZY(915)),h1=pj(ZY(1008)),gb1=pj(ZY(1046)),pa=pj(ZY(925)),pb=pj(ZY(1000)),th=pb.y-pa.y;
   const hBow0=archOf(h0.hw),hBow1=archOf(h1.hw);
   {g.beginPath();g.moveTo(CX-h0.hw*1.045,h0.y);g.quadraticCurveTo(CX,h0.y-hBow0*2,CX+h0.hw*1.045,h0.y);
    g.lineTo(CX+h1.hw*1.045,h1.y);g.quadraticCurveTo(CX,h1.y-hBow1*2,CX-h1.hw*1.045,h1.y);g.closePath();
-   const hg=g.createLinearGradient(0,h0.y-hBow0,0,h1.y);hg.addColorStop(0,"#b2b7cc");hg.addColorStop(.1,"#3a3c4a");hg.addColorStop(.24,"#14141c");hg.addColorStop(.85,"#0c0c12");hg.addColorStop(1,"#5a5d70");
-   g.fillStyle=hg;g.fill();g.lineWidth=2;g.strokeStyle="#0a0a10";g.stroke();}
-  const padPath=(i,ins)=>{const xl=(k,hw)=>CX-hw+k*hw/2,ya=pa.y+ins,yb=pb.y-ins,ea=pa.hw*.06+ins,eb=pb.hw*.06+ins;
-    g.beginPath();g.moveTo(xl(i,pa.hw)+ea,ya);g.lineTo(xl(i+1,pa.hw)-ea,ya);g.lineTo(xl(i+1,pb.hw)-eb,yb);g.lineTo(xl(i,pb.hw)+eb,yb);g.closePath()};
+   const hg=g.createLinearGradient(0,h0.y-hBow0,0,h1.y);
+   hg.addColorStop(0,"#989cb0");hg.addColorStop(.09,"#2e303d");hg.addColorStop(.22,"#101118");hg.addColorStop(.86,"#0a0b10");hg.addColorStop(1,"#505466");
+   g.fillStyle=hg;g.fill();g.lineWidth=2;g.strokeStyle="#07070b";g.stroke();}
   for(let i=0;i<4;i++){
     const col=COL[LCOL[i]],x=lx(i,HW),gl=Math.max(heldLanes[i]?.45:0,1-(tnow-(glow[i]||0))/200);
-    // 칠 때 패드가 위로 떨림 + 둥근 트랙 아치 높이·기울기 반영
     const ju=(tnow-(glow[i]||0))/240,cyPad=(pj(ZY(930)).y+pj(ZY(998)).y)/2,dy=archY(x,HW)+(!noMotion&&ju>=0&&ju<1?-8*Math.pow(1-ju,2)*(.55+.45*Math.cos(ju*Math.PI*7)):0),tl=archTilt(x,HW);
     g.save();g.translate(x,cyPad+dy);g.rotate(tl);g.translate(-x,-cyPad);
-    if(gl){const y0=(pj(ZY(930)).y+pj(ZY(998)).y)/2,y1=y0-300,lx2=y=>{const hw=(y-VY)*KK,lw=hw/2;return[CX-hw+i*lw+lw*.08,CX-hw+(i+1)*lw-lw*.08]},a=lx2(y0),b=lx2(y1);
+    if(gl){const y0=cyPad,y1=y0-280,lx2=y=>{const hw=(y-VY)*KK,lw=hw/2;return[CX-hw+i*lw+lw*.08,CX-hw+(i+1)*lw-lw*.08]},a=lx2(y0),b=lx2(y1);
       const bg=g.createLinearGradient(0,y0,0,y1);bg.addColorStop(0,col);bg.addColorStop(1,"rgba(0,0,0,0)");
-      g.globalAlpha=gl*.6;g.fillStyle=bg;g.beginPath();g.moveTo(a[0],y0);g.lineTo(a[1],y0);g.lineTo(b[1],y1);g.lineTo(b[0],y1);g.closePath();g.fill();g.globalAlpha=1}
-    const pw=HW/2*.88,ph=th*1.15,px=x-pw/2,py=hitY-ph/2,ya=pj(ZY(930)).y,yb=pj(ZY(998)).y;
-    // 트랙 기울기 따라 한 줄씩 (텍스처는 위아래 뒤집혀 있어서 거꾸로 읽음)
+      g.globalAlpha=gl*.55;g.fillStyle=bg;g.beginPath();g.moveTo(a[0],y0);g.lineTo(a[1],y0);g.lineTo(b[1],y1);g.lineTo(b[0],y1);g.closePath();g.fill();g.globalAlpha=1}
+    const ya=pj(ZY(930)).y,yb=pj(ZY(998)).y;
     const padRows=()=>{const st=1/(s*dpr);for(let y=ya;y<yb;y+=st){const hw=(y+st/2-VY)*KK,lw=hw/2,t=(y-ya)/(yb-ya);
       g.drawImage(GT.smash[i],10,55-Math.min(55,Math.floor(t*56)),176,1,CX-hw+i*lw+lw*.06,y,lw*.88,st+.5)}};
     if(GT)padRows();
@@ -1496,25 +1481,27 @@ function frame(){
       g.globalCompositeOperation="source-over";g.globalAlpha=1}
     g.restore();
   }
+  // RB3 패드 사이 은색 금속 격벽 3개
   for(let k=1;k<4;k++){const xa=CX-h0.hw+k*h0.hw/2,xb=CX-h1.hw+k*h1.hw/2,u=(k-2)/2,dy=-hBow0*(1-u*u);
-    g.strokeStyle="#232532";g.lineWidth=11;g.beginPath();g.moveTo(xa,h0.y+dy);g.lineTo(xb,h1.y+dy);g.stroke();
-    g.strokeStyle="#d6dae8";g.lineWidth=2.5;g.stroke()}
-  // 프레임 아랫단: 둥글게 휘어진 락밴드 스타일 3D 금속·골드 범퍼 바 (4x 배지 없음)
-  {const b0=pj(ZY(1006)),b1=pj(ZY(1038)),bb0=archOf(b0.hw),bb1=archOf(b1.hw);
-   g.beginPath();g.moveTo(CX-b0.hw*1.06,b0.y);g.quadraticCurveTo(CX,b0.y-bb0*2,CX+b0.hw*1.06,b0.y);
-   g.lineTo(CX+b1.hw*1.08,b1.y);g.quadraticCurveTo(CX,b1.y-bb1*2,CX-b1.hw*1.08,b1.y);g.closePath();
+    g.strokeStyle="#1a1c26";g.lineWidth=12;g.beginPath();g.moveTo(xa,h0.y+dy);g.lineTo(xb,h1.y+dy);g.stroke();
+    g.strokeStyle="#8b90a6";g.lineWidth=6;g.stroke();
+    g.strokeStyle="#e4e8f5";g.lineWidth=2;g.stroke();}
+  // RB3 타격선 전면 골드·크롬 아치 범퍼 바 (스샷 하단과 동일, 4x 배지만 제외)
+  {const b0=pj(ZY(1005)),b1=pj(ZY(1042)),bb0=archOf(b0.hw)*1.15,bb1=archOf(b1.hw)*1.15;
+   g.beginPath();g.moveTo(CX-b0.hw*1.055,b0.y);g.quadraticCurveTo(CX,b0.y-bb0*2,CX+b0.hw*1.055,b0.y);
+   g.lineTo(CX+b1.hw*1.07,b1.y);g.quadraticCurveTo(CX,b1.y-bb1*2,CX-b1.hw*1.07,b1.y);g.closePath();
    const bg=g.createLinearGradient(0,b0.y-bb0,0,b1.y);
-   bg.addColorStop(0,"#eef1fa");bg.addColorStop(.2,"#9da2b8");bg.addColorStop(.46,"#ffd878");bg.addColorStop(.7,"#d98218");bg.addColorStop(.9,"#3d2810");bg.addColorStop(1,"#14141c");
-   g.fillStyle=bg;g.fill();g.lineWidth=1.8;g.strokeStyle="#09090d";g.stroke();
+   bg.addColorStop(0,"#ffffff");bg.addColorStop(.16,"#ffd86b");bg.addColorStop(.38,"#f09819");bg.addColorStop(.58,"#2b2520");bg.addColorStop(.85,"#111218");bg.addColorStop(1,"#3a3d4d");
+   g.fillStyle=bg;g.fill();g.lineWidth=1.8;g.strokeStyle="#060609";g.stroke();
    g.beginPath();g.moveTo(CX-b0.hw*1.04,b0.y+2);g.quadraticCurveTo(CX,b0.y-bb0*2+2,CX+b0.hw*1.04,b0.y+2);
-   g.lineWidth=2.2;g.strokeStyle="rgba(255,250,230,.6)";g.stroke();}
+   g.lineWidth=2.4;g.strokeStyle="rgba(255,248,215,.85)";g.stroke();}
 
-  // 레일 이미지 (원근에 맞춰 기울여 붙임). 원본 좌표: 위끝 y356 → 트랙 끝, 주황 집게 y1055 → 타격선
+  // RB3 원본 사이드 레일 & 주황 브래킷 (railL / railR)
   {const sy=(hitY-top.y)/(1055-356),ty=top.y-sy*356,sx=.45;
     const put=(im,ox,a2,b2,sgn)=>{if(!im)return;g.save();g.transform(sx,0,sgn*KK*sy-sx*a2,sy,CX+sgn*KK*(ty-VY)-sx*b2,ty);g.drawImage(im,ox,350,620,842);g.restore()};
     put(IMG.railL,0,-.336,517.2,-1);put(IMG.railR,620,.344,719.5,1)}
   g.globalAlpha=1;
-  if(kg>0){ // 킥: 패드 줄 위에 굵게 빛나는 주황 띠 + 양끝 번쩍 (위로 올라가는 건 없음)
+  if(kg>0){ // 킥 타격 시 패드 줄 위 주황 플레어
     g.save();g.globalCompositeOperation="lighter";
     const ky=(pj(ZY(930)).y+pj(ZY(998)).y)/2,lw=(ky-VY)*KK*1.04,lt=(7+9*kg),kbow=archOf(lw)*2;
     const kb=g.createLinearGradient(0,ky-kbow-lt*1.6,0,ky+lt*1.6);kb.addColorStop(0,"rgba(255,140,0,0)");kb.addColorStop(.35,"rgba(255,150,20,.75)");kb.addColorStop(.5,"rgba(255,248,210,1)");kb.addColorStop(.65,"rgba(255,150,20,.75)");kb.addColorStop(1,"rgba(255,140,0,0)");
@@ -1530,67 +1517,168 @@ function frame(){
     const z=(e.t-p)*nspd,q=pj(z);
     if(z<0&&playing)continue;
     g.globalAlpha=z<0?Math.max(0,1+(e.t-p)*5):Math.min(1,(ZMAX-z)*4);
-    const er=.27+.2*TN,GS=CFG.gem;
+    const er=.24+.08*TN,GS=CFG.gem;
     if(GT){
-    if(e.ins.includes("K")&&!(playMode==="play"&&hitDone.has(i+"_K"))){ // 킥: 트랙 곡률 따라 살짝 아치형으로 휘어진 주황 풀폭 바
-      const h=15*q.sc*CFG.kick,xw=q.hw*1.01,bow=archOf(xw),y0=q.y-h/2,kc=COL.K,ga=g.globalAlpha;
+    if(e.ins.includes("K")&&!(playMode==="play"&&hitDone.has(i+"_K"))){ // RB3 킥 바: 살짝 아치형으로 휘어진 주황 튜브 + 양끝 레일 클램프 캡
+      const h=14*q.sc*CFG.kick,xw=q.hw*1.005,bow=archOf(xw),y0=q.y-h/2,kc=COL.K,ga=g.globalAlpha;
       const arcBar=(dy,hh)=>{g.beginPath();g.moveTo(CX-xw,q.y+dy-hh/2);g.quadraticCurveTo(CX,q.y+dy-hh/2-bow*2,CX+xw,q.y+dy-hh/2);
-        g.arc(CX+xw,q.y+dy,hh/2,-Math.PI/2,Math.PI/2);g.quadraticCurveTo(CX,q.y+dy+hh/2-bow*2,CX-xw,q.y+dy+hh/2);
-        g.arc(CX-xw,q.y+dy,hh/2,Math.PI/2,Math.PI*1.5);g.closePath()};
+        g.lineTo(CX+xw,q.y+dy+hh/2);g.quadraticCurveTo(CX,q.y+dy+hh/2-bow*2,CX-xw,q.y+dy+hh/2);g.closePath()};
+      // 바 아래 그림자
+      g.fillStyle="rgba(0,0,0,.6)";arcBar(h*.35,h*.9);g.fill();
+      // 은은한 주황 글로우
       g.save();g.globalCompositeOperation="lighter";
-      const gg=g.createLinearGradient(0,q.y-h*3-bow,0,q.y+h*3);
-      gg.addColorStop(0,rgba(kc,0));gg.addColorStop(.5,rgba(kc,.52));gg.addColorStop(1,rgba(kc,0));
-      g.fillStyle=gg;arcBar(0,h*3.6);g.fill();g.restore();g.globalAlpha=ga;
+      const gg=g.createLinearGradient(0,q.y-h*2.4-bow,0,q.y+h*2.4);
+      gg.addColorStop(0,rgba(kc,0));gg.addColorStop(.5,rgba(kc,.38));gg.addColorStop(1,rgba(kc,0));
+      g.fillStyle=gg;arcBar(0,h*2.8);g.fill();g.restore();g.globalAlpha=ga;
+      // 3D 원통형 앰버·골드 본체
       const kb=g.createLinearGradient(0,y0-bow,0,y0+h);
-      kb.addColorStop(0,"#fff7c8");kb.addColorStop(.28,mix(kc,"#ffffff",.42));kb.addColorStop(.65,kc);kb.addColorStop(1,mix(kc,"#000000",.38));
-      g.save();g.shadowColor=rgba(kc,.95);g.shadowBlur=16*q.sc*s*dpr;g.fillStyle=kb;arcBar(0,h);g.fill();g.restore();
-      g.beginPath();g.moveTo(CX-xw+h*.5,q.y-h*.22);g.quadraticCurveTo(CX,q.y-h*.22-bow*2,CX+xw-h*.5,q.y-h*.22);
-      g.lineWidth=Math.max(1.5,h*.22);g.lineCap="round";g.strokeStyle="rgba(255,252,225,.85)";g.stroke();
+      kb.addColorStop(0,"#8c4300");kb.addColorStop(.22,"#ff9a14");kb.addColorStop(.45,"#fff3b0");kb.addColorStop(.68,"#ff8800");kb.addColorStop(1,"#4a1e00");
+      g.fillStyle=kb;arcBar(0,h);g.fill();
+      g.lineWidth=Math.max(1,1.3*q.sc);g.strokeStyle="rgba(30,10,0,.85)";g.stroke();
+      // 양끝 어두운 금속/갈색 클램프 마개 (스샷처럼 레일에 물리는 끝단)
+      const cw=Math.max(4,h*.75);
+      for(const sg of[-1,1]){
+        const cx0=sg<0?CX-xw-cw*.3:CX+xw-cw*.7;
+        const cg=g.createLinearGradient(0,y0,0,y0+h);
+        cg.addColorStop(0,"#2a221c");cg.addColorStop(.4,"#a88b73");cg.addColorStop(.7,"#3d2e24");cg.addColorStop(1,"#120d0a");
+        g.fillStyle=cg;rr(cx0,q.y-h*.58,cw,h*1.16,cw*.28);g.fill();
+        g.lineWidth=1;g.strokeStyle="#000";g.stroke();
+      }
     }
     e.ins.forEach(c=>{
       if(c==="K"||(playMode==="play"&&hitDone.has(i+"_"+c)))return;
       const li=laneOf(c),lw=q.hw/2,x=lx(li,q.hw),col=COL[LCOL[li]],sh=SH[li],ny=q.y+archY(x,q.hw),ntl=archTilt(x,q.hw);
       g.save();g.translate(x,ny);g.rotate(ntl);g.translate(-x,-q.y);
-      if(c==="C"||c==="H"||c==="O"||c==="R"){ // 심벌: cym 텍스처 + 부드러운 3D 원뿔 돔
-        const rx=lw*.98*GS/2,ry=rx*er,bx=rx*.93,by=ry*.9,yb=q.y-ry*.05,ga=g.globalAlpha;
-        g.fillStyle="rgba(0,0,0,.6)";g.beginPath();g.ellipse(x,q.y+ry*.32,rx,ry,0,0,7);g.fill();
-        g.fillStyle="#8e92a8";g.beginPath();g.ellipse(x,q.y+ry*.14,rx,ry,0,0,7);g.fill();
-        g.fillStyle="#ffffff";g.beginPath();g.ellipse(x,q.y+ry*.05,rx,ry,0,0,7);g.fill();
-        g.lineWidth=1.5;g.strokeStyle="rgba(0,0,0,.55)";g.stroke();
-        g.save();g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.clip();
-        const bg=g.createLinearGradient(0,yb-by,0,yb+by);
-        if(c==="O"){bg.addColorStop(0,"#1c1926");bg.addColorStop(1,"#050408")}else{bg.addColorStop(0,sh.l);bg.addColorStop(.5,col);bg.addColorStop(1,sh.d1)}
-        g.fillStyle=bg;g.fillRect(x-bx,yb-by,bx*2,by*2);
-        g.globalAlpha=ga*.92;g.drawImage(c==="O"?GT.cymO:GT.cym[li],36,18,56,56,x-bx,yb-by,bx*2,by*2);g.globalAlpha=ga;
-        if(CFG.dome>0){g.globalCompositeOperation="lighter";const gl2=g.createLinearGradient(0,yb-by,0,yb+by*.2);gl2.addColorStop(0,"rgba(255,255,255,"+(.28*CFG.dome)+")");gl2.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gl2;g.fillRect(x-bx,yb-by,bx*2,by*1.2);g.globalCompositeOperation="source-over"}
+      if(c==="C"||c==="H"||c==="O"||c==="R"){ // RB3 프로 드럼 심벌 (초근접 픽셀 실측: 완만한 삿갓형 메탈릭 콘 + 반달형 전면 화이트 림 + 전면 U자 네온 아크)
+        const rx=lw*.96*GS/2,ry=rx*Math.min(.75,Math.max(.15,.28+(ZS*DH/KK-.573)*.44)),cy=q.y; // 심벌 납작한 정도: 카메라 각도에 따라 계산(깊이와 무관하게 일정)
+        // 1. 바닥 그림자
+        g.fillStyle="rgba(0,0,0,.68)";g.beginPath();g.ellipse(x,cy+ry*.36,rx*1.02,ry*.95,0,0,7);g.fill();
+        // 1.5 옆면 두께: 림 아래로 보이는 어두운 금속 측면
+        {const wg=g.createLinearGradient(x-rx,cy,x+rx,cy);wg.addColorStop(0,"#2a2d3a");wg.addColorStop(.3,"#7d8296");wg.addColorStop(.7,"#4a4e60");wg.addColorStop(1,"#1c1e28");
+        g.fillStyle=wg;g.beginPath();g.ellipse(x,cy+ry*.62,rx,ry*.9,0,0,7);g.fill();g.lineWidth=Math.max(1,ry*.06);g.strokeStyle="rgba(0,0,0,.8)";g.stroke()}
+        // 2. 전면 화이트/실버 하부 림 (아래쪽 앞면으로 볼록하게 감싸는 크롬/흰색 테두리)
+        const lipG=g.createLinearGradient(x-rx,cy,x+rx,cy);
+        lipG.addColorStop(0,"#9aa0b4");lipG.addColorStop(.18,"#ffffff");lipG.addColorStop(.82,"#ffffff");lipG.addColorStop(1,"#8d93a8");
+        g.fillStyle=lipG;g.beginPath();g.ellipse(x,cy+ry*.18,rx,ry*.90,0,0,7);g.fill();
+        g.lineWidth=Math.max(1,ry*.08);g.strokeStyle="rgba(0,0,0,.75)";g.stroke();
+        // 3. 심벌 전체 완만한 삿갓형(원뿔) 본체 — 바깥 가장자리부터 꼭대기까지 하나로 이어지는 매끈한 경사면
+        const bx=rx*.96,by=ry*.82,baseY=cy-ry*.02,peakY=baseY-ry*(.85+.38*CFG.dome);
+        g.save();
+        g.beginPath();
+        // 아래쪽 앞면 둥근 타원 호 (0 ~ PI) + 위쪽 꼭대기(peakY)로 완만하게 이어지는 삿갓 실루엣
+        g.arc(x,baseY,bx,0,Math.PI,false);
+        g.quadraticCurveTo(x-bx*.55,peakY+ry*.08,x,peakY);
+        g.quadraticCurveTo(x+bx*.55,peakY+ry*.08,x+bx,baseY);
+        g.closePath();
+        // 세로 비율 맞추기 위해 캔버스 스케일 변환 대신 직접 경로 구성
         g.restore();
-        if(c==="O"){g.lineWidth=Math.max(1.5,ry*.34);g.strokeStyle=col;g.beginPath();g.ellipse(x,yb,bx,by,0,0,7);g.stroke()}
-        // 심벌: 안쪽 무늬 원판을 겹겹이 들어 올려 부드러운 3D 벨 돔으로
-        {const im=c==="O"?GT.cymO:GT.cym[li],R0=.8,HH=by*(.38+.42*CFG.dome),N=36;
-          g.fillStyle="rgba(0,0,0,.28)";g.beginPath();g.ellipse(x,yb+by*.06,bx*R0*1.02,by*R0*1.02,0,0,7);g.fill();
-          for(let k=0;k<=N;k++){const r=R0*(1-k/N*.96),lift=(R0-r)/R0*HH;
-            g.save();g.beginPath();g.ellipse(x,yb-lift,bx*r,by*r,0,0,7);g.clip();
-            g.globalAlpha=ga;g.drawImage(im,36,18,56,56,x-bx,yb-by-lift,bx*2,by*2);
-            const sh2=g.createLinearGradient(0,yb-lift-by*r,0,yb-lift+by*r);sh2.addColorStop(0,"rgba(255,255,255,.12)");sh2.addColorStop(1,"rgba(0,0,0,"+(.20*(1-k/N))+")");
-            g.fillStyle=sh2;g.fillRect(x-bx,yb-lift-by,bx*2,by*2);g.restore()}
-          // 꼭대기 부드러운 광택
-          g.save();g.globalCompositeOperation="lighter";
-          const sg=g.createRadialGradient(x,yb-HH*.92,0,x,yb-HH*.85,bx*.28);
-          sg.addColorStop(0,"rgba(255,255,255,.5)");sg.addColorStop(1,"rgba(255,255,255,0)");
-          g.fillStyle=sg;g.beginPath();g.ellipse(x,yb-HH*.85,bx*.28,by*.35,0,0,7);g.fill();
-          g.restore();
-          g.globalAlpha=ga}
-      }else{ // 패드(탐/스네어): 양끝 은색 금속 마개 + 입체 흰 테두리
-        const gw=lw*.92*GS,gh=gw*(.24+.1*TN),cr=gh*.34,y0=q.y-gh*.62;
-        g.fillStyle="rgba(0,0,0,.6)";rr(x-gw/2,y0+gh*.28,gw,gh,cr);g.fill();
-        g.fillStyle="#7f849a";rr(x-gw/2,y0+gh*.14,gw,gh,cr);g.fill();
-        g.fillStyle="#f4f6fc";rr(x-gw/2,y0+gh*.05,gw,gh,cr);g.fill();
-        const ix=x-gw/2,iy=y0,iw=gw,ih=gh;
-        g.save();rr(ix,iy,iw,ih,cr*.85);g.clip();slice3(GT.pad[li],0,0,ix,iy,iw,ih,ih*.65);
-        g.globalCompositeOperation="lighter";const lg=g.createLinearGradient(0,iy,0,iy+ih);
-        lg.addColorStop(0,rgba(col,.55));lg.addColorStop(.32,"rgba(255,255,255,.45)");lg.addColorStop(.52,rgba(col,.25));lg.addColorStop(1,"rgba(0,0,0,0)");
-        g.fillStyle=lg;g.fillRect(ix+ih*.55,iy,iw-ih*1.1,ih);g.restore();
-        rr(x-gw/2,y0,gw,gh,cr);g.lineWidth=1.5;g.strokeStyle="rgba(0,0,0,.6)";g.stroke();
+        g.save();
+        g.beginPath();
+        g.moveTo(x-bx,baseY);
+        g.bezierCurveTo(x-bx,baseY+by*1.32,x+bx,baseY+by*1.32,x+bx,baseY);
+        g.quadraticCurveTo(x+bx*.52,peakY+by*.06,x,peakY);
+        g.quadraticCurveTo(x-bx*.52,peakY+by*.06,x-bx,baseY);
+        g.closePath();
+        g.clip();
+        // 바깥 어두운 유광 컬러 베이스
+        const bodyG=g.createLinearGradient(x-bx,baseY,x+bx,baseY);
+        if(c==="O"){
+          bodyG.addColorStop(0,"#12131a");bodyG.addColorStop(.32,"#383b4a");bodyG.addColorStop(.52,"#181a22");bodyG.addColorStop(1,"#0c0d12");
+        }else{
+          bodyG.addColorStop(0,mix(col,"#08090d",.72));
+          bodyG.addColorStop(.28,mix(col,"#14161f",.45));
+          bodyG.addColorStop(.55,mix(col,"#050608",.78));
+          bodyG.addColorStop(.82,mix(col,"#14161f",.52));
+          bodyG.addColorStop(1,mix(col,"#08090d",.75));
+        }
+        g.fillStyle=bodyG;g.fillRect(x-bx,peakY-2,bx*2,by*2.5);
+        // 4. 심벌 중앙 벨(원뿔) 좌우 비대칭 아나이소트로픽 광택 (왼쪽에서 중앙 꼭대기까지는 하얗게 빛나고, 중앙선 바로 오른쪽은 짙은 어두운 그림자)
+        const coneW=bx*.68;
+        g.save();
+        g.beginPath();
+        g.moveTo(x-coneW,baseY+by*.18);
+        g.bezierCurveTo(x-coneW*.6,baseY+by*.75,x+coneW*.6,baseY+by*.75,x+coneW,baseY+by*.18);
+        g.lineTo(x,peakY);
+        g.closePath();
+        const bellG=g.createLinearGradient(x-coneW*.75,baseY,x+coneW*.75,baseY);
+        if(c==="O"){
+          bellG.addColorStop(0,"#2a2d3a");bellG.addColorStop(.36,"#ffffff");bellG.addColorStop(.48,"#ffffff");bellG.addColorStop(.53,"#0b0c10");bellG.addColorStop(.82,"#5a6075");bellG.addColorStop(1,"#181a22");
+        }else{
+          bellG.addColorStop(0,mix(col,"#0a0b10",.55));
+          bellG.addColorStop(.25,mix(col,"#ffffff",.45));
+          bellG.addColorStop(.42,"#ffffff");
+          bellG.addColorStop(.49,mix(col,"#ffffff",.85));
+          bellG.addColorStop(.53,mix(col,"#000000",.82));
+          bellG.addColorStop(.72,mix(col,"#000000",.45));
+          bellG.addColorStop(.90,mix(col,"#ffffff",.25));
+          bellG.addColorStop(1,mix(col,"#000000",.65));
+        }
+        g.fillStyle=bellG;g.fill();
+        g.restore();
+        // 5. 전면 U자형 밝은 네온 컬러 스트라이프 (뒤쪽은 얇고 어둡게 사라지고 앞쪽·양옆만 굵고 쨍하게 빛나는 초승달/말굽 모양 링)
+        const rx1=bx*.72,ry1=by*.66,rcy1=baseY-by*.04;
+        const rx2=bx*.54,ry2=by*.42,rcy2=baseY-by*.10;
+        g.beginPath();
+        g.ellipse(x,rcy1,rx1,ry1,0,-.12*Math.PI,1.12*Math.PI,false);
+        g.ellipse(x,rcy2,rx2,ry2,0,1.12*Math.PI,-.12*Math.PI,true);
+        g.closePath();
+        const arcG=g.createLinearGradient(0,rcy2-ry2*.2,0,rcy1+ry1);
+        arcG.addColorStop(0,rgba(col,0));
+        arcG.addColorStop(.25,mix(col,"#ffffff",.35));
+        arcG.addColorStop(.7,mix(col,"#ffffff",.72));
+        arcG.addColorStop(1,"#ffffff");
+        g.fillStyle=arcG;g.fill();
+        g.restore();
+        // 바깥 윤곽선 마감
+        g.beginPath();
+        g.moveTo(x-bx,baseY);
+        g.bezierCurveTo(x-bx,baseY+by*1.32,x+bx,baseY+by*1.32,x+bx,baseY);
+        g.quadraticCurveTo(x+bx*.52,peakY+by*.06,x,peakY);
+        g.quadraticCurveTo(x-bx*.52,peakY+by*.06,x-bx,baseY);
+        g.closePath();
+        g.lineWidth=1.2;g.strokeStyle="rgba(0,0,0,.78)";g.stroke();
+      }else{ // RB3 북 젬 (스샷 100% 동일: 두꺼운 흰색 하부 베젤 + 볼록한 가로 실린더 바 + 양끝 둥근 다크 크롬 캡)
+        const gw=lw*.92*GS,gh=gw*(.26+.06*TN),cr=gh*.32,y0=q.y-gh*.58,ix=x-gw/2,iy=y0,iw=gw,ih=gh;
+        // 1. 바닥 그림자
+        g.fillStyle="rgba(0,0,0,.72)";rr(ix,iy+ih*.34,iw,ih,cr);g.fill();
+        // 2. 두꺼운 순백색 하부 베젤 (스샷에서 젬 아래로 또렷하게 보이는 흰 판)
+        const botG=g.createLinearGradient(ix,0,ix+iw,0);
+        botG.addColorStop(0,"#c2c7d6");botG.addColorStop(.12,"#ffffff");botG.addColorStop(.88,"#ffffff");botG.addColorStop(1,"#b4b9c8");
+        g.fillStyle=botG;rr(ix,iy+ih*.16,iw,ih*.96,cr);g.fill();
+        g.lineWidth=1.4;g.strokeStyle="rgba(0,0,0,.8)";g.stroke();
+        // 3. 상단 3D 실린더 본체 (클리핑)
+        const capW=Math.min(iw*.18,ih*.64);
+        g.save();rr(ix,iy,iw,ih*.92,cr*.88);g.clip();
+        // 컬러 실린더 (위쪽 짙은 톤 → 아래쪽 밝은 네온 스펙큘러 띠 → 바닥 그림자)
+        const cylG=g.createLinearGradient(0,iy,0,iy+ih*.92);
+        cylG.addColorStop(0,mix(col,"#000000",.62));
+        cylG.addColorStop(.22,mix(col,"#000000",.22));
+        cylG.addColorStop(.52,col);
+        cylG.addColorStop(.72,mix(col,"#ffffff",.78));
+        cylG.addColorStop(.84,col);
+        cylG.addColorStop(1,mix(col,"#000000",.55));
+        g.fillStyle=cylG;g.fillRect(ix,iy,iw,ih*.92);
+        // 실린더 좌우 가장자리 입체 비네팅
+        const sideG=g.createLinearGradient(ix+capW,0,ix+iw-capW,0);
+        sideG.addColorStop(0,"rgba(0,0,0,.38)");sideG.addColorStop(.18,"rgba(0,0,0,0)");sideG.addColorStop(.5,"rgba(255,255,255,.18)");sideG.addColorStop(.82,"rgba(0,0,0,0)");sideG.addColorStop(1,"rgba(0,0,0,.38)");
+        g.fillStyle=sideG;g.fillRect(ix+capW,iy,iw-capW*2,ih*.92);
+        // 4. 양끝 RB3 다크 크롬 숄더 캡 (검은 세로 줄 + 밝은 은색 립)
+        const drawCap=(cx0,isL)=>{
+          const cg=g.createLinearGradient(0,iy,0,iy+ih*.92);
+          cg.addColorStop(0,"#12131a");cg.addColorStop(.28,"#585d70");cg.addColorStop(.55,"#dfe4f2");cg.addColorStop(.78,"#323542");cg.addColorStop(1,"#14161e");
+          g.fillStyle=cg;g.fillRect(cx0,iy,capW,ih*.92);
+          // 컬러 몸통과 만나는 안쪽 밝은 크롬 링 + 검은 골
+          const sx0=isL?cx0+capW-2.6:cx0;
+          g.fillStyle="#050608";g.fillRect(sx0,iy,2.6,ih*.92);
+          g.fillStyle="#ffffff";g.fillRect(isL?sx0-1.8:sx0+2.6,iy,1.8,ih*.92);
+          // 캡 중앙 검은 세로 홈
+          g.fillStyle="#0a0b10";g.fillRect(cx0+capW*.42,iy+1,capW*.18,ih*.92-2);
+          g.fillStyle="rgba(255,255,255,.65)";g.fillRect(isL?cx0+capW*.24:cx0+capW*.62,iy+2,1.3,ih*.92-4);
+        };
+        drawCap(ix,true);
+        drawCap(ix+iw-capW,false);
+        g.restore();
+        rr(ix,iy,iw,ih*.92,cr*.88);g.lineWidth=1.4;g.strokeStyle="rgba(0,0,0,.85)";g.stroke();
       }
       g.restore();
     });
