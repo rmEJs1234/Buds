@@ -2107,7 +2107,7 @@ const SMPSRC={"K": "data:audio/wav;base64,UklGRtRSAABXQVZFZm10IBAAAAABAAEARKwAAI
 <script>
 // 듣고 맞추기: 다른 데서 나오는 같은 노래를 마이크로 듣고 그 위치에 노트를 맞춤 (내 쪽 노래 소리는 끔)
 (()=>{
-  const FS=11025,N=512,H=256,B=20,CLIP=6,RECLIP=5,EVERY=6000;
+  const FS=11025,N=512,H=256,B=20,CLIP=8,RECLIP=5,EVERY=6000;
   // ── 특징: 20개 대역 에너지(로그)의 상승분 = 어디서 소리가 '터지는지' 지도
   const edges=(()=>{const e=[];for(let i=0;i<=B;i++){const f=150*Math.pow(5000/150,i/B);e.push(Math.max(1,Math.round(f/(FS/N))))}return e})();
   const win=new Float32Array(N).map((_,i)=>.5-.5*Math.cos(2*Math.PI*i/(N-1)));
@@ -2163,16 +2163,19 @@ const SMPSRC={"K": "data:audio/wav;base64,UklGRtRSAABXQVZFZm10IBAAAAABAAEARKwAAI
   const LS={mode:null,stream:null,src:null,proc:null,ring:null,rn:0,rEnd:0,sr:0,Ts:0,tc:0,lead:0,just:0,bad:0,keep:null,corrT:null,reT:null,busy:false};
   window.__LSstate=LS;
   // 마이크 링버퍼 (최근 8초). 샘플 수로 시간 계산, 끊기면 다시 시작
+  const sess=t=>{try{if(navigator.audioSession)navigator.audioSession.type=t}catch(e){}};
   async function micOn(){
+    sess("play-and-record");
     LS.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    if(ctx.state!=="running"){try{await ctx.resume()}catch(e){}}
     LS.src=ctx.createMediaStreamSource(LS.stream);LS.sr=ctx.sampleRate;LS.ring=new Float32Array(Math.ceil(LS.sr*8));LS.rn=0;LS.rEnd=0;
     LS.proc=ctx.createScriptProcessor(2048,1,1);const z=ctx.createGain();z.gain.value=0;LS.src.connect(LS.proc);LS.proc.connect(z);z.connect(ctx.destination);LS.z=z;
     LS.proc.onaudioprocess=e=>{const d=e.inputBuffer.getChannelData(0),n=d.length,R=LS.ring,L=R.length,tNow=ctx.currentTime;
-      const tEst=LS.rEnd+n/LS.sr;if(!LS.rn||Math.abs(tEst-tNow)>.12){LS.rn=0;LS.rEnd=tNow}else LS.rEnd=tEst;
+      const tEst=LS.rEnd+n/LS.sr;if(!LS.rn||Math.abs(tEst-tNow)>.6){LS.rn=0;LS.rEnd=tNow}else LS.rEnd=tEst+(tNow-tEst)*.02;
       let s=0;for(let i=0;i<n;i++){R[(LS.rn+i)%L]=d[i];s+=d[i]*d[i]}LS.rn+=n;
       const bar=$("lsnBar");if(bar)bar.style.width=Math.min(100,Math.round(Math.sqrt(s/n)*600))+"%"}}
   function micOff(){try{LS.proc&&(LS.proc.onaudioprocess=null,LS.proc.disconnect())}catch(e){}try{LS.src&&LS.src.disconnect()}catch(e){}try{LS.z&&LS.z.disconnect()}catch(e){}
-    if(LS.stream)LS.stream.getTracks().forEach(t=>t.stop());LS.stream=LS.src=LS.proc=null;$("lsnLv").hidden=true}
+    if(LS.stream)LS.stream.getTracks().forEach(t=>t.stop());LS.stream=LS.src=LS.proc=null;sess("playback");$("lsnLv").hidden=true}
   // 링버퍼에서 마지막 sec초 꺼내기 → {M,m,t0(첫 프레임의 ctx 시각),rms}
   function grab(sec){const R=LS.ring,L=R.length,n=Math.min(LS.rn,Math.floor(sec*LS.sr),L);if(n<LS.sr*2)return null;
     const x=new Float32Array(n);let s=0;for(let i=0;i<n;i++){const v=R[(LS.rn-n+i)%L];x[i]=v;s+=v*v}
@@ -2195,11 +2198,11 @@ const SMPSRC={"K": "data:audio/wav;base64,UklGRtRSAABXQVZFZm10IBAAAAABAAEARKwAAI
       const t0=performance.now();
       while(LS.mode==="rec"&&(performance.now()-t0)<CLIP*1000+200){tx("듣는 중 "+Math.max(1,Math.ceil(CLIP-(performance.now()-t0)/1000))+"초");await new Promise(r=>setTimeout(r,200))}
       if(LS.mode!=="rec")return;tx("찾는 중…");await new Promise(r=>setTimeout(r,20));
-      const c=grab(CLIP);if(!c||c.rms<.002){quit();flashMsg("소리가 너무 작음 ㅠ");return}
-      const r=match(c.M,c.m,0,REF.n);
-      if(!r||!(r.score>=.2&&(r.score-r.second>=.03||r.score>=.45))){quit();flashMsg("못 찾음 다시 ↻");return}
+      const c=grab(CLIP);window.__LSlast={rms:c&&c.rms,n:LS.rn,sr:LS.sr};if(!c){quit();flashMsg("마이크 소리가 안 들어옴",4000);return}if(c.rms<.0015){quit();flashMsg("소리가 너무 작음 ("+c.rms.toFixed(4)+")",4000);return}
+      const r=match(c.M,c.m,0,REF.n);Object.assign(window.__LSlast,r||{});
+      if(!r||!(r.score>=.15&&(r.score-r.second>=.025||r.score>=.35))){quit();flashMsg("못 찾음 ("+(r?r.score.toFixed(2):"-")+") 다시 ↻",4000);return}
       LS.Ts=r.t;LS.tc=c.t0;startFollow();
-    }catch(e){quit();flashMsg(e&&e.name==="NotAllowedError"?"마이크 권한 필요":"마이크 못 씀")}
+    }catch(e){quit();flashMsg(e&&e.name==="NotAllowedError"?"마이크 권한 필요":"마이크 못 씀 "+(e&&e.name||""),4000)}
   }
   // 저쪽 노래 위치에 맞춰 바로 재생 (카운트인 없이, 내 소리는 끔)
   function startFollow(){
