@@ -923,8 +923,9 @@ const KEEP=(()=>{try{const n=4000,b=new Uint8Array(44+n),v=new DataView(b.buffer
   v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,"data");v.setUint32(40,n,true);b.fill(128,44);
   const a=new Audio(URL.createObjectURL(new Blob([b],{type:"audio/wav"})));a.loop=true;a.setAttribute("playsinline","");return a}catch(e){return null}})();
 // 멈춤 → 그 자리에서 다시 시작하면 한 마디 앞 마디 첫 박부터 (탐색바·구간·처음으로 등으로 옮겼으면 안 돌아감)
-let bkAt=null;
-function play(){
+let bkAt=null,sbAt=null;
+function play(noLead){
+  if(sbAt!==null&&Math.abs(pos-sbAt)<1e-6)noLead=true;sbAt=null;
   if(bkAt!==null&&Math.abs(pos-bkAt)<1e-6){pos=Math.max(0,(Math.floor(pos/4+1e-6)-1)*4);vi=ai=firstFrom(pos)}bkAt=null;
   if(KEEP){const pr=KEEP.play();if(pr&&pr.catch)pr.catch(()=>{})}
   initAudio();if(ctx&&ctx.state==="suspended")ctx.resume();
@@ -933,17 +934,17 @@ function play(){
   if(au){au.muted=true;const pr=au.play();if(pr&&pr.then)pr.then(()=>{if(counting)au.pause()}).catch(()=>{})}
   if(au2){au2.muted=true;const p2=au2.play();if(p2&&p2.then)p2.then(()=>{if(counting)au2.pause()}).catch(()=>{})}
   // 1단계: 노트가 위로 올라감(이미 지나간 노트는 숨김) → 2단계: 노래가 앞에서부터 다시 흐르며 노트가 내려옴
-  rwFrom=pos;rwTo=au?Math.max(pos-LEAD,-off()*2):pos-LEAD;rwT0=performance.now();countEnd=pos;
+  rwFrom=pos;rwTo=noLead?pos:au?Math.max(pos-LEAD,-off()*2):pos-LEAD;rwT0=performance.now();countEnd=pos;
   counting=true;wake(true);
   $("play").textContent="⏸ 멈춤";
   cdT=setTimeout(()=>{
     counting=false;playing=true;
     if(au){au.pause();au.muted=!drmOn}
     if(au2){au2.pause();au2.muted=!vocOn;au2.playbackRate=rate}
-    seek(rwFrom,true);
+    seek(rwFrom,!noLead);
     if(au&&!WA.on){au.playbackRate=rate;hold=true;lastT=au.currentTime;const pr=au.play();if(pr&&pr.catch)pr.catch(()=>{})}
     timer=setInterval(tick,25);tick();
-  },RW_MS);
+  },noLead?0:RW_MS);
 }
 function pause(){const wc=counting;if(counting){clearTimeout(cdT);counting=false;if(au)au.muted=!drmOn;if(au2)au2.muted=!vocOn}
   let np=wc?rwFrom:Math.max(cur(),0);if(!wc&&playing&&np<countEnd)np=countEnd;
@@ -1953,7 +1954,7 @@ requestAnimationFrame(frame);
   $("tTot").textContent=mmss(Math.round(TOTAL*.5));
   $("sMarks").innerHTML=SECTIONS.map(x=>`<i style="left:${x[1]*4/TOTAL*100}%"></i>`).join("");
   const at=e=>{const r=sb.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*TOTAL};
-  const setP=b=>{bkAt=null;pos=Math.min(TOTAL-.01,Math.max(0,b));vi=ai=firstFrom(pos)};
+  const setP=b=>{bkAt=null;pos=Math.min(TOTAL-.01,Math.max(0,b));sbAt=pos;vi=ai=firstFrom(pos)};
   sb.addEventListener("pointerdown",e=>{drag=true;was=playing||counting;if(was)pause();try{sb.setPointerCapture(e.pointerId)}catch(_){}sb.classList.add("drag");setP(at(e));e.preventDefault()});
   sb.addEventListener("pointermove",e=>{if(drag)setP(at(e))});
   const up=e=>{if(!drag)return;drag=false;sb.classList.remove("drag");setP(at(e));if(was)play()};
@@ -2082,7 +2083,7 @@ document.body.classList.add("ready");
   const marks=()=>{$("eMarks").innerHTML=SECTIONS.map(x=>`<i style="left:${x[1]*4/TOTAL*100}%"><em>${x[0]}</em></i>`).join("")};marks();
   document.querySelectorAll("[data-chart]").forEach(b=>b.addEventListener("click",()=>setTimeout(marks,0)));
   const at=e=>{const r=sb.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*TOTAL};
-  const setP=b=>{bkAt=null;pos=Math.min(TOTAL-.01,Math.max(0,b));vi=ai=firstFrom(pos);cb=Math.floor(pos/4)+1;view=pos-1;setFollow(true);chUi()};
+  const setP=b=>{bkAt=null;pos=Math.min(TOTAL-.01,Math.max(0,b));sbAt=pos;vi=ai=firstFrom(pos);cb=Math.floor(pos/4)+1;view=pos-1;setFollow(true);chUi()};
   sb.addEventListener("pointerdown",e=>{drag=true;was=playing||counting;if(was)pause();try{sb.setPointerCapture(e.pointerId)}catch(_){}sb.classList.add("drag");setP(at(e));e.preventDefault()});
   sb.addEventListener("pointermove",e=>{if(drag)setP(at(e))});
   const up=e=>{if(!drag)return;drag=false;sb.classList.remove("drag");setP(at(e));if(was)play()};
