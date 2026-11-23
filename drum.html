@@ -616,6 +616,8 @@ header h1 small{font-weight:600!important;color:var(--sub)!important;letter-spac
 .seg button[aria-pressed="true"],#chartEd .rseg button[aria-pressed="true"]{background:var(--btn)!important;color:#fff!important;box-shadow:var(--up1)!important}
 .seg button[data-ns],.seg button[data-nudge]{background:var(--btn)!important;color:#fff!important;box-shadow:var(--up1)!important}
 #nsVal,#syncVal{font-family:var(--num)!important;color:#fff!important}
+.seg button[data-lat]{flex:.7;font-size:17px;line-height:1;background:var(--btn)!important;color:#fff!important;box-shadow:var(--up1)!important}
+#latVal{flex:1;min-width:0;background:none!important;box-shadow:none!important;opacity:1;font-family:var(--num)!important;color:#fff!important;font-variant-numeric:tabular-nums}
 .side .cfg input[type=range]{accent-color:var(--gb)!important}
 .side .cfg select{border:0!important}
 /* 채보 편집 */
@@ -717,6 +719,13 @@ header #gear{margin-left:0!important}
       <button data-nudge="-0.02" aria-label="노트 빠르게">−</button>
       <button id="syncVal" disabled>0ms</button>
       <button data-nudge="0.02" aria-label="노트 느리게">+</button>
+    </div>
+  </div>
+  <div class="grp" id="latBox"><span class="cap">이어폰 지연</span>
+    <div class="seg" role="group" aria-label="블루투스 이어폰 지연 보정">
+      <button data-lat="-0.02" aria-label="지연 줄이기">−</button>
+      <button id="latVal" disabled>0ms</button>
+      <button data-lat="0.02" aria-label="지연 늘리기">+</button>
     </div>
   </div>
   <div class="grp tools"><span class="cap">도구</span>
@@ -881,8 +890,11 @@ let au=null,au2=null,vocOn=true,drmOn=true,hold=false,lastT=0,OFF=.258,nudge=0;
 try{nudge=+localStorage.getItem("drumSync2")||0}catch(e){}
 const off=()=>OFF+nudge,audioBeat=()=>(au.currentTime-off())*2;
 const WA={b1:null,b2:null,s1:null,s2:null,g1:null,g2:null,on:false};
-const LAT=()=>WA.on&&ctx?(ctx.outputLatency||ctx.baseLatency||0):0;
-const cur=()=>playing&&!hold?anchorPos+(now()-anchorTime-LAT())*BPM*rate/60:pos;
+// 이어폰 지연: 소리가 늦게 들리는 만큼 노트·판정만 늦춤 (엔진 시간 raw는 그대로 → 소리 예약은 안 밀림)
+let btLat=0;try{btLat=+localStorage.getItem("drumBtLat")||0}catch(e){}
+const LAT=()=>(ctx?(ctx.outputLatency||ctx.baseLatency||0):0)+btLat;
+const raw=()=>playing&&!hold?anchorPos+(now()-anchorTime)*BPM*rate/60:pos;
+const cur=()=>playing&&!hold?raw()-LAT()*BPM*rate/60:pos;
 const timeOf=b=>anchorTime+(b-anchorPos)*60/(BPM*rate);
 const firstFrom=b=>{let i=0;while(i<EVENTS.length&&EVENTS[i].t<b-1e-6)i++;return i};
 let jumped=false;
@@ -897,13 +909,13 @@ function tick(){
     if(hold){
       if(!au.paused&&!au.seeking&&au.readyState>=3&&au.currentTime>lastT){pos=audioBeat();anchorPos=pos;anchorTime=now();hold=false;nextClick=Math.ceil(pos-1e-6)}
       else{lastT=au.currentTime;return}
-    }else if(!au.paused&&!au.seeking&&Math.abs(audioBeat()-cur())>.05){anchorPos=audioBeat();anchorTime=now()}
+    }else if(!au.paused&&!au.seeking&&Math.abs(audioBeat()-raw())>.05){anchorPos=audioBeat();anchorTime=now()}
   }
   if(au&&au2&&playing&&!hold&&!au.paused&&!WA.on){
     if(au2.paused){try{au2.currentTime=au.currentTime+.05}catch(e){}const pr=au2.play();if(pr&&pr.catch)pr.catch(()=>{})}
     else if(!au2.seeking){const d=au2.currentTime-au.currentTime;if(Math.abs(d)>.25){try{au2.currentTime=au.currentTime+.03}catch(e){}}else au2.playbackRate=rate*(1-Math.max(-.06,Math.min(.06,d*3)))}
   }
-  const p=cur(),ahead=p+.25*rate+.1;
+  const p=raw(),ahead=p+.25*rate+.1;
   while(ai<EVENTS.length&&EVENTS[ai].t<ahead){
     if(ctx&&sndOn&&playMode==="auto"){const t=Math.max(timeOf(EVENTS[ai].t),ctx.currentTime);EVENTS[ai].ins.forEach(c=>VOICE[c](t))}
     ai++;
@@ -953,7 +965,7 @@ $("play").onclick=()=>playing||counting?pause():play();
 $("rew").onclick=()=>{const a=playing||counting;if(a)pause();bkAt=null;pos=0;vi=0;if(a)play()};
 chipEls.forEach(b=>b.onclick=()=>{const beat=SECTIONS[+b.dataset.i][1]*4;const a=playing||counting;if(a)pause();bkAt=null;pos=beat;vi=firstFrom(beat);if(a)play()});
 document.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{
-  const p=playing?cur():pos,was=WA.on;rate=+b.dataset.rate;if(au)au.playbackRate=rate;if(au2)au2.playbackRate=rate;
+  const p=playing?raw():pos,was=WA.on;rate=+b.dataset.rate;if(au)au.playbackRate=rate;if(au2)au2.playbackRate=rate;
   if(playing){if(useWA())waStart(p);else if(was&&au){waStop();const t=Math.max(0,p/2+off());try{au.currentTime=t;if(au2)au2.currentTime=t}catch(e){}
       au.muted=!drmOn;if(au2)au2.muted=!vocOn;pos=p;anchorPos=p;anchorTime=now();hold=true;lastT=t;const pr=au.play();if(pr&&pr.catch)pr.catch(()=>{})}
     else{pos=p;anchorPos=p;anchorTime=now()}}
@@ -967,6 +979,10 @@ document.addEventListener("visibilitychange",()=>{if(playing&&document.visibilit
 // ── 내 음원 파일 (기기 안에서만 재생, 다음에 또 쓰게 브라우저에 보관)
 function idb(mode,fn){return new Promise((res,rej)=>{try{const r=indexedDB.open("drumguide",1);r.onupgradeneeded=()=>r.result.createObjectStore("f");
   r.onsuccess=()=>{const tx=r.result.transaction("f",mode),q=fn(tx.objectStore("f"));tx.oncomplete=()=>res(q.result);tx.onerror=()=>rej()};r.onerror=()=>rej()}catch(e){rej(e)}})}
+function showLat(){$("latVal").textContent=Math.round(btLat*1000)+"ms"}
+document.querySelectorAll("[data-lat]").forEach(b=>b.onclick=()=>{
+  btLat=Math.max(0,Math.min(.6,Math.round((btLat+ +b.dataset.lat)*1000)/1000));showLat();try{localStorage.setItem("drumBtLat",btLat)}catch(e){}});
+setTimeout(showLat,0);
 function showSync(){$("syncVal").textContent=(nudge>0?"+":"")+Math.round(nudge*1000)+"ms"}
 function setSong(blob,fresh){
   if(playing)pause();WA.b1=WA.b2=null;waDecode(blob,"b1");
@@ -992,7 +1008,7 @@ $("file").onchange=e=>{const fs=[...e.target.files];e.target.value="";if(!fs.len
     setSong(drum,true);setVocal(voc);idb("readwrite",s=>s.put(voc,"voc2")).catch(()=>{})}};
 document.querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>{
   nudge=Math.round((nudge+ +b.dataset.nudge)*1000)/1000;showSync();try{localStorage.setItem("drumSync2",nudge)}catch(e){}
-  if(WA.on)waStart(cur());else if(au&&playing&&!hold){anchorPos=audioBeat();anchorTime=now()}
+  if(WA.on)waStart(raw());else if(au&&playing&&!hold){anchorPos=audioBeat();anchorTime=now()}
 });
 function waDecode(blob,slot){try{initAudio();if(!ctx)return;blob.arrayBuffer().then(ab=>new Promise((res,rej)=>ctx.decodeAudioData(ab,res,rej))).then(buf=>{WA[slot]=buf}).catch(()=>{})}catch(e){}}
 function useWA(){return !!ctx&&rate===1&&!!WA.b1&&(!au2||!!WA.b2)&&(!ndOn||!!WA.b3)}
@@ -1010,7 +1026,7 @@ function useND(v){ndOn=v;$("ndBtn").setAttribute("aria-pressed",v);const b=v?ndB
   if(v&&!vocOn){vocOn=true;$("vocBtn").setAttribute("aria-pressed","true")}
   const wasP=playing&&!WA.on,t=au2?au2.currentTime:0;
   if(au2){try{URL.revokeObjectURL(au2.src)}catch(e){}au2.src=URL.createObjectURL(b);au2.playbackRate=rate;au2.muted=!vocOn;try{au2.currentTime=t}catch(e){};if(wasP){const pr=au2.play();if(pr&&pr.catch)pr.catch(()=>{})}}
-  if(playing&&WA.on)waStart(cur())}
+  if(playing&&WA.on)waStart(raw())}
 function setVocal(blob){vocBlob=blob;waDecode(blob,"b2");drmOn=false;if(au)au.muted=true;$("drmBtn").setAttribute("aria-pressed","false");au2=new Audio();au2.preload="auto";au2.src=URL.createObjectURL(blob);au2.muted=!vocOn;au2.volume=.85;au2.playbackRate=rate;$("vocBtn").hidden=false;$("drmBtn").hidden=false}
 const loadDefault=()=>{try{if(au||typeof SONG==="undefined")return;setSong(b64blob(SONG),false);if(typeof VOC!=="undefined")setVocal(b64blob(VOC));if(typeof NODRUM!=="undefined")setNoDrum(b64blob(NODRUM))}catch(e){}};
 // 같은 폴더에 drum.mp3 / song.mp3 가 있으면 그걸 씀 → 없으면 이 기기에 골라둔 파일
@@ -1931,7 +1947,7 @@ $("chFollow").onclick=()=>setFollow($("chFollow").getAttribute("aria-pressed")!=
 document.querySelectorAll("[data-er]").forEach(b=>b.onclick=()=>document.querySelector('[data-rate="'+b.dataset.er+'"]').click());
 $("chVocT").onclick=()=>$("vocBtn").click();$("chDrmT").onclick=()=>$("drmBtn").click();
 function setFollow(v){chFollowOn=v;$("chFollow").setAttribute("aria-pressed",v)}
-function resync(){const p=playing?Math.max(cur(),countEnd):pos;vi=firstFrom(p);ai=firstFrom(p+(playing?.25*rate+.1:0))}
+function resync(){const p=playing?Math.max(cur(),countEnd):pos;vi=firstFrom(p);ai=firstFrom((playing?raw():p)+(playing?.25*rate+.1:0))}
 function chHit(ev){if($("chartEd").hidden)return;const t=performance.now();ev.ins.forEach(c=>{hitAt.set(ev.t.toFixed(4)+c,t);padAt[c]=t});if(hitAt.size>400)hitAt.clear()}
 function chFollow(p){
   if($("chartEd").hidden)return;
