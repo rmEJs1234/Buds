@@ -2282,31 +2282,49 @@ const SMPSRC={"K": "data:audio/wav;base64,UklGRtRSAABXQVZFZm10IBAAAAABAAEARKwAAI
       if(first||!cur||cur.i.length>=n){cur={s:b[0],xa:first?0:b[1]-6,xb:0,i:[]};segs.push(cur)}cur.i.push(i);cur.xb=Math.min(SD.w,b[2]+8)});
     const bySys={};segs.forEach(g=>(bySys[g.s]=bySys[g.s]||[]).push(g));
     Object.values(bySys).forEach(a=>{const L=a[a.length-1];if(a.length>1&&L.i.length===1){const P=a[a.length-2];P.i.push(...L.i);P.xb=L.xb;segs.splice(segs.indexOf(L),1)}});segN=n};
+  let sp=-1,lastT=0,hudT=0,hudR=null;const pal=x=>x<0?0:x>1?1:x;
   window.__drawScore=(g,W,H,p,TT)=>{
     if(!on||!ready)return;
-    const port=H>W*1.15,n=W<700?2:99;if(n!==segN)mkSegs(n);
+    const port=H>W*1.15,n=W<700?2:99;if(n!==segN){mkSegs(n);sp=-1}
     const bi=Math.max(0,Math.min(SD.bars.length-1,Math.floor(Math.max(p,0)/4))),fr=p<0?0:Math.min(4,Math.max(p,0)-bi*4);
     const si=segs.findIndex(x=>x.i.includes(bi));if(si<0)return;
     const top=port?112:84,bot=Math.max(top+80,TT-(port?18:6)),pad=port?10:28;
-    const sw=x=>x.xb-x.xa,sc=Math.min((W-pad*2)/sw(segs[si]),(port?.62:.85)*(bot-top)/SD.h,port?.4:.8);
-    const lh=SD.h*sc,y0=top+Math.max(0,(bot-top-lh*(port?2:1))/2)-(port?0:4);
-    // 렉 줄이기: 줄마다 흰 악보/빨간 악보를 화면 크기로 한 번만 그려 두고(최근 4개만 보관) 매 프레임엔 잘라 붙이기만
+    const sw=x=>x.xb-x.xa,med=segs.map(sw).sort((x,y)=>x-y)[segs.length>>1];
+    const sc=Math.min((W-pad*2)/med,(port?.62:.85)*(bot-top)/SD.h,port?.4:.8);
+    const lh=SD.h*sc*(port?1.02:.94),y0=top+Math.max(0,(bot-top-lh*(port?2:1))/2)-(port?0:4);
+    // 줄 바뀔 때 뚝 끊기지 않게 위로 스르륵 올라가게
+    const now=performance.now(),dt=Math.min(.1,(now-lastT)/1000);lastT=now;
+    if(sp<0||Math.abs(si-sp)>2.5)sp=si;else sp+=(si-sp)*(1-Math.exp(-dt*9));if(Math.abs(si-sp)<.002)sp=si;
     const dpr=Math.min(3,window.devicePixelRatio||1);
     const getC=(sg,s2)=>{const k=segs.indexOf(sg)+"|"+s2.toFixed(4)+"|"+dpr;let c=cache.get(k);if(c){cache.delete(k);cache.set(k,c);return c}
       const cw=Math.max(1,Math.ceil(sw(sg)*s2*dpr)),ch=Math.max(1,Math.ceil(SD.h*s2*dpr)),mk=()=>{const v=document.createElement("canvas");v.width=cw;v.height=ch;return v};
       const wC=mk(),rC=mk(),wx=wC.getContext("2d");wx.imageSmoothingEnabled=true;wx.imageSmoothingQuality="high";wx.drawImage(IM[sg.s],sg.xa*F,0,sw(sg)*F,SD.h*F,0,0,cw,ch);
       const rx=rC.getContext("2d");rx.drawImage(wC,0,0);rx.globalCompositeOperation="source-in";rx.fillStyle="#ff3b3b";rx.fillRect(0,0,cw,ch);
-      c={w:wC,r:rC,k:cw/(sw(sg))};cache.set(k,c);while(cache.size>4)cache.delete(cache.keys().next().value);return c};
-    const draw=(sg,dy,al,hl)=>{const s2=Math.min((W-pad*2)/sw(sg),sc),w=sw(sg)*s2,h=SD.h*s2,dx=(W-w)/2,C=getC(sg,s2);
-      g.save();g.globalAlpha=al;g.drawImage(C.w,dx,dy,w,h);g.restore();
-      if(!hl)return;
-      const b=SD.bars[bi],X=v=>dx+(v-sg.xa)*s2,xs=xAt(b,fr)+12;
-      if(b[1]>sg.xa+1){g.fillStyle="rgba(0,0,0,.55)";g.fillRect(dx,dy,X(b[1])-dx,h)}
-      const a0=Math.max(sg.xa,b[1]),cw=Math.min(xs,b[2])-a0;
-      if(cw>1){const sx=(a0-sg.xa)*C.k,swp=Math.min(C.r.width-sx,cw*C.k);if(swp>0)g.drawImage(C.r,sx,0,swp,C.r.height,X(a0),dy,swp/C.k*s2,h)}
+      c={w:wC,r:rC,k:cw/(sw(sg))};cache.set(k,c);while(cache.size>6)cache.delete(cache.keys().next().value);return c};
+    const red=(C,sg,dx,dy,s2,x0,x1,al)=>{const cw=x1-x0;if(cw<=1||al<=0)return;const sx=(x0-sg.xa)*C.k,swp=Math.min(C.r.width-sx,cw*C.k);
+      if(swp>0){g.globalAlpha=al;g.drawImage(C.r,sx,0,swp,C.r.height,dx+(x0-sg.xa)*s2,dy,swp/C.k*s2,SD.h*s2);g.globalAlpha=1}};
+    const draw=(k,dy,al)=>{const sg=segs[k];if(!sg)return;const s2=Math.min((W-pad*2)/sw(sg),sc),w=sw(sg)*s2,h=SD.h*s2,dx=(W-w)/2,C=getC(sg,s2),X=v=>dx+(v-sg.xa)*s2;
+      g.globalAlpha=al;g.drawImage(C.w,dx,dy,w,h);g.globalAlpha=1;
+      if(k!==si)return;
+      const b=SD.bars[bi],ease=pal(fr/.6),pb=SD.bars[bi-1];
+      // 이미 친 마디는 서서히 어둡게, 바로 앞 마디 빨강은 서서히 빠짐
+      if(pb&&sg.i.includes(bi-1)){g.fillStyle="rgba(0,0,0,.5)";if(X(pb[1])-dx>1)g.fillRect(dx,dy,X(pb[1])-dx,h);
+        g.fillStyle="rgba(0,0,0,"+(.5*ease).toFixed(3)+")";g.fillRect(X(pb[1]),dy,X(b[1])-X(pb[1]),h)}
+      if(pb&&sg.i.includes(bi-1))red(C,sg,dx,dy,s2,Math.max(sg.xa,pb[4]-16),pb[2],1-ease);
+      // 지금 마디: 음표가 쳐지는 순간 빨개짐 (박자표·템포 글씨는 빼고 첫 음표부터)
+      red(C,sg,dx,dy,s2,Math.max(sg.xa,b[4]-16),Math.min(xAt(b,fr)+12,b[2]),1);
       const px=X(Math.min(xAt(b,fr),b[2]));g.fillStyle="rgba(255,59,59,.9)";g.fillRect(px-1,dy+(SD.st-SD.sh*.9)*s2,2,SD.sh*2.8*s2)};
-    draw(segs[si],y0,1,true);
-    if(segs[si+1])draw(segs[si+1],y0+lh,port?.5:.35,false)};
+    g.save();g.beginPath();g.rect(0,top-8,W,H);g.clip();
+    const k0=Math.floor(sp);
+    for(let k=k0-1;k<=k0+2;k++){const d=k-sp,dy=y0+d*lh;if(dy<top-8-lh||dy>bot+lh)continue;
+      const al=d<0?pal(1+d*1.6)*.9:pal(1-d*(port?.5:.65));if(al>.01)draw(k,dy,k===si?Math.max(al,.85):al)}
+    // 위쪽 가장자리 부드럽게 (헤더 밑으로 사라질 때)
+    const fg=g.createLinearGradient(0,top-8,0,top+22);fg.addColorStop(0,"rgba(0,0,0,1)");fg.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=fg;g.fillRect(0,top-8,W,30);
+    // 마디 HUD 뒤는 악보를 살짝 가려서 숫자가 안 묻히게
+    if(now-hudT>500){hudT=now;const e=$("hud");hudR=e&&e.offsetParent?e.getBoundingClientRect():null;const c=$("cv").getBoundingClientRect();if(hudR)hudR={x:hudR.x-c.x,y:hudR.y-c.y,w:hudR.width,h:hudR.height}}
+    if(hudR&&hudR.w){const cx=hudR.x+hudR.w/2,cy=hudR.y+hudR.h/2,R=Math.max(hudR.w,hudR.h)*.9+20,rg=g.createRadialGradient(cx,cy,0,cx,cy,R);
+      rg.addColorStop(0,"rgba(0,0,0,.92)");rg.addColorStop(.6,"rgba(0,0,0,.75)");rg.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=rg;g.fillRect(cx-R,cy-R,R*2,R*2)}
+    g.restore()};
 })();
 </script>
 </body>
