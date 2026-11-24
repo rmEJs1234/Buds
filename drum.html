@@ -2275,6 +2275,8 @@ const SMPSRC={"K": "data:audio/wav;base64,UklGRtRSAABXQVZFZm10IBAAAAABAAEARKwAAI
   const apply=()=>{btn.setAttribute("aria-pressed",on);document.body.classList.toggle("scoreOn",on)};
   btn.onclick=()=>{on=!on;try{localStorage.setItem("drumScore",on?"1":"0")}catch(_){}apply()};apply();
   const st=document.createElement("style");st.textContent="body.scoreOn .lyr{display:none!important}";document.head.appendChild(st);
+  // 마디 끝(4박) 위치를 다음 마디 첫 음표로 이어서, 재생선이 마디선에서 멈췄다 튀지 않고 쭉 흘러가게
+  SD.bars.forEach((b,i)=>{const nb=SD.bars[i+1];if(nb&&nb[0]===b[0]&&nb[4]>b[b.length-3])b[b.length-1]=nb[4]});
   const xAt=(b,t)=>{for(let k=3;k+3<b.length;k+=2)if(t<=b[k+2])return b[k+1]+(b[k+3]-b[k+1])*(t-b[k])/(b[k+2]-b[k]);return b[2]};
   // 넓은 화면은 한 줄 통째로, 좁은 화면은 2마디씩 끊어서
   let segs=[],segN=-1;
@@ -2313,7 +2315,7 @@ const SMPSRC={"K": "data:audio/wav;base64,UklGRtRSAABXQVZFZm10IBAAAAABAAEARKwAAI
       if(pb&&sg.i.includes(bi-1))red(C,sg,dx,dy,s2,Math.max(sg.xa,pb[4]-16),pb[2],1-ease);
       // 지금 마디: 음표가 쳐지는 순간 빨개짐 (박자표·템포 글씨는 빼고 첫 음표부터)
       red(C,sg,dx,dy,s2,Math.max(sg.xa,b[4]-16),Math.min(xAt(b,fr)+12,b[2]),1);
-      const px=X(Math.min(xAt(b,fr),b[2]));g.fillStyle="rgba(255,59,59,.9)";g.fillRect(px-1,dy+(SD.st-SD.sh*.9)*s2,2,SD.sh*2.8*s2)};
+      const px=X(xAt(b,fr));g.fillStyle="rgba(255,59,59,.9)";g.fillRect(px-1,dy+(SD.st-SD.sh*.9)*s2,2,SD.sh*2.8*s2)};
     g.save();g.beginPath();g.rect(0,top-8,W,H);g.clip();
     const k0=Math.floor(sp);
     for(let k=k0-1;k<=k0+2;k++){const d=k-sp,dy=y0+d*lh;if(dy<top-8-lh||dy>bot+lh)continue;
